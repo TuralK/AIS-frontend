@@ -23,7 +23,7 @@ const Login = () => {
   const handleLoginSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:4000/', {
+      const response = await axios.post('http://localhost/', {
         email,
         password,
       }, {
@@ -72,7 +72,7 @@ const Login = () => {
   const handleForgotPasswordSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:4000/forgotPassword', {
+      const response = await axios.post('http://localhost/forgotPassword', {
         email: forgotEmail,
       }, {
         withCredentials: true,
