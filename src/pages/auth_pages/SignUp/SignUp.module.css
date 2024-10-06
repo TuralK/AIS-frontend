@@ -1,0 +1,235 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+  
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.background {
+    position: absolute; /* or fixed if you want it to stay in place on scroll */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /*background: url('../../../assets/iyte_background.jpg') no-repeat center center; */
+    background: url('https://ceng.iyte.edu.tr/wp-content/uploads/sites/124/2017/02/100_3495.jpg');
+    background-size: cover;
+    z-index: 0;
+    display: flex;
+    justify-content: flex-end; /* Aligns child items to the right */
+    align-items: center;       /* Aligns child items vertically in the center */
+    background-size: 100% 100%;
+}
+  
+.background::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgb(15, 1, 30, 0.55); /* Adjust the last value for transparency */
+  z-index: -1;
+}
+
+
+.right {
+  background-color: white;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 500px;
+  z-index: 1002;
+  border-radius: 20px;
+  height: 850px;
+  margin-top: 25px;
+  margin-right: 20px;
+  padding: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+  
+.top_right {
+  background-color: white;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 30%;
+  z-index: 1001;
+  border-radius: 20px;
+}
+  
+.top_right_middle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.top_right_middle img {
+    height: 225px;
+    width: 225px;
+}
+
+.form_top_bottom {
+  width: 85%;
+  margin: 0 auto;
+}
+
+.form_line {
+  border: 1px solid black;
+  border-color: black;
+  opacity: 0.15;
+  margin: 0;
+}
+  
+.bottom_right {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 70%;
+  z-index: 1001;
+  border-radius: 20px;
+}
+  
+.bottom_right_inner {
+  width: 100%;
+}
+
+.slide_controls {
+  position: relative;
+  display: flex;
+  height: 50px;
+  width: 90%;
+  overflow: hidden;
+  margin: 8px 0 8px 0;
+  justify-content: space-between;
+  border: 1px solid lightgrey;
+  border-radius: 15px;
+  margin-left: auto;
+  margin-right: auto;
+  user-select: none;
+}
+
+.slide_controls .slide {
+  height: 100%;
+  width: 100%;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 48px;
+  cursor: pointer;
+  z-index: 1;
+  transition: all 0.6s ease;
+}
+
+input[type="radio"].slide {
+  display: none;
+}
+
+.slide.registerCompany {
+  color: #000;
+}
+
+.slide_controls .slider_tab {
+  position: absolute;
+  height: 100%;
+  width: 50%;
+  left: 0;
+  z-index: 0;
+  border-radius: 15px;
+  background: -webkit-linear-gradient(left,darkred,#bf1b1b,#bf1b1b, darkred);
+  transition: all 0.6s cubic-bezier(0.68,-0.55,0.265,1.55);
+}
+
+.registerCompany.active {
+  color: #fff;
+  cursor: default;
+  user-select: none;
+}
+
+.registerStudent.active {
+  color: #fff;
+  cursor: default;
+  user-select: none;
+}
+
+.registerStudent.deactive {
+  color: #000;
+}
+
+.registerCompany.deactive {
+  color: #000;
+}
+
+.slider_tab.deactive {
+  left: 50%;
+}
+
+.form_container {
+  display: flex;
+  width: 200%;  
+  overflow: hidden;
+}
+
+.title {
+  width: 50%;
+  /* font-size: 35px;
+  font-weight: 600; */
+  transition: all 0.6s cubic-bezier(0.68,-0.55,0.265,1.55);
+}
+
+.form_container .page_name {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+}
+
+.form_container .header {
+  margin-left: 45px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 400;
+  margin-top: 5px;
+  font-size: 28px;
+}
+
+p[name=page-name] {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin-top: 5px;
+  margin-left: 35px;
+  font-weight: 500;
+  font-size: 11px;
+}
+
+.student_form.active {
+  margin-left: 0%;
+}
+
+.student_form.deactive {
+  margin-left: -50%;
+}
+
+.form_inner{
+  display: flex;
+  width: 200%;
+  overflow: hidden;
+}
+
+.form_inner form{
+  width: 50%;
+  transition: all 0.6s cubic-bezier(0.68,-0.55,0.265,1.55);
+}
+
+.bottom_right_inner{
+  width: 100%;
+}

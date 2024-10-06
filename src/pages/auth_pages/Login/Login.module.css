@@ -1,4 +1,5 @@
 /* add root */
+/* change all page */
 *{
   box-sizing: border-box;
   margin: 0;
@@ -35,10 +36,10 @@ html, body {
   width: 100%;
   height: 100%;
   background: rgb(15, 1, 30, 0.55); /* Adjust the last value for transparency */
-  z-index: -1; /* Ensure the overlay is behind other content within the .background */
+  z-index: -1;
 }
 
-/* change this*/
+
 .form-container {
     top: 0px;
     right: 0px;
@@ -56,11 +57,6 @@ html, body {
     z-index: 10;
     overflow-y: auto;
     overflow-x: hidden;
-}
-
-.form-image {
-    height: 200px;
-    width: 200px;
 }
 
 .form-top {
@@ -81,7 +77,7 @@ html, body {
     height: 100%;
 }
 
-.logo img {
+.form-top-middle img {
   width: 225px;
   height: 225px;
 }
@@ -108,7 +104,7 @@ html, body {
   border-radius: 20px;
 }
 
-p[name="page-name"] {
+.page-name {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin-top: 5px;
   margin-left: 35px;
@@ -116,7 +112,7 @@ p[name="page-name"] {
   font-size: 11px;
 }
 
-h1[name="header"] {
+.header {
   margin-left: 45px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-weight: 400;
@@ -138,7 +134,7 @@ input[type="text"], input[type="password"], input[type="email"] {
   font-size: 14px;
 }
 
-.login.error {
+.login-error {
   width: 100%;
   height: 40px;
   margin-left: 50px;
@@ -151,6 +147,7 @@ input[type="checkbox"] {
   box-sizing: border-box;
   padding: initial;
   border: initial;
+  accent-color: darkred;
 }
 
 button {
@@ -168,7 +165,7 @@ button {
   margin: 8px auto;
 }
 
-.no.user.error {
+.no-user-error {
   width: 100%;
   height: 20px;
   margin-left: 50px;

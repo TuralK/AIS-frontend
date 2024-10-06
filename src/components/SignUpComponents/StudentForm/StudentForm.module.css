@@ -1,0 +1,80 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  width: 100%;
+  margin: auto;
+}
+
+.registerStudent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.bottomRightInner {
+  width: 100%;
+}
+
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+input[type="email"],
+input[type="password"] {
+  width: 82%;
+  height: 45px;
+  padding: 1px 10px;
+  margin: 13px 0;
+  display: block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+button {
+  background-color: darkred;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 82%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+li {
+  list-style: none;
+}
+
+li a {
+  text-decoration: none;
+}
+
+.error {
+  display: none;
+  width: 100%;
+  color: red;
+  margin-left: 100px;
+}
+
+.email.error,
+.password.error,
+.confirm.error {
+  display: block;
+}  

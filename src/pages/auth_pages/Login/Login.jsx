@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import './Login.css';
+import LoginCSS from './Login.module.css';
+import { Helmet } from "react-helmet";
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import IYTElogo from '../../../assets/iyte_logo_eng.png'
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -13,7 +15,6 @@ const Login = () => {
   const [isForgotPasswordActive, setIsForgotPasswordActive] = useState(false);
 
   useEffect(() => {
-    // Retrieve email from localStorage on component mount
     const savedEmail = localStorage.getItem('savedEmail');
     if (savedEmail) {
       setEmail(savedEmail);
@@ -100,32 +101,34 @@ const Login = () => {
   // don't forget to set logo to the page, add pictures to assets folder instead of using web url
 
   return (
-    <div className='background'>
-      <div className='form-container'>
-        <div className='form-top'>
-          <div className='form-top-middle'>
+    <div className={LoginCSS.background}>
+      <Helmet>
+        <title>Automated Internship System Login</title>
+      </Helmet>
+      <div className={LoginCSS['form-container']}>
+        <div className={LoginCSS['form-top']}>
+          <div className={LoginCSS['form-top-middle']}>
             <a
-              className='logo'
+              className={LoginCSS.logo}
               href='https://iyte.edu.tr/'
               target='_blank'
               rel='noopener noreferrer'>
               <img
-                className='form-image'
-                src='https://bhib.iyte.edu.tr/wp-content/uploads/sites/115/2018/09/iyte_logo-eng.png'
+                src={IYTElogo}
                 alt='IYTE'
               />
             </a>
           </div>
-          <div className='form-top-bottom'>
-            <hr className='form-line'></hr>
+          <div className={LoginCSS['form-top-bottom']}>
+            <hr className={LoginCSS['form-line']}></hr>
           </div>
         </div>
 
-        <div className='form-bottom'>
-          <form onSubmit={handleLoginSubmit} className='signin'>
-            <p name='page-name'>Automated Internship System</p>
-            <h1 name='header'>Login</h1>
-            <div className='form-content'>
+        <div className={LoginCSS['form-bottom']}>
+          <form onSubmit={handleLoginSubmit} className={LoginCSS['signin']}>
+            <p className={LoginCSS['page-name']}>Automated Internship System</p>
+            <h1 className={LoginCSS.header}>Login</h1>
+            <div className={LoginCSS['form-content']}>
               <input
                 type='email'
                 placeholder='Email'
@@ -145,7 +148,7 @@ const Login = () => {
                 required
               />
               { 
-              loginError.length > 0 && <div className='login error'>{loginError}</div>
+              loginError.length > 0 && <div className={LoginCSS['login-error']}>{loginError}</div>
               }
               <label>
               <input
@@ -160,9 +163,9 @@ const Login = () => {
               <button type='submit'>Login</button>
             </div>
           </form>
-          <div className={`forgot-password ${isForgotPasswordActive ? 'active' : ''}`}>
+          <div className={`${LoginCSS['forgot-password']} ${isForgotPasswordActive ? LoginCSS.active : ''}`}>
             <form onSubmit={handleForgotPasswordSubmit}>
-              <div className='forgotPassword'>
+              <div className={LoginCSS['forgotPassword']}>
                 <input
                   type='email'
                   placeholder='Email'
@@ -173,7 +176,7 @@ const Login = () => {
                   required
                 />
                 {
-                  forgotEmailError.length > 0 && <div className='no user error'>{forgotEmailError}</div>
+                  forgotEmailError.length > 0 && <div className={LoginCSS['no-user-error']}>{forgotEmailError}</div>
                 }
                 <button type='submit'>Send Reset Link</button>
               </div>

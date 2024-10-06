@@ -1,0 +1,62 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.registerCompany {
+  width: 100%;
+}
+
+.bottomRightInner {
+  width: 100%;
+}
+
+.container {
+  width: 100%;
+}
+
+.input {
+  width: 82%;
+  height: 45px;
+  padding: 1px 10px;
+  margin: 13px 0;
+  display: block;
+  border: 1px solid #ccc;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.button {
+  background-color: darkred;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 82%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.button:hover {
+  opacity: 0.85;
+}
+
+.error {
+  display: none;
+  width: 100%;
+  margin-left: 50px;
+  color: red;
+}
+
+.link {
+  text-decoration: none;
+}
+
+.email.error,
+.password.error,
+.confirm.error {
+  display: block;
+}  
