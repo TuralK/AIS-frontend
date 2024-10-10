@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import IYTElogo from '../../../assets/iyte_logo_eng.png'
 import { getUserType } from '../../../api/LoginApi/getUserTypeAPI';
+import { forgotPassword } from '../../../api/ChangePasswordApi/forgotPasswordAPI';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -20,13 +21,17 @@ const Login = () => {
 
   useEffect(() => {
     const fetchUserTypeAndNavigate = async () => {
-      await getUserType()
-        .then(userType => {
-          navigate("/" + userType);
-        })
+      try {
+        const userType = await getUserType();
+        navigate("/" + userType);
+      } catch (error) {
+        console.error("Failed to fetch user type:", error);
+      } finally {
+        setLoading(false);
+      }
     };
+  
     fetchUserTypeAndNavigate();
-    setLoading(false)
   }, [navigate]);
 
   useEffect(() => {
@@ -85,20 +90,16 @@ const Login = () => {
   const handleForgotPasswordSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost/forgotPassword', {
-        email: forgotEmail,
-      }, {
-        withCredentials: true,
-      });
+      const response = await forgotPassword(forgotEmail);
       if(response.status === 200){
         alert(response.data.success);
       } else {
-        alert('Failed to send code. Please try again.');
+        throw new Error('Failed to send code. Please try again.');
       }
       setForgotEmail('');
       setForgotEmailError('');
     } catch (error) {
-      setForgotEmailError(error.response.data.error || 'An unexpected error occurred');
+      setForgotEmailError(error.message || 'An unexpected error occurred');
     }
   };
 

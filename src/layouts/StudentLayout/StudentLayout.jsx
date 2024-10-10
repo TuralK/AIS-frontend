@@ -161,6 +161,16 @@ export const StudentLayout = () => {
     setIsUserMenuOpen(false)
   }
 
+  const deleteCookie = (name) => {
+    document.cookie = `${name}=; Max-Age=0; path=/;`;
+  };
+  
+  const logout = () => {
+    deleteCookie('jwt');
+    navigate('/');
+  };
+
+
   if (loading) { return null }
 
   return (
@@ -255,7 +265,8 @@ export const StudentLayout = () => {
                       {userMenuItems.map(({item, route}) => (
                         <NavLink
                           key={route}
-                          to={`/student/${route}`}>
+                          to={route !== 'logout' ? `/student/${route}` : '#'}
+                          >
                           <a
                             key={item}
                             href="#"
@@ -263,7 +274,14 @@ export const StudentLayout = () => {
                               ...styles.dropdownItem,
                               ':hover': { backgroundColor: '#f3f4f6' },
                             }}
-                            onClick={() => handleDropdownItemClick(item.toLowerCase())}
+                            onClick={(e) => {
+                              if (route === 'logout') {
+                                e.preventDefault();
+                                logout();
+                              } else {
+                                handleDropdownItemClick(item.toLowerCase());
+                              }
+                            }}
                             onMouseEnter={(e) => (e.target.style.backgroundColor = '#f3f4f6')}
                             onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
                           >

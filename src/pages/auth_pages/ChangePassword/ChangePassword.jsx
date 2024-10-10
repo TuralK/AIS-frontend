@@ -27,7 +27,7 @@ const ChangePassword = () => {
     //     }
     // }, [location, navigate]);    
 
-    const sleep = ms => new Promise(r => setTimeout(r, ms));
+    // const sleep = ms => new Promise(r => setTimeout(r, ms));
     
     useEffect( () => {
         const params = new URLSearchParams(location.search);
@@ -88,8 +88,6 @@ const ChangePassword = () => {
                 password: password,
                 confirmPassword: confirmPassword,
                 token: token,
-            }, {
-                withCredentials: true,
             });
             if(response.status === 200){
                 alert(response.data.success);

@@ -9,6 +9,7 @@ import ChangePassword from "./pages/auth_pages/ChangePassword/ChangePassword";
 import SignUp from "./pages/auth_pages/SignUp/SignUp";
 import { StudentLayout } from "./layouts/StudentLayout/StudentLayout.jsx";
 import Home from "./components/StudentComponents/StudentHomePageComponent/StudentHomePage.jsx";
+import StudentAnnouncements from "./components/StudentComponents/StudentAnnouncementsComponent/StudentAnnouncements.jsx";
 
 const App = () => {
   
@@ -30,7 +31,8 @@ const App = () => {
       element: <StudentLayout />,
       children: [
         {index: true, element: <Home/>},
-        {path: "home", element: <Home/>}
+        {path: "home", element: <Home/>},
+        {path: "announcements", element: <StudentAnnouncements/> }
       ]
       // children: [
       //   {index: true, element: },
