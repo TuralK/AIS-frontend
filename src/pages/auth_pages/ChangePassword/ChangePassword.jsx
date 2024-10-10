@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ChangePasswordCSS from './ChangePassword.module.css';
 import axios from 'axios';
 import Login from '../Login/Login';
+import { validateToken } from '../../../api/ChangePasswordApi/validateTokenAPI';
 
 const ChangePassword = () => {
     const [password, setPassword] = useState('');
@@ -24,7 +25,7 @@ const ChangePassword = () => {
     //     } else {
     //         navigate('/');
     //     }
-    // }, [location, navigate]);
+    // }, [location, navigate]);    
 
     const sleep = ms => new Promise(r => setTimeout(r, ms));
     
@@ -33,26 +34,24 @@ const ChangePassword = () => {
         const tokenFromURL = params.get('token');
 
         if (tokenFromURL) {
-            axios.get(`http://localhost/changePassword?token=${tokenFromURL}`)
-                .then(response => {
-                    const data = response.data;
+            validateToken(tokenFromURL)
+                .then(data => {
                     if (data.error) {
+                        alert(data.error || "An error occured");
                         navigate('/');
-                        setError(data.error);
                     } else {
                         setToken(tokenFromURL);
                     }
                 })
                 .catch(err => {
-                    if (err.response) {
-                        alert(err.response.data.error || "An error occured");
-                    }
+                    alert(err || "An error occured");
                     navigate('/');
                 })
                 .finally(() => {
                     setLoading(false);
                 });
         } else {
+            alert("No token provided");
             navigate('/');
         }
     }, [location, navigate]);
@@ -108,9 +107,10 @@ const ChangePassword = () => {
         }
     };
 
-    if (loading) { return null}
+    if (loading) { return null }
 
     return (
+        <div className={ChangePasswordCSS.background}>
         <div className={ChangePasswordCSS['center-container']}>
             <div className={ChangePasswordCSS['top-of-center']}>
                 <img src='https://bhib.iyte.edu.tr/wp-content/uploads/sites/115/2018/09/iyte_logo-eng.png' alt="IYTE" />
@@ -155,6 +155,7 @@ const ChangePassword = () => {
                 {success && <center><p style={{ color: 'green' }}>{success}</p></center>}
                 <center><a href='/'>Log in.</a></center>
             </form>
+        </div>
         </div>
     );
 };

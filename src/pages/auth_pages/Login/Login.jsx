@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import LoginCSS from './Login.module.css';
 import { Helmet } from "react-helmet";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import IYTElogo from '../../../assets/iyte_logo_eng.png'
+import { getUserType } from '../../../api/LoginApi/getUserTypeAPI';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -13,6 +14,20 @@ const Login = () => {
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotEmailError, setForgotEmailError] = useState('');
   const [isForgotPasswordActive, setIsForgotPasswordActive] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserTypeAndNavigate = async () => {
+      await getUserType()
+        .then(userType => {
+          navigate("/" + userType);
+        })
+    };
+    fetchUserTypeAndNavigate();
+    setLoading(false)
+  }, [navigate]);
 
   useEffect(() => {
     const savedEmail = localStorage.getItem('savedEmail');
@@ -36,20 +51,16 @@ const Login = () => {
       if(response.status === 200){
         switch(response.data.user) {
           case "admin":
-            //navigate('/admin');
-            console.log("Navigate to admin.")
+            navigate('/admin');
             break;
           case "secretary":
-            //navigate('/secretary');
-            console.log("Navigate to secretary.")
+            navigate('/secretary');
             break;
           case "student":
-            //navigate('/student');
-            console.log("Navigate to student.")
+            navigate('/student');
             break;
           case "company":
-            //navigate('/company');
-            console.log("Navigate to company.")
+            navigate('/company');
             break;
         }
         if (rememberMe) {
@@ -64,6 +75,7 @@ const Login = () => {
       } else if (error.request) {
         setLoginError('Unable to connect to the server. Please try again later.');
       } else {
+        console.log(error)
         setLoginError('An unexpected error occurred.');
       }
     }
@@ -99,6 +111,8 @@ const Login = () => {
   }
   
   // don't forget to set logo to the page, add pictures to assets folder instead of using web url
+
+  if (loading) { return null }
 
   return (
     <div className={LoginCSS.background}>
