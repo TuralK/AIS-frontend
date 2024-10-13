@@ -1,4 +1,3 @@
-// i18n.js
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
@@ -27,6 +26,9 @@ const resources = {
       summerRule9: "Every student must deliver the summer practice performance report, marked “CONFIDENTAL” in this guide, to the employer at the start of the summer practice. At the end of the practice, one copy of these reports is sent directly to the departmental committee by registered mail. This is the students responsibility to ensure that the report is mailed by the employer. The second copy is retained in the employer’s files.",
       summerRule10: "In the evaluation of summer practice performance reports, the average of performance grade should be “C” (at least) for each department. A student who receives an average of less than “C” on his/her performance report or who receives an “F” in attendance grade, is requred to repeat the summer practice.",
       summerRule11: "After the internship documents are reviewed, the given internship grades are sent to the Student Affairs Department by the relevant departments and recorded in the students' files.",
+      moreDetails: "More Details",
+      loading: "Loading",
+      noAnnouncement: "There are no available announcements or you have applied all announcements",
     },
   },
   tr: {
@@ -52,7 +54,10 @@ const resources = {
       summerRule8: "Raporunu istenen formata uygun olarak yazmayan öğrenciden, Bölüm Staj Komisyonu tarafından stajın kurallarına uygun olarak yapıldığı saptanır ise, raporun iki hafta içinde, istenilen formata uygun duruma getirmesi istenir. İstenilen raporu bu süre içinde getirmeyen veya raporları red edilen öğrenciler stajlarını tekrarlamak zorundadır.",
       summerRule9: "Her öğrenci staja başlarken, bu rehber içindeki 'GİZLİ' yazılı staj başarı belgelerini işyerine vermek zorundadır. Staj sonunda bu formlardan biri, işyerince, Bölüm Staj Komitesine eposta olarak yollanır. Bunu sağlamak öğrencinin sorumluluğundadır. Diğer form ise işyerince saklanır.",
       summerRule10: "Başarı belgesinde değerlendirmede öğrencinin staj yaptığı Bölümlerden almış olduğu başarı notlarının ortalaması en az 'C' olmalıdır. Başarı notu ortalaması 'C'nin altında veya herhangi bir bölümde devam durumu 'F' olan öğrencinin bu stajı yeniden yapması zorunludur.",
-      summerRule11: "Staj belgeleri incelendikten sonra verilen staj notları ilgili bölümlerce Öğrenci İşleri Dairesi Başkanlığına gönderilerek öğrencilerin dosyalarına işlenir."
+      summerRule11: "Staj belgeleri incelendikten sonra verilen staj notları ilgili bölümlerce Öğrenci İşleri Dairesi Başkanlığına gönderilerek öğrencilerin dosyalarına işlenir.",
+      moreDetails: "Daha Fazla Detay",
+      loading: "Yükleniyor",
+      noAnnouncement: "Mevcut duyuru yok veya tüm duyurulara başvurmuşsunuz",
     },
   },
 };

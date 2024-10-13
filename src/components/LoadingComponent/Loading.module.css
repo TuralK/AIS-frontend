@@ -1,0 +1,91 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10; /* Keep it below StudentLayout’s interactive elements */
+  pointer-events: none; /* Allow clicking through to parent components */
+  /* background-color: rgba(255, 255, 255, 0.7); */
+}
+
+.logo {
+  width: 150px;
+  height: 150px;
+  z-index: 2;
+}
+
+.spinner {
+  border: 16px solid white;
+  border-top: 16px solid darkred;
+  /* border-right: 16px solid #3498db;
+  border-bottom: 16px solid darkgreen;
+  border-left: 16px solid #f39c12; */
+  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+  animation: spin 2s linear infinite;
+  position: absolute;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+
+
+/* .loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  position: relative;
+}
+
+.logoContainer {
+  z-index: 1;
+}
+
+.logo {
+  width: 150px;
+  height: auto;
+}
+
+.circle1, .circle2, .circle3 {
+  position: absolute;
+  border: 4px solid transparent;
+  border-top-color: #007bff;
+  border-radius: 50%;
+  animation: spin 1.5s linear infinite;
+}
+
+.circle1 {
+  width: 200px;
+  height: 200px;
+}
+
+.circle2 {
+  width: 230px;
+  height: 230px;
+  animation-duration: 2s;
+  animation-direction: reverse;
+}
+
+.circle3 {
+  width: 260px;
+  height: 260px;
+  animation-duration: 2.5s;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+} */

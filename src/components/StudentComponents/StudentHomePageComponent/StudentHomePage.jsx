@@ -1,5 +1,5 @@
 import React from 'react';
-import StudentHomePageCSS from './StudentHomePage.module.css'; // Import CSS Module
+import StudentHomePageCSS from './StudentHomePage.module.css';
 import { useTranslation } from 'react-i18next';
 
 const StudentHomePage = () => {

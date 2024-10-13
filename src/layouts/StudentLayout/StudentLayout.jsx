@@ -4,6 +4,7 @@ import { Menu, X, ChevronDown, Bell } from 'lucide-react'
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import IYTElogo from "../../assets/iyte_logo_eng.png"
 import { validateStudent } from '../../api/StudentApi/validateStudentAPI';
+import Loading from '../../components/LoadingComponent/Loading.jsx';
 
 const styles = {
     nav: {
@@ -102,6 +103,7 @@ export const StudentLayout = () => {
   const navigate = useNavigate();
 
   const changeLanguage = (lng) => {
+    localStorage.setItem('pageLanguage', lng);
     i18n.changeLanguage(lng);
   };
 
@@ -120,9 +122,13 @@ export const StudentLayout = () => {
         navigate('/');
       })
       .finally(() => {
+        const pageLanguage = localStorage.getItem('pageLanguage');
+        if (pageLanguage == 'tr') {
+          changeLanguage(pageLanguage);
+        }
         setLoading(false);
       });
-  });
+  }, [location, navigate]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -143,7 +149,6 @@ export const StudentLayout = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [userMenuRef])
 
-  //const menuItems = [t('home'), t('announcements'), t('applications')];
   const menuItems = [
     { item: t('home'), route: 'home' },
     { item: t('announcements'), route: 'announcements' },
@@ -164,14 +169,18 @@ export const StudentLayout = () => {
   const deleteCookie = (name) => {
     document.cookie = `${name}=; Max-Age=0; path=/;`;
   };
-  
+
   const logout = () => {
     deleteCookie('jwt');
     navigate('/');
   };
 
 
-  if (loading) { return null }
+  if (loading) {
+    return (
+        <Loading />
+    )
+  }
 
   return (
     <div>

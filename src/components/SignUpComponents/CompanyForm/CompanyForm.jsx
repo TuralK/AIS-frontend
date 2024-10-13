@@ -58,7 +58,6 @@ const CompanyForm = (reset) => {
         alert(response.data.message);
       }
     } catch (error) {
-      console.log(error)
       if (error.status === 400) {
         const responseErrors = error.response.data.errors;
         if (responseErrors.email != '') {

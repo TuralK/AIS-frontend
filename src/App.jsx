@@ -10,6 +10,8 @@ import SignUp from "./pages/auth_pages/SignUp/SignUp";
 import { StudentLayout } from "./layouts/StudentLayout/StudentLayout.jsx";
 import Home from "./components/StudentComponents/StudentHomePageComponent/StudentHomePage.jsx";
 import StudentAnnouncements from "./components/StudentComponents/StudentAnnouncementsComponent/StudentAnnouncements.jsx";
+import StudentAnnouncement from "./components/StudentComponents/StudentAnnouncementComponent/StudentAnnouncement.jsx";
+import Loading from "./components/LoadingComponent/Loading.jsx";
 
 const App = () => {
   
@@ -30,14 +32,12 @@ const App = () => {
       path: '/student',
       element: <StudentLayout />,
       children: [
-        {index: true, element: <Home/>},
-        {path: "home", element: <Home/>},
-        {path: "announcements", element: <StudentAnnouncements/> }
+        { index: true, element: <Home /> },
+        { path: "home", element: <Home /> },
+        { path: "announcements", element: <StudentAnnouncements /> },
+        { path: 'announcements/:announcementId', element: <StudentAnnouncement /> },
       ]
       // children: [
-      //   {index: true, element: },
-      //   {path: "home", element: },
-      //   {path: "announcements", element: },
       //   {path: "applications", element: }
       //   {path: "notifications", element: },
       //   {path: "profile", element: }
