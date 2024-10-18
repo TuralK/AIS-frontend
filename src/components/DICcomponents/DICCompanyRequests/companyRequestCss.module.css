@@ -1,0 +1,149 @@
+.container {
+  max-width: 1500px;      
+  margin: 0 auto;         
+  padding: 2rem 1rem;
+  text-align: center;     
+}
+
+.title {
+  font-size: 25px; /* Varsayılan boyut */
+  margin-bottom: 10px;
+  text-align: left; /* Sola yaslama */
+  font-weight: bold;
+}
+
+.cardGrid {
+  display: flex;
+  flex-wrap: wrap; /* Kartların yan yana yerleşimini sağlamak için wrap ekledik */
+  gap: 1.5rem;     /* Kartlar arasında boşluk */
+}
+
+.noRequests {
+  text-align: center;
+  color: #6B7280;
+  font-size: 1.25rem;
+  margin-top: 2rem;
+}
+
+.loading, .error {
+  text-align: center;
+  font-size: 1.25rem;
+  margin-top: 2rem;
+}
+
+.error {
+  color: #EF4444;
+}
+
+.card {
+  background-color: white;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  padding: 1.5rem;
+  flex: 1 1 calc(33.333% - 1.5rem); /* Her kartın genişliğini %33.333 olarak ayarladık (3 kart yan yana) */
+  max-width: calc(33.333% - 1.5rem); /* Maksimum genişlik %33.333 */
+  margin: 0; /* Kartın dışarıda boşluk bırakmaması için sıfır margin */
+  box-sizing: border-box; /* Padding ve border'ı genişlik hesaplamasına dahil et */
+  border: 2px solid #E5E7EB;
+  position: relative; /* Butonları konumlandırmak için */
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;  /* Elemanları dikey sırayla yerleştir */
+  gap: 0.5rem;             /* Satırlar arasına boşluk ekle */
+  margin-bottom: 1.5rem;
+  text-align: left;        /* Yazıları sola hizala */
+}
+
+.cardRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* İki yazı alanı */
+  gap: 1rem; /* Araya boşluk bırakıyoruz */
+  align-items: center; /* Butonların yazı ile hizalanmasını sağlıyoruz */
+}
+
+.cardActions {
+  display: flex;
+  justify-content: flex-end; /* Butonları sağda hizalayalım */
+  gap: 0.25rem;               /* Butonlar arasında küçük bir boşluk */
+  position: absolute; /* Kartın alt köşesine yerleştirmek için */
+  bottom: 1rem; /* Kartın altından 1rem yukarıda */
+  right: 1rem; /* Kartın sağından 1rem içeride */
+}
+
+.cardText {
+  color: #4B5563;
+  font-size: 1rem;
+}
+
+.cardText strong {
+  font-weight: bold;
+}
+
+.cardTitle {
+  font-weight: bold;
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.button {
+  color: white;
+  font-weight: bold;
+  padding: 0.25rem 0.5rem; /* Küçük padding */
+  border-radius: 0.25rem;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem; /* Normal boyutta buton */
+  transition: background-color 0.3s; /* Hover efekti için geçiş süresi */
+}
+
+.approveButton {
+  background-color: darkgreen; /* Onay butonu yeşil */
+}
+
+.rejectButton {
+  background-color: darkred; /* Reddetme butonu kırmızı */
+}
+
+/* Hover efektleri */
+.approveButton:hover {
+  background-color: green; /* Onay butonu hover'da açık yeşil */
+}
+
+.rejectButton:hover {
+  background-color: red; /* Reddetme butonu hover'da açık kırmızı */
+}
+
+/* Mobil görünüm için medya sorgusu */
+@media (max-width: 768px) {
+  .cardGrid {
+    flex-direction: column; /* Mobilde kartları dikey sıraya geçir */
+  }
+
+  .container {
+    max-width: 100%; /* Mobil görünümde genişliği tam yap */
+  }
+
+  .card {
+    max-width: 100%; /* Kartın genişliği mobilde tam olacak */
+  }
+
+  .cardActions {
+    position: static; /* Mobilde butonları normal akışa bırak */
+    justify-content: center; /* Butonları merkezde hizala */
+    margin-top: 1rem; /* Butonların üstünde boşluk bırak */
+  }
+
+  .button {
+    padding: 0.25rem 0.5rem; /* Buton boyutunu normalle aynı yap */
+    font-size: 1rem; /* Mobilde buton boyutunu normal ile aynı yap */
+  }
+  
+  .title {
+    font-size: 20px; /* Orta ekranlarda daha büyük boyut */
+  }
+}
+
+
