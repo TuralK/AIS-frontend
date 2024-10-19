@@ -1,11 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AnnouncementCard.css';
+import DICAnouncementDetails from './DICAnouncementDetails';
 
 const AnnouncementCard = ({ announcement }) => {
   const navigate = useNavigate(); 
 
   const handleClick = () => {
+    <DICAnouncementDetails announcement={announcement} />
     navigate(`/admin/announcement/${announcement.id}`);
   };
 

@@ -16,6 +16,7 @@ import Loading from "./components/LoadingComponent/Loading.jsx";
 import { DICLayout } from "./layouts/DICLayout/DICLayout.jsx";
 import CompanyCards from "./components/DICcomponents/DICCompanyRequests/companyRequestComponent.jsx";
 import DICAnnouncementRequest from "./components/DICcomponents/DICAnnouncementRequests/DICAnnouncementRequest.jsx";
+import DICAnouncementDetails from "./components/DICcomponents/DICAnnouncementRequests/DICAnouncementDetails.jsx";
 
 const App = () => {
   
@@ -56,6 +57,7 @@ const App = () => {
         { path: "home", element: <DICHome /> },
         { path: "companyRequests", element: <CompanyCards /> },
         { path: 'announcementRequests', element: <DICAnnouncementRequest /> },
+        { path: 'announcement/:id', element: <DICAnouncementDetails /> },
       ]
     }
   ]);
