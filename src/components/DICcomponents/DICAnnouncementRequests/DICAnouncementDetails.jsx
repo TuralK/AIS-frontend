@@ -12,17 +12,16 @@ const DICAnouncementDetails = () => {
   const [loading, setLoading] = useState(true); // Yükleniyor durumunu izlemek için state
   const navigate = useNavigate();
   const { t } = useTranslation(); // `t` is here
-  const { id } = useParams(); // URL'den duyuru ID'sini almak için
+  const { id } = useParams(); 
 
   useEffect(() => {
     const fetchAnnouncement = async () => {
       try {
         // Backend'den duyuru verisini çeken fonksiyon
-        const response = await axios.get(`http://localhost:3003/admin/announcement/${id}`, {
+        const response = await axios.get(`http://localhost:3003/announcement/:${id}`, {
             withCredentials: true,
         });
-        console.log(response);
-        setAnnouncement(response.data); // Duyuru verisini state'e kaydediyoruz
+        setAnnouncement(response.data.announcement); // Duyuru verisini state'e kaydediyoruz
       } catch (err) {
         setError(err.message); // Hata durumunu kaydet
       } finally {
@@ -35,7 +34,7 @@ const DICAnouncementDetails = () => {
 
   const updateAnnouncement = async (isApproved) => {
     try {
-      await axios.put(`http://localhost:3003/admin/announcement/${id}`, {
+      await axios.put(`http://localhost:3003/announcement/${id}`, {
         isApproved,
         feedback
       }, {
@@ -58,8 +57,14 @@ const DICAnouncementDetails = () => {
       </div>
       <div className="announcement-content">
         <h1>{announcement.Company.name}</h1>
-        <h2>{announcement.announcementName}</h2>
+        <h3><strong>{announcement.announcementName}</strong></h3>
         <p>{announcement.description}</p>
+        <p>
+          {t('startDate')}{announcement.formattedStartDate}
+        </p>
+        <p>
+          {t('endDate')} {announcement.formattedEndDate}
+        </p>
       </div>
       <div className="announcement-actions">
         <textarea

@@ -2,9 +2,11 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AnnouncementCard.css';
 import DICAnouncementDetails from './DICAnouncementDetails';
+import { useTranslation } from 'react-i18next';
 
 const AnnouncementCard = ({ announcement }) => {
   const navigate = useNavigate(); 
+  const { t } = useTranslation(); // `t` is here
 
   const handleClick = () => {
     <DICAnouncementDetails announcement={announcement} />
@@ -20,6 +22,8 @@ const AnnouncementCard = ({ announcement }) => {
         <h2>{announcement.Company.name}</h2>
         <h3>{announcement.announcementName}</h3>
         <p>{announcement.description}</p>
+        <h4>{t('endDate')}</h4>
+        <p>{announcement.formattedEndDate}</p>
       </div>
     </div>
   );
