@@ -1,69 +1,53 @@
 import React, { useEffect, useState } from 'react';
-import styles from './DICAnnouncementRequests.module.css'; // CSS modülünü içe aktar
+import './DICAnnouncementRequests.css'; // CSS modülünü içe aktar
 import Loading from '../../LoadingComponent/Loading';
+import { fetchAnnouncementRequests } from '../../../api/DICApi/getAnnouncementRequests';
+import AnnouncementCard from './AnnouncementCard';
+import { useTranslation } from 'react-i18next';
 
 const AnnouncementRequest = () => {
     const [announcements, setAnnouncements] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
+    const { t, i18n } = useTranslation(); // `t` is here
+  
     useEffect(() => {
-        const fetchAnnouncementRequests = async () => {
-            try {
-                const response = await fetchAnnouncementRequests(); 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch announcements');
-                }
-                const data = await response.json();
-                setAnnouncements(data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchAnnouncementRequests();
-    }, []); 
-
+      const fetchAnnouncementRequest = async () => {
+        try {
+          const response = await fetchAnnouncementRequests();
+          setAnnouncements(response);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchAnnouncementRequest();
+    }, []);
+  
     if (loading) {
-        return (<Loading />);
+      return <Loading />;
     }
-
+  
     if (error) {
-        return <div>Error: {error}</div>; // Hata mesajı
+      return <div className="error">Error: {error}</div>;
     }
-
+  
     return (
-        <div className={styles.announcementContainer}>
-            <div className={styles.contentContainer}>
-                {announcements.length > 0 ? (
-                    <div className={styles.content2} id="content">
-                        {announcements.map((announcement) => (
-                            <div className={styles.card} key={announcement.id}>
-                                <img
-                                    src={announcement.image || '/announcement.jpg'}
-                                    alt="Announcement Logo"
-                                />
-                                <div className={styles.cardBody}>
-                                    <p className={styles.cardTitle}>{announcement.Company.name}</p>
-                                    <p className={styles.cardText}>{announcement.announcementName}</p>
-                                    <button
-                                        className={styles.detailsButton}
-                                        onClick={() => window.location.href = `/admin/announcement/${announcement.id}`}
-                                    >
-                                        More Details
-                                    </button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <h2 style={{ width: '1000px' }}>There are no announcement requests</h2>
-                )}
-            </div>
-        </div>
+      <div className="announcement-container">
+        <h1> {t('announcementHeader')} </h1>
+        {announcements.length > 0 ? (
+          <div className="announcement-grid">
+            {announcements.map((announcement) => (
+              <AnnouncementCard key={announcement.id} announcement={announcement} />
+            ))}
+          </div>
+        ) : (
+          <h2 className="no-announcements">{t('announcementErrorDIC')}</h2>
+        )}
+      </div>
     );
-};
-
-export default AnnouncementRequest;
+  };
+  
+  export default AnnouncementRequest;

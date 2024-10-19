@@ -38,7 +38,7 @@ const CompanyCard = ({ company, onApprove, onReject, t }) => (
     const [companies, setCompanies] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const { t, i18n } = useTranslation(); // `t` is here
+    const { t, i18n } = useTranslation();
   
     useEffect(() => {
       const getCompanyRequests = async () => {

@@ -5,8 +5,7 @@ export const fetchAnnouncementRequests = async () => {
         const response = await axios.get('http://localhost:3003/announcementRequests', {
             withCredentials: true,
         });
-        console.log(response.data.announcementsWithImages);
-        return response.dataValues.announcementsWithImages;
+        return response.data.announcements;
     } catch (error) {
         throw new Error(error);
     }
