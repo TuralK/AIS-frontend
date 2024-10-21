@@ -44,19 +44,19 @@
 .company-name {
   font-size: 1.5rem;
   font-weight: bold;
-  color: black;
+  color: #41454c;
   text-align: center;
   margin-bottom: 0.5rem;
 }
 
 .company-details {
-  color: #9ca3af;
+  color: #41454c;
   text-align: center;
   margin-bottom: 0.5rem;
 }
 
 .company-address {
-  color: #d1d5db;
+  color: #41454c;
   text-align: center;
   margin-bottom: 1.5rem;
 }

@@ -11,11 +11,11 @@ const CompanyTestimonialCard = ({ company, onApprove, onReject }) => {
   return (
     <div className="company-card">
       <div className="card-content">
-        <img
+        {/* <img
           src="/placeholder.svg?height=100&width=100"
           alt={company.name}
           className="company-image"
-        />
+        /> */}
         <h2 className="company-name">{company.name}</h2>
         <p className="company-details">
           <strong>{t('representativeName')}:</strong> {company.username} 
@@ -24,7 +24,7 @@ const CompanyTestimonialCard = ({ company, onApprove, onReject }) => {
           <strong>{t('email')}:</strong> {company.email}
         </p>
         
-        <p className="company-address"> <strong>{t('address')}: </strong>{company.address}</p>
+        <p className="company-address"> <strong>{t('address')}: </strong> {company.address}</p>
         <div className="button-container">
           <button
             onClick={() => onApprove(company.id)}
