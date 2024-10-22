@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react'; // useEffect'i ekledim
-import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom'; // useParams eklendi
+import React, { useState, useEffect } from 'react'; 
+import { useNavigate, useParams } from 'react-router-dom'; 
 import './DICAnouncementDetails.css';
 import { useTranslation } from 'react-i18next';
 import Loading from '../../LoadingComponent/Loading';
+import { fetchAnnouncementById, updateAnnouncementById } from '../../../api/DICApi/announcementDetailApi.js';
 
 const DICAnouncementDetails = () => {
   const [announcement, setAnnouncement] = useState(null); // Duyuru verisini tutmak için state
@@ -16,33 +16,24 @@ const DICAnouncementDetails = () => {
   
 
   useEffect(() => {
-    const fetchAnnouncement = async () => {
+    const fetchData = async () => {
       try {
-        // Backend'den duyuru verisini çeken fonksiyon
-        const response = await axios.get(`http://localhost:3003/announcement/${id}`, {
-            withCredentials: true,
-        });
-        console.log(response);
-        setAnnouncement(response.data.announcement); // Duyuru verisini state'e kaydediyoruz
+        const data = await fetchAnnouncementById(id); 
+        setAnnouncement(data);
       } catch (err) {
-        setError(err.message); // Hata durumunu kaydet
+        setError(err.message);
       } finally {
-        setLoading(false); // Yükleme durumunu kapat
+        setLoading(false);
       }
     };
 
-    fetchAnnouncement();
-  }, [id]); // `id` değiştiğinde yeniden veri çek
+    fetchData();
+  }, [id]);
 
   const updateAnnouncement = async (isApproved) => {
     try {
-      await axios.put(`http://localhost:3003/announcement/${id}`, {
-        isApproved,
-        feedback
-      }, {
-        withCredentials: true,
-      });
-      navigate('/admin/announcementRequests'); // Onaylandıktan veya reddedildikten sonra yönlendirme
+      await updateAnnouncementById(id, isApproved, feedback); 
+      navigate(-1); // Bir önceki sayfaya gitmeyi sağlıyor 
     } catch (error) {
       console.error('Error updating announcement:', error);
     }

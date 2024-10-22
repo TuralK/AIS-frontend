@@ -276,9 +276,16 @@ export const DICLayout = () => {
                       {userMenuItems.map(({ item, route }) => (
                         <NavLink
                           key={route}
-                          to={`/admin/${route}`}
+                          to={route !== 'logout' ? `/admin/${route}` : '#'}
                           style={styles.dropdownItem}
-                          onClick={() => handleDropdownItemClick(item)}
+                          onClick={(e) => {
+                            if (route === 'logout') {
+                              e.preventDefault();
+                              logout();
+                            } else {
+                              handleDropdownItemClick(item.toLowerCase());
+                            }
+                          }}
                         >
                           {item}
                         </NavLink>

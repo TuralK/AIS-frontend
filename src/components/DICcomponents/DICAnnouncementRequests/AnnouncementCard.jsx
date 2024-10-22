@@ -25,10 +25,10 @@ const AnnouncementCard = ({ announcement }) => {
         <h2 className={styles.companyName}>{announcement.Company.name}</h2>
         <h3 className={styles.announcementName}>{announcement.announcementName}</h3>
         <p className={styles.dates}>
-          <strong>{t('startDate')}:</strong> {announcement.startDate}
+          <strong>{t('startDate')}:</strong> {new Date(announcement.startDate).toLocaleDateString('tr-TR')}
         </p>
         <p className={styles.dates}>
-          <strong>{t('endDate')}:</strong> {announcement.endDate}
+          <strong>{t('endDate')}:</strong> {new Date(announcement.endDate).toLocaleDateString('tr-TR')}
         </p>
       </div>
     </div>
