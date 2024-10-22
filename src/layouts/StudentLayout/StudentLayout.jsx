@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next';
 import { Menu, X, ChevronDown, Bell } from 'lucide-react'
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
 import IYTElogo from "../../assets/iyte_logo_eng.png"
 import { validateStudent } from '../../api/StudentApi/validateStudentAPI';
 import Loading from '../../components/LoadingComponent/Loading.jsx';
@@ -97,10 +98,13 @@ export const StudentLayout = () => {
   const [isMobile, setIsMobile] = useState(false)
   const [userName, setUserName] = useState('')
   const [loading, setLoading] = useState(true);
+  // const [isValidating, setIsValidating] = useState(false); // show loading while validating
   const { t, i18n } = useTranslation();
 
   const location = useLocation();
   const navigate = useNavigate();
+
+  // const getUserLanguage = () => window.navigator.userLanguage || window.navigator.language;
 
   const changeLanguage = (lng) => {
     localStorage.setItem('pageLanguage', lng);
@@ -108,7 +112,6 @@ export const StudentLayout = () => {
   };
 
   //is mobile <a> hey!
-
   const userMenuRef = useRef(null)
   
   //check if cookie exists in frontend
@@ -128,7 +131,7 @@ export const StudentLayout = () => {
         }
         setLoading(false);
       });
-  }, [location, navigate]);
+  }, [location]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -201,6 +204,8 @@ export const StudentLayout = () => {
                   <NavLink
                     key={route}
                     to={`/student/${route}`}
+                    //to={isValidating ? '#' : `/student/${route}`} 
+
                     // style={({ isActive }) => ({
                     //   ...styles.menuItem,
                     //   backgroundColor: isActive ? '#7d0e1a' : 'transparent',
@@ -412,7 +417,8 @@ export const StudentLayout = () => {
           </div>
         )}
       </nav>
-      <main>             
+      <main>    
+        {/* { navigation.state === "loading" &&  <Loading /> } */}
         <Outlet />
       </main>
     </div>

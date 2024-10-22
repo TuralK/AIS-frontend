@@ -2,7 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import StudentAnnouncementsCSS from "./StudentAnnouncements.module.css";
 import { fetchAnnouncements } from '../../../api/StudentApi/fetchAnnouncementsAPI';
-import AnnouncementImage from '../../../assets/announcement.jpg';
+import AnnouncementImage from '../../../assets/office.jpg';
 import { useTranslation } from 'react-i18next';
 import { Link } from "react-router-dom";
 import Loading from '../../LoadingComponent/Loading.jsx';

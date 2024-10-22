@@ -4,6 +4,7 @@ import ChangePasswordCSS from './ChangePassword.module.css';
 import axios from 'axios';
 import Login from '../Login/Login';
 import { validateToken } from '../../../api/ChangePasswordApi/validateTokenAPI';
+import Loading from '../../../components/LoadingComponent/Loading';
 
 const ChangePassword = () => {
     const [password, setPassword] = useState('');
@@ -105,7 +106,11 @@ const ChangePassword = () => {
         }
     };
 
-    if (loading) { return null }
+    if (loading) {
+        return (
+            <Loading />
+        )
+      }
 
     return (
         <div className={ChangePasswordCSS.background}>

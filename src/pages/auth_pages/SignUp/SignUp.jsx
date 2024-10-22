@@ -1,19 +1,49 @@
 import React, { useState, useEffect } from 'react';
 import SignUpCSS from './SignUp.module.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { getUserType } from '../../../api/LoginApi/getUserTypeAPI';
 import IYTElogo from '../../../assets/iyte_logo_eng.png'
 import StudentForm from '../../../components/SignUpComponents/StudentForm/StudentForm';
 import CompanyForm from '../../../components/SignUpComponents/CompanyForm/CompanyForm';
+import Loading from '../../../components/LoadingComponent/Loading';
 
 const SignUp = () => {
     const [studentForm, setForm] = useState(true);
     const [resetKey, setResetKey] = useState(0);
+    const [loading, setLoading] = useState(true);
+
+    const navigate = useNavigate();
 
     const handleForm = ((formValue) => {
         setForm(formValue);
         setResetKey((prevKey) => (prevKey === 0 ? 1 : 0));
     })
+
+    useEffect(() => {
+      const fetchUserTypeAndNavigate = async () => {
+        try {
+          const userType = await getUserType();
+          if(userType) {
+            navigate("/" + userType);
+          } else {
+            navigate(window.location.pathname);
+          }
+        } catch (error) {
+          console.error("Failed to fetch user type:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+    
+      fetchUserTypeAndNavigate();
+    }, [navigate]);
+
+    if (loading) {
+      return (
+          <Loading />
+      )
+    }
 
     return (
         <div className={SignUpCSS.background}>

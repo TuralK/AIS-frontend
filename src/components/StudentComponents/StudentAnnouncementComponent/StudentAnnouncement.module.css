@@ -1,0 +1,290 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.card {
+  max-width: 1360px;
+  margin: 50px auto; 
+  overflow: visible;
+}
+
+.header h1 {
+  font-family: "Lexend Deca";
+  font-weight: 600;
+  font-size: 32;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  overflow: auto;
+}
+
+.header p {
+  font-family: "Lexend Deca";
+  font-weight: 400;
+  font-size: 20;
+  color: #545454;
+  margin: 30px auto;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  overflow: auto;
+}
+
+
+.content {
+  position: relative;
+}
+
+.content .announcementImage {
+  max-width: 1360px;
+  max-height: 380px;
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.content .announcementImage img {
+  /* image-resolution: ; */
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* cover? Ensures the image scales without cropping */
+}
+
+.announcementInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  height: 74px;
+  border-radius: 12px;
+  border: 2.5px solid #9A1220;
+  max-width: inherit;
+  padding: 0 20px;
+  z-index: 1;
+  background-color: white;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  overflow: auto;
+}
+
+.announcementInfo .deadline {
+  display: flex;
+  flex: 1 1 auto;
+  text-align: center; 
+  font-family: "Work Sans";
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.announcementInfo .applyButton {
+  display: flex;
+  margin-left: auto;
+  background-color: #9A1220;
+  border-radius: 12px;
+  font-family: "Work Sans";
+  font-weight: 500;
+  font-size: 14px;
+  max-width: 114px;
+  max-height: 36px;
+  align-items: center;
+  justify-content: center;
+}
+
+.announcementInfo .applyButton:hover {
+    
+}
+
+.stuck .announcementInfo {
+  margin: 0; 
+  opacity: 0.97;
+}
+
+.announcementInfo .textContainer {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: center;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  overflow: auto;
+}
+
+.announcementInfo .announcementName {
+  font-family: "Work Sans";
+  font-weight: 700;
+  font-size: 18px;
+  margin: 0;
+}
+
+.announcementInfo .companyName {
+  font-family: "Work Sans";
+  font-weight: 400;
+  font-size: 14px;
+  color: #545454;
+  margin: 0;
+}
+
+.description {
+  margin-top: 30px;
+
+}
+
+.descriptionName {
+  font-family: "Lexend Deca";
+  font-weight: 600;
+  font-size: 26px;
+  margin-bottom: 35px;
+}
+
+.descriptionContent {
+  font-family: "Lexend Deca";
+  font-weight: 300;
+  font-size: 16px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  overflow: auto;
+}
+
+.endDateContainer {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  display: inline-flex;
+  flex-direction: column;
+  width: 416px;
+  height: 92px;
+  border-radius: 8px;
+  background-color: #F7F7F7;
+}
+
+.endDateName {
+  margin: 16px auto 16px 20px;
+  font-family: "Lexend Deca";
+  font-weight: 500;
+  font-size: 24px;
+}
+
+.endDate {
+  margin-left: 20px;
+  font-family: "Lexend Deca";
+  font-weight: 400;
+  font-size: 16px;
+  color: #545454;
+}
+
+.applicationDetails {
+  color: #9A1220;
+  cursor: pointer;
+  font-family: "Work Sans";
+  font-weight: 500;
+  font-size: 14px;
+  margin-right: 20px;
+}
+
+.applicationDetails:hover {
+  text-decoration: underline;
+}
+
+.appDetails {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.appDetailsContent {
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.uploadFileContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 82%;
+  margin: 13px auto;
+}
+
+.uploadFile {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  gap: 10px;
+  color: #9A1220;
+  cursor: pointer;
+  padding: 10px 20px;
+  border: 2px solid #9A1220;
+  border-radius: 4px;
+  transition: background-color 0.7s ease, color 0.7s ease;
+}
+
+.uploadFile:hover {
+  color: #ffffff;
+  background-color: #9A1220;
+}
+
+.previewDeleteContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: black;
+  gap: 15px;
+  padding: 10px 10px;
+  border-radius: 4px;
+}
+
+.previewDeleteContainer [icon="preview"],
+.previewDeleteContainer [icon="trash"]{
+  user-select: none;
+  cursor: pointer;
+}
+
+.CV {
+  display: none;
+}
+
+.closeApplicationDetails {
+  color: #9A1220;
+  cursor: pointer;
+  font-family: "Work Sans";
+  font-weight: 500;
+  font-size: 14px;
+  width: fit-content;
+}
+
+.closeApplicationDetails:hover {
+  text-decoration: underline;
+}
+
+.numberName {
+  display: block;
+  width: 82%;
+  margin: 13px auto;
+}

@@ -1,7 +1,7 @@
 import React from "react";
 import './App.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-// import { AuthLayout } from "./layouts/AuthLayout";
+import { useTranslation } from 'react-i18next';
 import './utils/translatePage.js';
 
 import Login from "./pages/auth_pages/Login/Login";
@@ -11,9 +11,9 @@ import { StudentLayout } from "./layouts/StudentLayout/StudentLayout.jsx";
 import Home from "./components/StudentComponents/StudentHomePageComponent/StudentHomePage.jsx";
 import StudentAnnouncements from "./components/StudentComponents/StudentAnnouncementsComponent/StudentAnnouncements.jsx";
 import StudentAnnouncement from "./components/StudentComponents/StudentAnnouncementComponent/StudentAnnouncement.jsx";
-import Loading from "./components/LoadingComponent/Loading.jsx";
 
 const App = () => {
+  const { t, i18n } = useTranslation();
   
   const routes = createBrowserRouter([
     { 
@@ -25,7 +25,7 @@ const App = () => {
       element: <ChangePassword />
     },
     {
-      path: '/signup',
+      path: `/${t('signUpLink')}`, 
       element: <SignUp />
     },
     {

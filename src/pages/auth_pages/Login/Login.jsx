@@ -6,6 +6,7 @@ import axios from 'axios';
 import IYTElogo from '../../../assets/iyte_logo_eng.png'
 import { getUserType } from '../../../api/LoginApi/getUserTypeAPI';
 import { forgotPassword } from '../../../api/ChangePasswordApi/forgotPasswordAPI';
+import Loading from '../../../components/LoadingComponent/Loading';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -19,11 +20,25 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  const resetLoginForm = () => {
+    setLoginError('');
+    setEmail('');
+    setPassword('');
+  }
+  const resetForgotPasswordForm = () => {
+    setForgotEmail('');
+    setForgotEmailError('');
+  }
+
   useEffect(() => {
     const fetchUserTypeAndNavigate = async () => {
       try {
         const userType = await getUserType();
-        navigate("/" + userType);
+        if(userType) {
+          navigate("/" + userType);
+        } else {
+          navigate(window.location.pathname);
+        }
       } catch (error) {
         console.error("Failed to fetch user type:", error);
       } finally {
@@ -50,9 +65,8 @@ const Login = () => {
       }, {
         withCredentials: true
       });
-      setLoginError('');
-      setEmail('');
-      setPassword('');
+      resetLoginForm();
+      resetForgotPasswordForm();
       if(response.status === 200){
         switch(response.data.user) {
           case "admin":
@@ -75,6 +89,7 @@ const Login = () => {
         }
       }
     } catch (error) {
+      resetForgotPasswordForm();
       if (error.response) {
         setLoginError(error.response.data.errors.error || 'An error occurred');
       } else if (error.request) {
@@ -96,9 +111,10 @@ const Login = () => {
       } else {
         throw new Error('Failed to send code. Please try again.');
       }
-      setForgotEmail('');
-      setForgotEmailError('');
+      resetLoginForm();
+      resetForgotPasswordForm();
     } catch (error) {
+      resetLoginForm();
       setForgotEmailError(error.message || 'An unexpected error occurred');
     }
   };
@@ -106,14 +122,15 @@ const Login = () => {
   const toggleForgotPassword = () => {
     setIsForgotPasswordActive(prevState => !prevState);
     if (isForgotPasswordActive) {
-      setForgotEmail('');
-      setForgotEmailError('');
+      resetForgotPasswordForm();
     }
   }
-  
-  // don't forget to set logo to the page, add pictures to assets folder instead of using web url
 
-  if (loading) { return null }
+  if (loading) {
+    return (
+        <Loading />
+    )
+  }
 
   return (
     <div className={LoginCSS.background}>

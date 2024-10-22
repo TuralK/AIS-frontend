@@ -1,12 +1,10 @@
 import axios from 'axios';
 
-export const fetchAnnouncementData = async (opportunityId) => {
+export const fetchAnnouncementData = async (announcementID) => {
     try {
-        const response = await axios.get(`http://localhost:3004/opportunities/:${opportunityId}`, {
+        const response = await axios.get(`http://localhost:3004/opportunities/:${announcementID}`, {
             withCredentials: true,
         });
-        console.log("ayn");
-        console.log(response)
         return response.data.announcement;
     } catch (error) {
         throw new Error(error);

@@ -6,7 +6,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 10; /* Keep it below StudentLayout’s interactive elements */
+  z-index: 1000; /* Keep it below StudentLayout’s interactive elements */
   pointer-events: none; /* Allow clicking through to parent components */
   /* background-color: rgba(255, 255, 255, 0.7); */
 }
