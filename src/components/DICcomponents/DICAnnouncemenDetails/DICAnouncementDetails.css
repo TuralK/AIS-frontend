@@ -54,6 +54,8 @@
   .announcement-content p {
     color: #666;
     line-height: 1.6;
+    word-wrap: break-word;
+    white-space: pre-wrap;
   }
   
   .announcement-content p:nth-child(4), /* StartDate */
