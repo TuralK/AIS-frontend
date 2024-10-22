@@ -65,5 +65,9 @@
   "no_cv_alert": "Önizleme yapmaya çalışmadan önce lütfen CV'nizi yükleyin.",
   "fill_all_fields_alert": "Lütfen tüm zorunlu alanları doldurun.",
   "failed_to_sumbit_alert": "Başvurunuzu göndermekte başarısız olundu. Lütfen tekrar deneyin.",
-  "save_and_apply": "Kaydet ve Başvur"
+  "save_and_apply": "Kaydet ve Başvur",
+  "placeholderHome": "Duyurunuzu buraya yazınız",
+  "buttonHome": "Gönder",
+  "announceTitleHome":"Duyuru Paylaş"
+
 }

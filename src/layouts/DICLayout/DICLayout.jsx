@@ -115,6 +115,7 @@ export const DICLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Change language function
   const changeLanguage = (lng) => {
     localStorage.setItem('pageLanguage', lng);
     i18n.changeLanguage(lng);
@@ -207,18 +208,18 @@ export const DICLayout = () => {
             {!isMobile && (
               <div style={styles.desktopMenu}>
                 {menuItems.map(({item, route}) => (
-                  <NavLink
-                    key={route}
-                    to={`/admin/${route}`}
-                    style={({ isActive }) => ({
-                      ...styles.menuItem,
-                      fontSize: isActive ? '1.25rem' : '1.125rem',
-                      fontWeight: isActive ? '600' : '400',
-                      color: isActive ? '#ffffff' : '#ffffffcc',
-                      borderBottom: isActive ? '4px solid #ffffff' : 'none',  
-                      position: 'relative'
-                    })}
-                  >
+                <NavLink
+                  key={route}
+                  to={`/admin/${route}`}
+                  style={({ isActive }) => ({
+                    ...styles.menuItem,
+                    fontSize: isActive || location.pathname === '/admin' && route === 'home' ? '1.25rem' : '1.125rem',
+                    fontWeight: isActive || location.pathname === '/admin' && route === 'home' ? '600' : '400',
+                    color: isActive || location.pathname === '/admin' && route === 'home' ? '#ffffff' : '#ffffffcc',
+                    borderBottom: (isActive || location.pathname === '/admin' && route === 'home') ? '4px solid #ffffff' : 'none',  
+                    position: 'relative'
+                  })}
+                >
                     {item}
                   </NavLink>
                 ))}

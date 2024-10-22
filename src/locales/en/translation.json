@@ -73,5 +73,8 @@
   "no_cv_alert": "Please upload your CV before proceeding to the preview.",
   "fill_all_fields_alert": "Please fill in all the required fields.",
   "failed_to_sumbit_alert": "Failed to submit your application. Please try again.",
-  "save_and_apply": "Save and Apply"
-}
+  "save_and_apply": "Save and Apply",
+  "placeholderHome": "Write your announcement here",
+  "buttonHome": "Submit",
+  "announceTitleHome":"Share Announcement"
+} 

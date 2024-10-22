@@ -15,7 +15,7 @@ import Loading from "./components/LoadingComponent/Loading.jsx";
 import { DICLayout } from "./layouts/DICLayout/DICLayout.jsx";
 import CompanyCards from "./components/DICcomponents/DICCompanyRequests/companyRequestComponent.jsx";
 import DICAnnouncementRequest from "./components/DICcomponents/DICAnnouncementRequests/DICAnnouncementRequest.jsx";
-import DICAnouncementDetails from "./components/DICcomponents/DICAnnouncementRequests/DICAnnouncementRequest.jsx";
+import DICAnouncementDetails from "./components/DICcomponents/DICAnnouncemenDetails/DICAnouncementDetails.jsx";
 
 const App = () => {
   const { t, i18n } = useTranslation();

@@ -13,14 +13,16 @@ const DICAnouncementDetails = () => {
   const navigate = useNavigate();
   const { t } = useTranslation(); // `t` is here
   const { id } = useParams(); 
+  
 
   useEffect(() => {
     const fetchAnnouncement = async () => {
       try {
         // Backend'den duyuru verisini çeken fonksiyon
-        const response = await axios.get(`http://localhost:3003/announcement/:${id}`, {
+        const response = await axios.get(`http://localhost:3003/announcement/${id}`, {
             withCredentials: true,
         });
+        console.log(response);
         setAnnouncement(response.data.announcement); // Duyuru verisini state'e kaydediyoruz
       } catch (err) {
         setError(err.message); // Hata durumunu kaydet

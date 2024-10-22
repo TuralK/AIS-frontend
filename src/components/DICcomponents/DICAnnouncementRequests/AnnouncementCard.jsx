@@ -1,27 +1,35 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import DICAnouncementDetails from '../DICAnnouncemenDetails/DICAnouncementDetails.jsx';
-import styles from './AnnouncementCard.module.css'; // Modül CSS'i içe aktar
+import styles from './AnnouncementCard.module.css'; // Custom CSS module
 import { useTranslation } from 'react-i18next';
+import office from '../../../assets/office.jpg';
 
 const AnnouncementCard = ({ announcement }) => {
-  const navigate = useNavigate(); 
-  const { t } = useTranslation(); 
+  const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleClick = () => {
-    <DICAnouncementDetails announcement={announcement} />
     navigate(`/admin/announcement/${announcement.id}`);
   };
 
   return (
-    <div className={styles['announcement-card']} onClick={handleClick}>
-      <div className={styles['announcement-image']} style={{ backgroundImage: `url(${announcement.image})` }}></div>
-      <div className={styles['announcement-content']}>
-        <h2 className={styles['announcement-company']}>{announcement.Company.name}</h2>
-        <h3 className={styles['announcement-title']}>{announcement.announcementName}</h3>
-        <div className={styles['announcement-date']}>
-          <p><strong>{t('endDate')}</strong> {announcement.formattedEndDate}</p>
-        </div>
+    <div className={styles.cardContainer} onClick={handleClick}>
+      <div className={styles.imageContainer}>
+        <img
+          src={announcement.image || office}
+          alt={announcement.announcementName}
+          className={styles.image}
+        />
+      </div>
+      <div className={styles.contentContainer}>
+        <h2 className={styles.companyName}>{announcement.Company.name}</h2>
+        <h3 className={styles.announcementName}>{announcement.announcementName}</h3>
+        <p className={styles.dates}>
+          <strong>{t('startDate')}:</strong> {announcement.startDate}
+        </p>
+        <p className={styles.dates}>
+          <strong>{t('endDate')}:</strong> {announcement.endDate}
+        </p>
       </div>
     </div>
   );

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './DICHome.css'; // CSS dosyasını içe aktar
+import styles from './DICHome.module.css'; 
+import { useTranslation } from 'react-i18next';
 
 const DICHome = () => {
   const [announcement, setAnnouncement] = useState('');
+  const { t } = useTranslation(); 
 
   const handleChange = (e) => {
     setAnnouncement(e.target.value);
@@ -23,20 +25,20 @@ const DICHome = () => {
   };
 
   return (
-    <div className="container">
-      <div className="card">
-        <h2 className="title">Duyuru Paylaş</h2>
+    <div className={styles.container}>
+      <div className={styles.card}>
+        <h2 className={styles.title}> {t('announceTitleHome')}</h2>
         <form onSubmit={handleSubmit}>
           <textarea
             value={announcement}
             onChange={handleChange}
             rows="4"
-            placeholder="Duyurunuzu buraya yazın..."
-            className="textarea"
+            placeholder={t('placeholderHome')}
+            className={styles.textarea} // Apply module style
             required
           />
-          <button type="submit" className="submit-button">
-            Gönder
+          <button type="submit" className={styles.submitButton}> {/* Apply module style */}
+            {t('buttonHome')}
           </button>
         </form>
       </div>
