@@ -1,0 +1,66 @@
+/* Container */
+.container {
+  max-width: 50%; /* Maksimum genişlik */
+  width: 100%; /* Tam genişlik */
+  background-color: white; /* Beyaz arka plan */
+  border-radius: 8px; /* Yuvarlak köşeler */
+  border: 2px solid black;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hafif gölge */
+  padding: 20px; /* İçerik dolgu */
+  margin-top: 50px;
+}
+
+/* Başlık stili */
+.title {
+  font-size: 24px; /* Başlık boyutu */
+  font-weight: bold; /* Kalın yazı */
+  text-align: center; /* Ortala */
+  margin-bottom: 16px; /* Altında boşluk */
+}
+
+/* Textarea stili */
+.textarea {
+  width: 100%; /* Tam genişlik */
+  padding: 10px; /* İçerik dolgu */
+  border: 1px solid #ccc; /* Kenar rengi */
+  border-radius: 4px; /* Yuvarlak köşeler */
+  resize: none; /* Boyutlandırmayı engelle */
+  outline: none; /* Kenarları kaldır */
+  transition: border-color 0.3s; /* Kenar rengi geçişi */
+}
+
+.textarea:focus {
+  border-color: darkred; /* Odaklanıldığında mavi kenar */
+}
+
+/* Buton stili */
+.submit-button {
+  margin-top: 12px; /* Üstünde boşluk */
+  width: 100%; /* Tam genişlik */
+  background-color: darkred; /* Mavi arka plan */
+  color: white; /* Beyaz yazı */
+  padding: 12px; /* İçerik dolgu */
+  border: none; /* Kenar yok */
+  border-radius: 4px; /* Yuvarlak köşeler */
+  cursor: pointer; /* İmleç işareti */
+  transition: background-color 0.3s; /* Arka plan geçişi */
+}
+
+.submit-button:hover {
+  background-color: rgb(110, 2, 2); /* Üzerine gelindiğinde koyulaşma */
+}
+
+/* Responsive ayarlar */
+@media (max-width: 600px) {
+  .title {
+    font-size: 20px; /* Mobilde başlık boyutunu azalt */
+  }
+
+  .textarea {
+    padding: 8px; /* Mobilde dolgu azalt */
+  }
+
+  .submit-button {
+    padding: 10px; /* Mobilde buton dolgusunu azalt */
+  }
+}

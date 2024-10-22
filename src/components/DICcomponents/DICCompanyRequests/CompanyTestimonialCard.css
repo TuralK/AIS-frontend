@@ -1,0 +1,116 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.company-card {
+  background-color: #fff;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); 
+  position: relative;
+  border: 0.5px solid black;
+}
+
+.card-content {
+  padding: 1rem;
+}
+
+.company-image {
+  width: 7rem;
+  height: 7rem;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 1rem;
+  display: block;
+  border: 2px solid black; /* Siyah border ekledik */
+}
+
+.company-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #41454c;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.company-details {
+  color: #41454c;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.company-address {
+  color: #41454c;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.approve-button,
+.reject-button {
+  padding: 0.5rem 1rem;
+  margin-right: 0.5rem;
+  border: none;
+  border-radius: 0.25rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.approve-button {
+  background-color: #2dd4bf;
+  color: white;
+}
+
+.approve-button:hover {
+  background-color: #14b8a6;
+}
+
+.reject-button {
+  background-color: #ef4444;
+  color: white;
+}
+
+.reject-button:hover {
+  background-color: #dc2626;
+}
+
+.error-message {
+  color: #ef4444;
+  text-align: center;
+  font-size: 1.25rem;
+  margin-top: 2rem;
+}
+
+.no-requests {
+  text-align: center;
+  color: #6b7280;
+  font-size: 1.25rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 640px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}
