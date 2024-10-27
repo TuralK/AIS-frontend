@@ -68,6 +68,12 @@
   "save_and_apply": "Kaydet ve Başvur",
   "placeholderHome": "Duyurunuzu buraya yazınız",
   "buttonHome": "Gönder",
-  "announceTitleHome":"Duyuru Paylaş"
-
-}
+  "announceTitleHome":"Duyuru Paylaş",
+  "submit":"Gönder",
+  "update": "Güncelle",
+  "delete": "Sil",
+  "placeholderMessage": "Mesajınızı buraya yazınız",
+  "noMessage":"Mesaj bulunamadı",
+  "messageTitle":"Mesaj Kutusu",
+  "send":"Gönder"
+} 

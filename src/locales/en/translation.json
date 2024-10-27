@@ -76,5 +76,12 @@
   "save_and_apply": "Save and Apply",
   "placeholderHome": "Write your announcement here",
   "buttonHome": "Submit",
-  "announceTitleHome":"Share Announcement"
+  "announceTitleHome":"Share Announcement",
+  "submit":"Submit",
+  "update": "Update",
+  "delete": "Delete",
+  "placeholderMessage": "Type your message here",
+  "noMessage":"There is no message",
+  "messageTitle":"Message Box",
+  "send":"Send"
 } 

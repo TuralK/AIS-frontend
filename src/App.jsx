@@ -8,7 +8,7 @@ import ChangePassword from "./pages/auth_pages/ChangePassword/ChangePassword";
 import SignUp from "./pages/auth_pages/SignUp/SignUp";
 import { StudentLayout } from "./layouts/StudentLayout/StudentLayout.jsx";
 import StudentHome from "./components/StudentComponents/StudentHomePageComponent/StudentHomePage.jsx";
-import DICHome from "./components/DICcomponents/DICHome.jsx";
+import DICHome from "./components/DICcomponents/DICHome/DICHome.jsx";
 import StudentAnnouncements from "./components/StudentComponents/StudentAnnouncementsComponent/StudentAnnouncements.jsx";
 import StudentAnnouncement from "./components/StudentComponents/StudentAnnouncementComponent/StudentAnnouncement.jsx";
 import Loading from "./components/LoadingComponent/Loading.jsx";
@@ -16,6 +16,7 @@ import { DICLayout } from "./layouts/DICLayout/DICLayout.jsx";
 import CompanyCards from "./components/DICcomponents/DICCompanyRequests/companyRequestComponent.jsx";
 import DICAnnouncementRequest from "./components/DICcomponents/DICAnnouncementRequests/DICAnnouncementRequest.jsx";
 import DICAnouncementDetails from "./components/DICcomponents/DICAnnouncemenDetails/DICAnouncementDetails.jsx";
+import DICApplications from "./components/DICcomponents/DICApplications/DICApplications.jsx";
 
 const App = () => {
   const { t, i18n } = useTranslation();
@@ -58,6 +59,7 @@ const App = () => {
         { path: "companyRequests", element: <CompanyCards /> },
         { path: 'announcementRequests', element: <DICAnnouncementRequest /> },
         { path: 'announcement/:id', element: <DICAnouncementDetails /> },
+        { path: 'applicationRequests', element: <DICApplications /> },
       ]
     }
   ]);
