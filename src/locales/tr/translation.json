@@ -75,5 +75,10 @@
   "placeholderMessage": "Mesajınızı buraya yazınız",
   "noMessage":"Mesaj bulunamadı",
   "messageTitle":"Mesaj Kutusu",
-  "send":"Gönder"
+  "send":"Gönder",
+  "enter_new_content":"Yeni duyuruyu giriniz",
+  "cancel":"İptal et",
+  "announcement_deleted":"Duyuru silindi",
+  "announcement_updated":"Duyuru güncellendi"
+
 } 

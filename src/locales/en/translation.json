@@ -83,5 +83,10 @@
   "placeholderMessage": "Type your message here",
   "noMessage":"There is no message",
   "messageTitle":"Message Box",
-  "send":"Send"
+  "send":"Send",
+  "enter_new_content":"Enter new announcement",
+  "cancel":"Cancel",
+  "announcement_deleted":"Announcement deleted",
+  "announcement_updated":"Announcement updated"
+
 } 
