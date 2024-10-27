@@ -4,51 +4,59 @@
   padding: 16px;
   margin-bottom: 16px;
 }
-  
+
+/* Add grid layout for announcements */
+.announcementGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Two columns */
+  gap: 16px; /* Space between items */
+}
+
 .titleAnnouncementList {
-    font-size: 1.5rem;
-    margin-bottom: 16px;
-    color: #333;
-    justify-self: center;
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+  color: #333;
+  justify-self: center;
 }
-  
+
 .announcement {
-    background-color: white;
-    border-radius: 4px;
-    padding: 12px;
-    margin-bottom: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-  
+
 .actions {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
 }
-  
+
 .updateButton,
 .deleteButton {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    margin-left: 8px;
-    max-width: 80%;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-left: 8px;
+  max-width: 80%;
 }
-  
+
 .updateButton {
-    background-color: #429c45;
-    color: white;
+  background-color: #429c45;
+  color: white;
 }
-  
+
 .deleteButton {
-    background-color: darkred;
-    color: white;
+  background-color: darkred;
+  color: white;
 }
 
 /* Güncelleme ve silme mesajlarının stili */
-.updateMessage, .deleteMessage {
+.updateMessage,
+.deleteMessage {
   margin: 10px 0;
   padding: 10px;
   border-radius: 5px;
@@ -85,7 +93,8 @@
   margin-top: 10px; /* Input ile butonlar arasına boşluk ekleyin */
 }
 
-.submitUpdateButton, .cancelUpdateButton {
+.submitUpdateButton,
+.cancelUpdateButton {
   margin-right: 5px;
   padding: 5px 10px;
   border: none;
@@ -102,24 +111,29 @@
   background-color: darkred;
   color: white;
 }
-  
+
 @media (max-width: 768px) {
-    .announcementList {
-      padding: 12px;
-    }
-  
-    .announcement {
-      padding: 10px;
-    }
-  
-    .actions {
-      flex-direction: column;
-    }
-  
-    .updateButton,
-    .deleteButton {
-      margin-left: 0;
-      margin-top: 8px;
-      width: 100%;
-    }
+  .announcementList {
+    padding: 12px;
+  }
+
+  .announcement {
+    padding: 10px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .updateButton,
+  .deleteButton {
+    margin-left: 0;
+    margin-top: 8px;
+    width: 100%;
+  }
+
+  /* Adjust grid layout for smaller screens */
+  .announcementGrid {
+    grid-template-columns: 1fr; /* One column on small screens */
+  }
 }

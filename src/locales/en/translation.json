@@ -87,6 +87,14 @@
   "enter_new_content":"Enter new announcement",
   "cancel":"Cancel",
   "announcement_deleted":"Announcement deleted",
-  "announcement_updated":"Announcement updated"
+  "announcement_updated":"Announcement updated",
+  "no_message":"There is no messages yet",
+  "message_tab":"Messages",
+  "ai_tab":"AI Chat",
+  "messaging":"Messaging",
+  "search":"Search in Messages",
+  "type_message":"Type Message",
+  "start_conversation":"Start conversation",
+  "conversation":"Conversation"
 
 } 

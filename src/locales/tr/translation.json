@@ -79,6 +79,15 @@
   "enter_new_content":"Yeni duyuruyu giriniz",
   "cancel":"İptal et",
   "announcement_deleted":"Duyuru silindi",
-  "announcement_updated":"Duyuru güncellendi"
+  "announcement_updated":"Duyuru güncellendi",
+  "no_message":"Henüz mesaj yok",
+  "message_tab":"Mesajlar",
+  "ai_tab":"Yapay Zeka",
+  "messaging":"Mesajlaşma",
+  "search":"Mesajlarda Ara",
+  "type_message":"Mesaj yaz",
+  "start_conversation":"Sohbeti başlat",
+  "conversation":"Sohbet"
+
 
 } 

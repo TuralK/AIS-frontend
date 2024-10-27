@@ -2,7 +2,6 @@ import React from 'react';
 import AnnouncementList from '../AnnouncementList';
 import ShareAnnouncement from '../ShareAnnouncement';
 import Messaging from '../../MessagingComponent';
-import styles from './DICHome.module.css';
 
 const DICHome = () => {
   const sampleAnnouncements = [
@@ -14,15 +13,17 @@ const DICHome = () => {
   ];
 
   return (
-    <div className={styles.container}>
-      <div className={styles.leftColumn}>
+    <div className="flex h-screen">
+      <div className="w-3/4 p-4">
         <AnnouncementList announcements={sampleAnnouncements} />
       </div>
-      <div className={styles.bottomCenter}>
-        <ShareAnnouncement />
-      </div>
-      <div className={styles.rightColumn}>
-        <Messaging />
+      <div className="w-1/4 flex flex-col">
+        <div className="flex-1 p-4">
+          <ShareAnnouncement />
+        </div>
+        <div className="flex-1">
+          <Messaging />
+        </div>
       </div>
     </div>
   );
