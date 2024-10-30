@@ -11,7 +11,7 @@ import StudentHome from "./components/StudentComponents/StudentHomePageComponent
 import DICHome from "./components/DICcomponents/DICHome/DICHome.jsx";
 import StudentAnnouncements from "./components/StudentComponents/StudentAnnouncementsComponent/StudentAnnouncements.jsx";
 import StudentAnnouncement from "./components/StudentComponents/StudentAnnouncementComponent/StudentAnnouncement.jsx";
-import Loading from "./components/LoadingComponent/Loading.jsx";
+import StudentApplications from "./components/StudentComponents/StudentApplicationsComponent/StudentApplications.jsx";
 import { DICLayout } from "./layouts/DICLayout/DICLayout.jsx";
 import CompanyCards from "./components/DICcomponents/DICCompanyRequests/companyRequestComponent.jsx";
 import DICAnnouncementRequest from "./components/DICcomponents/DICAnnouncementRequests/DICAnnouncementRequest.jsx";
@@ -42,9 +42,9 @@ const App = () => {
         { path: "home", element: <StudentHome /> },
         { path: "announcements", element: <StudentAnnouncements /> },
         { path: 'announcements/:announcementId', element: <StudentAnnouncement /> },
+        { path: "applications", element: <StudentApplications />}
       ]
       // children: [
-      //   {path: "applications", element: }
       //   {path: "notifications", element: },
       //   {path: "profile", element: }
       //   {path: "settings", element: }

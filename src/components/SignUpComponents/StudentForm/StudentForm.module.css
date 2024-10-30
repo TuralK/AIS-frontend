@@ -41,7 +41,7 @@ input[type="password"] {
   margin-right: auto;
 }
 
-button {
+.button {
   background-color: darkred;
   color: white;
   padding: 14px 20px;
@@ -54,7 +54,7 @@ button {
   margin-right: auto;
 }
 
-button:hover {
+.button:hover {
   opacity: 0.85;
 }
 

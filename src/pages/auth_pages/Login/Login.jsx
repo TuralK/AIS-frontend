@@ -202,38 +202,48 @@ export default function Login() {
                 onChange={(e) => setRememberMe(e.target.checked)}
                 className="rounded border-gray-300 text-red-900 focus:ring-red-900"
               />
-              <span className="text-sm text-gray-600">Remember your username</span>
-            </label>
-
-            <button
-              type="submit"
-              className="w-full rounded-md bg-red-900 py-2 text-white transition-colors hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-900 focus:ring-offset-2"
-            >
-              Login
-            </button>
-          </form>
-
-          <div className={`overflow-hidden transition-all duration-300 ${
-            isForgotPasswordActive ? 'max-h-40' : 'max-h-0'
-          }`}>
-            <form onSubmit={handleForgotPasswordSubmit} className="space-y-4">
               <input
-                type="email"
-                placeholder="Email"
-                value={forgotEmail}
-                onChange={(e) => setForgotEmail(e.target.value)}
-                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-red-900 focus:outline-none focus:ring-1 focus:ring-red-900"
+                type='password'
+                placeholder='Password'
+                id='password'
+                name='password'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              {forgotEmailError && (
-                <div className="text-sm text-red-600">{forgotEmailError}</div>
-              )}
-              <button
-                type="submit"
-                className="w-full rounded-md bg-red-900 py-2 text-white transition-colors hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-900 focus:ring-offset-2"
-              >
-                Send Reset Link
-              </button>
+              { 
+              loginError.length > 0 && <div className={LoginCSS['login-error']}>{loginError}</div>
+              }
+              <label>
+              <input
+                  type='checkbox'
+                  id='remember'
+                  name='remember'
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
+                <span> Remember your username</span>
+              </label>
+              <button className={LoginCSS.button} type='submit'>Login</button>
+            
+          </form>
+          <div className={`${LoginCSS['forgot-password']} ${isForgotPasswordActive ? LoginCSS.active : ''}`}>
+            <form onSubmit={handleForgotPasswordSubmit}>
+              <div className={LoginCSS['forgotPassword']}>
+                <input
+                  type='email'
+                  placeholder='Email'
+                  id='forgot-email'
+                  name='forgot-email'
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  required
+                />
+                {
+                  forgotEmailError.length > 0 && <div className={LoginCSS['no-user-error']}>{forgotEmailError}</div>
+                }
+                <button className={LoginCSS.button} type='submit'>Send Reset Link</button>
+              </div>
             </form>
           </div>
 

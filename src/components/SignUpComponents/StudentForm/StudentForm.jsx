@@ -115,7 +115,7 @@ const StudentForm = ({ reset }) => {
           />
           <div className={`${StudentFormCSS.confirm} ${StudentFormCSS.error}`}>{errors.confirmPassword}</div>
 
-          <button type="submit" value="Sign Up">
+          <button className={StudentFormCSS.button} type="submit" value="Sign Up">
             Sign up
           </button>
 

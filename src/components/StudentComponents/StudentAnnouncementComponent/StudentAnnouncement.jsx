@@ -120,7 +120,12 @@ const StudentAnnouncementComponent = () => {
         navigate('/student/announcements');
       }
     } catch (error) {
-      alert(t('failed_to_sumbit_alert'));
+      if(error.status === 409) {
+        alert(error.response.data.error);
+        window.location.reload();
+      } else{
+        alert(t('failed_to_sumbit_alert'));
+      }
     }
     setLoadingApply(false);
   };
@@ -190,7 +195,6 @@ const StudentAnnouncementComponent = () => {
 
 
   const formatRemainingTime = (remainingSeconds) => {
-    // const { days, hours, minutes, seconds } = announcement.remainingTime;
     const days = Math.floor(remainingSeconds / (60 * 60 * 24));
     const hours = Math.floor((remainingSeconds % (60 * 60 * 24)) / (60 * 60));
     const minutes = Math.floor((remainingSeconds % (60 * 60)) / 60);
@@ -198,26 +202,16 @@ const StudentAnnouncementComponent = () => {
 
     if (days > 0) {
       setRemainingTime(t('application_close_day', { count: days }));
-      //setRemainingTime(`Application closes in ${days} ${days === 1 ? 'day' : 'days'}`);
       setRemainingTimeStuck(t('application_left_day', {count: days}));
-      // setRemainingTimeStuck(`Left ${days} ${days === 1 ? 'day' : 'days'}`);
     } else if (hours > 0) {
       setRemainingTime(t('application_close_hour', { count: hours }));
-      // setRemainingTime(`Application closes in ${hours} ${hours === 1 ? 'hour' : 'hours'}`);
       setRemainingTimeStuck(t('application_left_hour', { count: hours }));
-      // setRemainingTimeStuck(`Left ${hours} ${hours === 1 ? 'hour' : 'hours'}`);
     } else if (minutes > 0) {
       setRemainingTime(t('application_close_minute', { count: minutes }));
-      // setRemainingTime(`Application closes in ${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`);
       setRemainingTimeStuck(t('application_left_minute', { count: minutes }));
-      // setRemainingTimeStuck(`Left ${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`);
     } else {
       setRemainingTime(t('application_close_second', { count: seconds }));
-      // setRemainingTime(`Application closes in ${seconds} ${seconds === 1 ? 'second' : 'seconds'}`);
-      setRemainingTimeStuck(t('application_left_second', { count: seconds }));
-      // setRemainingTimeStuck(`Left ${seconds} ${seconds === 1 ? 'second' : 'seconds'}`);
-      // setRemainingTime(`Application closes in ${seconds} ${seconds > 1 ? 'seconds' : (seconds === 1 ? 'second' : navigate('/student/announcements'))}`);
-    }
+      setRemainingTimeStuck(t('application_left_second', { count: seconds })); }
   };
 
   if (loading) {
@@ -252,13 +246,18 @@ const StudentAnnouncementComponent = () => {
                         (
                           <div className={StudentAnnouncementCSS.announcementInfo}>
                             <p className={StudentAnnouncementCSS.deadline}>{remainingTime}</p>
-                            <p 
-                              className={StudentAnnouncementCSS.applicationDetails} 
-                              onClick={toggleAppDetails}
-                            >
-                              {t('my_application_details')}
-                            </p>
-                            <button className={StudentAnnouncementCSS.applyButton} onClick={handleSubmit}>{t('applyNow')}</button>
+                            {!announcement.isApplied && 
+                              <p 
+                                className={StudentAnnouncementCSS.applicationDetails} 
+                                onClick={toggleAppDetails}
+                              >
+                                {t('my_application_details')}
+                              </p>
+                            }
+                            {!announcement.isApplied
+                              ? <button className={StudentAnnouncementCSS.applyButton} onClick={handleSubmit}>{t('applyNow')}</button>
+                              : <button className={` ${StudentAnnouncementCSS.applyButton} ${StudentAnnouncementCSS.applied}`}>{t('applied')}</button>
+                            }
                           </div>
                         )
                         :
@@ -269,19 +268,24 @@ const StudentAnnouncementComponent = () => {
                               <p className={StudentAnnouncementCSS.companyName}>{announcement.Company.name}</p>
                             </div>
                             <p className={StudentAnnouncementCSS.deadline}>{remainingTimeStuck}</p>
-                            <p 
-                              className={StudentAnnouncementCSS.applicationDetails} 
-                              onClick={toggleAppDetails}
-                            >
-                              {t('my_application_details')}
-                            </p>
-                            <button className={StudentAnnouncementCSS.applyButton}>{t('applyNow')}</button>
+                            {!announcement.isApplied && 
+                              <p 
+                                className={StudentAnnouncementCSS.applicationDetails} 
+                                onClick={toggleAppDetails}
+                              >
+                                {t('my_application_details')}
+                              </p>
+                            }
+                            {!announcement.isApplied
+                              ? <button className={StudentAnnouncementCSS.applyButton} onClick={handleSubmit}>{t('applyNow')}</button>
+                              : <button className={` ${StudentAnnouncementCSS.applyButton} ${StudentAnnouncementCSS.applied}`}>{t('applied')}</button>
+                            }
                           </div>
                         )
                       }
                     </RenderPropSticky>
 
-                    {showAppDetails && (
+                    {showAppDetails && !announcement.isApplied && (
                       <form onSubmit={handleSubmit}>
                         <div className={StudentAnnouncementCSS.appDetails}>
                           <div className={StudentAnnouncementCSS.appDetailsContent}  ref={appDetailsContentRef}>
