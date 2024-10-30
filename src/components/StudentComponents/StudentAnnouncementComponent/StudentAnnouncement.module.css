@@ -12,8 +12,7 @@ html, body {
 }
 
 .card {
-  padding: 10px;
-  max-width: 1480px;
+  max-width: 1360px;
   margin: 50px auto; 
   overflow: visible;
 }
@@ -44,7 +43,7 @@ html, body {
 }
 
 .content .announcementImage {
-  max-width: 1480px;
+  max-width: 1360px;
   max-height: 380px;
   width: 100%;
   height: auto;
@@ -103,8 +102,8 @@ html, body {
   justify-content: center;
 }
 
-.applied {
-  cursor: default;
+.announcementInfo .applyButton:hover {
+    
 }
 
 .stuck .announcementInfo {
