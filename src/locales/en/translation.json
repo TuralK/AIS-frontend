@@ -98,7 +98,14 @@
   "conversation":"Conversation",
   "delete_announcement_confirmation":"Confirm deletion",
   "confirm_deletion":"Confirmation",
-  "provideFeedback":"Provide feedback"
-
+  "provideFeedback":"Provide feedback",
+  "applicationRequests":"Application requests",
+  "id":"ID",
+  "applicationDetailTitle":"Application details",
+  "studentName":"Student Name",
+  "downloadForm":"Download Application Form",
+  "uploadForm": "Upload Application Form",
+  "sendSecretary":"Send to secretary",
+  "optional": "Optional"
 
 } 

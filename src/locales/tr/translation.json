@@ -36,7 +36,7 @@
   "summerRule9": "Her öğrenci staja başlarken, bu rehber içindeki 'GİZLİ' yazılı staj başarı belgelerini işyerine vermek zorundadır. Staj sonunda bu formlardan biri, işyerince, Bölüm Staj Komitesine eposta olarak yollanır. Bunu sağlamak öğrencinin sorumluluğundadır. Diğer form ise işyerince saklanır.",
   "summerRule10": "Başarı belgesinde değerlendirmede öğrencinin staj yaptığı Bölümlerden almış olduğu başarı notlarının ortalaması en az 'C' olmalıdır. Başarı notu ortalaması 'C'nin altında veya herhangi bir bölümde devam durumu 'F' olan öğrencinin bu stajı yeniden yapması zorunludur.",
   "summerRule11": "Staj belgeleri incelendikten sonra verilen staj notları ilgili bölümlerce Öğrenci İşleri Dairesi Başkanlığına gönderilerek öğrencilerin dosyalarına işlenir.",
-  "moreDetails": "Daha Fazla Detay",
+  "moreDetails": "Daha fazla detay",
   "loading": "Yükleniyor",
   "noAnnouncement": "Mevcut duyuru yok veya tüm duyurulara başvurmuşsunuz",
   "applyNow": "Şimdi başvur",
@@ -90,7 +90,13 @@
   "conversation":"Sohbet",
   "delete_announcement_confirmation":"Silmeyi onayla",
   "confirm_deletion":"Onay kutusu",
-  "provideFeedback":"Geri bildirim verin"
-
-
+  "provideFeedback":"Geri bildirim verin",
+  "applicationRequests":"Bekleyen başvurular",
+  "id":"Öğrenci No",
+  "applicationDetailTitle":"Başvuru detayları",
+  "studentName":"Öğrenci ismi",
+  "downloadForm":"Başvuru formunu indir",
+  "uploadForm": "Başvuru formu yükle",
+  "sendSecretary":"Sekretere gönder",
+  "optional": "İsteğe bağlı"
 } 

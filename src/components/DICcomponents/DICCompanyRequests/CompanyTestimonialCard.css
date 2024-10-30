@@ -78,21 +78,21 @@
 }
 
 .approve-button {
-  background-color: #2dd4bf;
+  background-color: darkred;
   color: white;
 }
 
 .approve-button:hover {
-  background-color: #14b8a6;
+  background-color: rgb(183, 25, 25);
 }
 
 .reject-button {
-  background-color: #ef4444;
+  background-color: gray;
   color: white;
 }
 
 .reject-button:hover {
-  background-color: #dc2626;
+  background-color: rgb(71, 66, 66);
 }
 
 .error-message {
