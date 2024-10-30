@@ -87,7 +87,10 @@
   "search":"Mesajlarda Ara",
   "type_message":"Mesaj yaz",
   "start_conversation":"Sohbeti başlat",
-  "conversation":"Sohbet"
+  "conversation":"Sohbet",
+  "delete_announcement_confirmation":"Silmeyi onayla",
+  "confirm_deletion":"Onay kutusu",
+  "provideFeedback":"Geri bildirim verin"
 
 
 } 

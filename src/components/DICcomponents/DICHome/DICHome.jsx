@@ -14,15 +14,15 @@ const DICHome = () => {
 
   return (
     <div className="flex h-screen">
-      <div className="w-3/4 p-4">
+      <div className="flex-grow p-4">
         <AnnouncementList announcements={sampleAnnouncements} />
       </div>
-      <div className="w-1/4 flex flex-col">
-        <div className="flex-1 p-4">
-          <ShareAnnouncement />
-        </div>
+      <div className="flex flex-col">
         <div className="flex-1">
           <Messaging />
+        </div>
+        <div className="flex-1 p-2 mt-12">
+          <ShareAnnouncement />
         </div>
       </div>
     </div>
