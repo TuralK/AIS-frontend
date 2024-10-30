@@ -73,5 +73,19 @@
   "no_cv_alert": "Please upload your CV before proceeding to the preview.",
   "fill_all_fields_alert": "Please fill in all the required fields.",
   "failed_to_sumbit_alert": "Failed to submit your application. Please try again.",
-  "save_and_apply": "Save and Apply"
+  "save_and_apply": "Save and Apply",
+  "applied": "Applied",
+  "announcement_name": "Announcement Name",
+  "status": "Status",
+  "applied_date": "Apply Date",
+  "last_update_date": "Last Update Date",
+  "details": "Details",
+  "company_evaluation": "Company Evaluation",
+  "coordinator_evaluation": "Coordinator Evaluation",
+  "ssi_procedures": "SSI Procedures",
+  "internship_process": "Internship Process",
+  "rejected": "Rejected",
+  "all": "All",
+  "evaluation_phase": "Evaluation Phase",
+  "accepted": "Accepted"
 }

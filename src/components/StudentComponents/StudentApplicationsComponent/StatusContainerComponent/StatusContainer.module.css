@@ -1,0 +1,102 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  margin-top: 25px;
+}
+
+.statusKeyContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: 1px solid #E2E2E2;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  width: 100%;
+  flex-basis: 100%;
+}
+
+.statusValueContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: 1px solid #E2E2E2;
+  width: 100%;
+  flex-basis: 100%;
+}
+
+.statusValueContainer:last-child {
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.key {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  border-bottom: 1px solid #E2E2E2;
+  padding: 10px;
+  height: 80px;
+}
+
+.smallBox {
+  flex-basis: 60%;
+  max-width: 60%;
+  flex-grow: 0;
+}
+.mediumBox {
+  flex-basis: 90%;
+  max-width: 90%;
+  flex-grow: 0;
+}
+
+.value {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  padding: 10px;
+  flex-wrap: wrap;
+}
+
+img {
+  width: 65px;
+  height: 65px;
+}
+
+.date {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.action {
+    color: #9A1220;
+}
+
+.action:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.statusDetail {
+  color: white;
+  background-color: #9A1220;
+  border-radius: 12px;
+  padding: 10px 15px;
+  width: 75%;
+}
+
+.evaluation {
+  background-color: #9A1220;
+}
+
+.accepted {
+  background-color: #066a1e;
+}
+
+.rejected {
+  background-color: #000000;
+}

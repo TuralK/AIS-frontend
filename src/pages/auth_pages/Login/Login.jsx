@@ -192,7 +192,7 @@ const Login = () => {
                 />
                 <span> Remember your username</span>
               </label>
-              <button type='submit'>Login</button>
+              <button className={LoginCSS.button} type='submit'>Login</button>
             </div>
           </form>
           <div className={`${LoginCSS['forgot-password']} ${isForgotPasswordActive ? LoginCSS.active : ''}`}>
@@ -210,7 +210,7 @@ const Login = () => {
                 {
                   forgotEmailError.length > 0 && <div className={LoginCSS['no-user-error']}>{forgotEmailError}</div>
                 }
-                <button type='submit'>Send Reset Link</button>
+                <button className={LoginCSS.button} type='submit'>Send Reset Link</button>
               </div>
             </form>
           </div>

@@ -56,14 +56,6 @@ const styles = {
       borderRadius: '0.375rem',
       cursor: 'pointer',
     },
-    menuItem: {
-      padding: '0.75rem 1rem',
-      fontSize: '1.125rem',
-      fontWeight: '500',
-      borderRadius: '0.375rem',
-      cursor: 'pointer',
-      transition: 'background-color 0.3s ease',
-    },
     mobileMenu: {
       padding: '0.5rem 1rem 1rem',
     },
@@ -89,6 +81,27 @@ const styles = {
       height: '40px',
       borderRadius: '50%',
       marginRight: '0.5rem',
+    },
+    menuItem: {
+      padding: '0.75rem 1rem',
+      fontSize: '1.125rem', // Normal durumdaki yazı boyutu
+      fontWeight: '400',    // Normal durumdaki yazı kalınlığı
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      position: 'relative',
+      textDecoration: 'none',
+      color: '#ffffffcc',
+    },
+    activeIndicator: {  
+      position: 'absolute',
+      bottom: '-2px', // Çizgiyi tam altında konumlandır
+      left: 0,
+      width: '100%',
+      height: '3px', // Çizgi kalınlığı
+      backgroundColor: '#00ffff', // Çizgi rengi - istediğiniz renge değiştirebilirsiniz
+      transform: 'scaleX(0)',
+      transition: 'transform 0.3s ease',
+      transformOrigin: 'left'
     },
   }
 
@@ -135,7 +148,7 @@ export const StudentLayout = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768)
+      setIsMobile(window.innerWidth < 900)
     }
     handleResize()
     window.addEventListener('resize', handleResize)
@@ -204,19 +217,14 @@ export const StudentLayout = () => {
                   <NavLink
                     key={route}
                     to={`/student/${route}`}
-                    //to={isValidating ? '#' : `/student/${route}`} 
-
-                    // style={({ isActive }) => ({
-                    //   ...styles.menuItem,
-                    //   backgroundColor: isActive ? '#7d0e1a' : 'transparent',
-                    //   transition: 'background-color 0.3s ease',
-                    // })}
-                    
-                    // href="#"
-                    style={{
+                    style={({ isActive }) => ({
                       ...styles.menuItem,
-                      ':hover': { backgroundColor: '#7d0e1a' },
-                    }}
+                      fontSize: isActive || location.pathname === '/student' && route === 'home' ? '1.25rem' : '1.125rem',
+                      fontWeight: isActive || location.pathname === '/student' && route === 'home' ? '600' : '400',
+                      color: isActive || location.pathname === '/student' && route === 'home' ? '#ffffff' : '#ffffffcc',
+                      borderBottom: isActive || location.pathname === '/student' && route === 'home' ? '4px solid #ffffff' : 'none',  
+                      position: 'relative'
+                    })}
                     onMouseEnter={(e) => (e.target.style.backgroundColor = '#7d0e1a')}
                     onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
                   >

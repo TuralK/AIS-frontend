@@ -150,7 +150,7 @@ input[type="checkbox"] {
   accent-color: darkred;
 }
 
-button {
+.button {
   background-color: darkred;
   color: white;
   cursor: pointer;
