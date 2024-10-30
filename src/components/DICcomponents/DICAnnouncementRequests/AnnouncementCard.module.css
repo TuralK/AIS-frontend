@@ -1,84 +1,78 @@
-.announcement-card {
+.cardContainer {
   display: flex;
-  flex-direction: column; /* Dikey hizalama */
-  position: relative; 
-  background-color: darkred;
-  border-radius: 8px;
+  justify-content: center;
+  align-items: center;
+  width: 320px;
+  height: 400px;
+  background-color: white;
+  border-radius: 20px 0 0 20px;
   overflow: hidden;
-  max-height: 2000px;
+  position: relative;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  z-index: 1;
+  border: 2px solid black;
+  transition: transform 0.3s ease;
 }
 
-.announcement-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Gölgeyi güçlendirdim */
+.cardContainer:hover {
+  transform: scale(1.05); /* Hover'da biraz büyüme */
 }
 
-
-.announcement-image {
-  position: relative; 
-  width: 100%; /* Genişliği %100 yap */
-  height: 100%; /* Yüksekliği ayarlayın (veya ihtiyacınıza göre değiştirin) */
-  background-size: cover;
-  background-position: center;
-  z-index: 1; 
+.imageContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 80%; /* Resim alanı genişliği */
+  height: 60%; /* Resim alanı yüksekliği */
+  overflow: hidden;
 }
 
-.announcement-content {
-  position: relative; 
-  color: white;
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.contentContainer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 75%; /* İçerik genişliği */
+  height: 60%; /* İçerik yüksekliği */
+  background: linear-gradient(
+    to bottom, 
+    rgb(154, 18, 32) 0%,       /* En üstte koyu */
+    rgb(177, 42, 51) 40%,      /* Ortada biraz açılmış */
+    rgb(154, 18, 32) 100%    /* En altta en açık */
+  );
+  padding: 16px;
+  border-radius: 20px 0 0 0; /* Sağ üst kısmı yuvarlak */
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  z-index: 2; 
-  width: 50%; /* İçeriğin genişliğini %50 yaparak büyüt */
+  justify-content: space-evenly;
 }
 
-.announcement-company {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.announcement-title {
+.companyName {
   font-size: 1.2rem;
-  margin-bottom: 10px;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 8px;
 }
 
-.announcement-description {
+.announcementName {
   font-size: 1rem;
-  margin-bottom: 10px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
+  color: #cccccc;
+  margin-bottom: 8px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
-.announcement-date h4 {
-  font-size: 0.9rem;
-  margin-bottom: 5px;
+.dates {
+  font-size: 0.85rem;
+  color: #cccccc;
+  margin-bottom: 4px;
 }
 
-.announcement-date p {
-  font-size: 0.9rem;
-}
-
-@media (min-width: 768px) {
-  .announcement-card {
-    flex-direction: row; /* Yatay hizalama */
-    height: 250px; /* Kart boyutunu artır */
-  }
-
-  .announcement-content {
-    width: 40%; /* İçeriği %40 yaparak büyüt */
-    margin-left: 0; /* Sağdan kaydırmayı kaldır */
-  }
-
-  .announcement-image {
-    width: 60%; /* Fotoğrafın genişliğini %60 yaparak ayarla */
-    height: 100%; /* Yüksekliği %100 yaparak tam boyutlu olacak şekilde ayarlayın */
-  }
+.dates strong {
+  font-weight: bold;
+  color: #ffffff;
 }
