@@ -1,11 +1,12 @@
-import * as React from "react"
+import * as React from "react" 
 import { cn } from "../../utils/utils.js"
 
 const Textarea = React.forwardRef(({ className, ...props }, ref) => {
   const [height, setHeight] = React.useState('auto');
 
   React.useEffect(() => {
-    if (ref.current) {
+    // `ref` boş değilse ayarları uygula
+    if (ref?.current) {
       ref.current.style.height = 'auto';
       ref.current.style.height = `${ref.current.scrollHeight}px`;
       setHeight(`${ref.current.scrollHeight}px`);
@@ -19,11 +20,11 @@ const Textarea = React.forwardRef(({ className, ...props }, ref) => {
         className
       )}
       ref={ref}
-      style={{ height }}
+      style={{ height, resize:"none" }}
       {...props}
     />
-  )
-})
-Textarea.displayName = "Textarea"
+  );
+});
+Textarea.displayName = "Textarea";
 
-export { Textarea }  
+export { Textarea };

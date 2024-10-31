@@ -98,5 +98,8 @@
   "downloadForm":"Başvuru formunu indir",
   "uploadForm": "Başvuru formu yükle",
   "sendSecretary":"Sekretere gönder",
-  "optional": "İsteğe bağlı"
+  "optional": "İsteğe bağlı",
+  "studentInfo": "Öğrenci Bilgileri",
+  "companyInfo":"Şirket Bilgileri",
+  "internshipPeriod":"Staj tarihleri"
 } 
