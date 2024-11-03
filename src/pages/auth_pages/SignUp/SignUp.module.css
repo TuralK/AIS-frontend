@@ -11,24 +11,26 @@ html, body {
 }
 
 .background {
-    position: absolute; /* or fixed if you want it to stay in place on scroll */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /*background: url('../../../assets/iyte_background.jpg') no-repeat center center; */
-    background: url('https://ceng.iyte.edu.tr/wp-content/uploads/sites/124/2017/02/100_3495.jpg');
-    background-size: cover;
-    z-index: 0;
-    display: flex;
-    justify-content: flex-end; /* Aligns child items to the right */
-    align-items: center;       /* Aligns child items vertically in the center */
-    background-size: 100% 100%;
+  position: fixed;
+  overflow: auto;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /*background: url('../../../assets/iyte_background.jpg') no-repeat center center; */
+  background: url('https://ceng.iyte.edu.tr/wp-content/uploads/sites/124/2017/02/100_3495.jpg');
+  background-size: cover;
+  z-index: 0;
+  display: flex;
+  justify-content: flex-end; /* Aligns child items to the right */
+  align-items: center;       /* Aligns child items vertically in the center */
+  background-size: 100% 100%;
 }
   
 .background::before {
   content: "";
-  position: absolute;
+  position: fixed;
+  overflow: auto;
   top: 0;
   left: 0;
   width: 100%;

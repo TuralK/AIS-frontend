@@ -43,11 +43,6 @@ const StudentAnnouncements = () => {
                             <div className={StudentAnnouncementsCSS["card-body"]}>
                                 <p className={StudentAnnouncementsCSS["card-title"]}>{announcement.Company.name}</p>
                                 <p className={StudentAnnouncementsCSS["card-text"]}>{announcement.announcementName}</p>
-                                <button
-                                    className={StudentAnnouncementsCSS["details-button"]}
-                                >
-                                    {t('moreDetails')}
-                                </button>
                             </div>
                         </div>
                     </Link>

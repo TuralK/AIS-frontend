@@ -18,16 +18,16 @@ html, body {
   overflow: visible;
 }
 
-.header h1 {
+.announcementNameHeader {
   font-family: "Lexend Deca";
   font-weight: 600;
-  font-size: 32;
+  font-size: 32px;
   word-wrap: break-word;
   white-space: pre-wrap;
   overflow: auto;
 }
 
-.header p {
+.companyNameHeader {
   font-family: "Lexend Deca";
   font-weight: 400;
   font-size: 20;
@@ -53,6 +53,10 @@ html, body {
   align-items: center;
   overflow: hidden;
   margin-bottom: 30px;
+}
+
+.applied {
+  cursor: default;
 }
 
 .content .announcementImage img {
@@ -101,10 +105,31 @@ html, body {
   max-height: 36px;
   align-items: center;
   justify-content: center;
+  padding: 10px 20px;
+  color: white;
+  line-height: normal;
 }
 
-.applied {
-  cursor: default;
+.announcementInfo .applyButton:hover {
+    
+}
+
+.saveButton {
+  margin: 8px 0;
+  width: 82%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: darkred;
+  color: white;
+  line-height: normal;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  font-size: 14px;
 }
 
 .stuck .announcementInfo {

@@ -227,8 +227,8 @@ const StudentAnnouncementComponent = () => {
             (
               <div className={StudentAnnouncementCSS.card}>
                 <header className={StudentAnnouncementCSS.header}>
-                    <h1>{announcement.announcementName}</h1>
-                    <p>{announcement.Company.name}</p>
+                    <h1 className={StudentAnnouncementCSS.announcementNameHeader}>{announcement.announcementName}</h1>
+                    <h3 className={StudentAnnouncementCSS.companyNameHeader}>{announcement.Company.name}</h3>
                 </header>
                 
                 <div className={StudentAnnouncementCSS.content}>
@@ -330,7 +330,7 @@ const StudentAnnouncementComponent = () => {
                             </div>
                             <input type="file" accept=".pdf" className={StudentAnnouncementCSS.CV} ref={fileInputRef} onChange={handleFileChange}/>
 
-                            <button>{t('save_and_apply')}</button>
+                            <button className={StudentAnnouncementCSS.saveButton}>{t('save_and_apply')}</button>
                             <center>
                               <p 
                                   className={StudentAnnouncementCSS.closeApplicationDetails} 
@@ -369,19 +369,3 @@ const StudentAnnouncementComponent = () => {
 }
 
 export default StudentAnnouncementComponent
-
-// translate
-
-{/* <div><strong>Company Name:</strong>        {announcement.Company.name}</div>
-<div><strong>Announcement Name:</strong>   {announcement.announcementName}</div>
-<div><strong>Company Id:</strong>          {announcement.companyId}</div>
-<div><strong>Description:</strong>         {announcement.description}</div>
-<div><strong>End Date:</strong>            {announcement.endDate}</div>
-<div><strong>Formatted End Date:</strong>  {announcement.formattedEndDate}</div>
-<div><strong>Id:</strong>                  {announcement.id}</div>
-<div><strong>Image:</strong>               {announcement.image}</div>
-<div><strong>Start Date:</strong>          {announcement.startDate}</div>
-<div><strong>Status:</strong>              {announcement.status}</div> 
-
-
-<img src={AnnouncementImage} alt="Announcement" />*/}

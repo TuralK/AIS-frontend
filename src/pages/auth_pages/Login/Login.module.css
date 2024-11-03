@@ -13,7 +13,8 @@ html, body {
 }
 
 .background {
-    position: absolute; /* or fixed if you want it to stay in place on scroll */
+    position: fixed;
+    overflow: auto;
     top: 0;
     left: 0;
     width: 100%;
@@ -30,7 +31,8 @@ html, body {
 
 .background::before {
   content: "";
-  position: absolute;
+  position: fixed;
+  overflow: auto;
   top: 0;
   left: 0;
   width: 100%;

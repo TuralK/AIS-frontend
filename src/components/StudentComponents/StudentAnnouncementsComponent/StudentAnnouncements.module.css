@@ -40,7 +40,6 @@ body, html {
     background-color: #fff;
 }
 
-/* Card Styling */
 .card {
     background-color: #fff;
     border-radius: 10px;
@@ -88,23 +87,6 @@ body, html {
     margin-bottom: 10px;
 }
 
-.details-button {
-    background-color: darkred;
-    color: #fff;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-    text-align: center;
-    align-self: flex-start;
-}
-
-.details-button:hover {
-    background-color: rgb(217, 4, 4);
-}
-
-/* Message Styling */
 .content-container h2 {
     margin-top: 50px;
     text-align: center;

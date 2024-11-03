@@ -17,6 +17,7 @@ import CompanyCards from "./components/DICcomponents/DICCompanyRequests/companyR
 import DICAnnouncementRequest from "./components/DICcomponents/DICAnnouncementRequests/DICAnnouncementRequest.jsx";
 import DICAnouncementDetails from "./components/DICcomponents/DICAnnouncemenDetails/DICAnouncementDetails.jsx";
 import DICApplications from "./components/DICcomponents/DICApplications/DICApplications.jsx";
+import DICInnerApplication from "./components/DICcomponents/DICApplications/InnerApplication/DICInnerApplication.jsx";
 
 const App = () => {
   const { t, i18n } = useTranslation();
@@ -45,6 +46,7 @@ const App = () => {
         { path: "applications", element: <StudentApplications />}
       ]
       // children: [
+      //   {path: "applications", element: }
       //   {path: "notifications", element: },
       //   {path: "profile", element: }
       //   {path: "settings", element: }
@@ -60,6 +62,7 @@ const App = () => {
         { path: 'announcementRequests', element: <DICAnnouncementRequest /> },
         { path: 'announcement/:id', element: <DICAnouncementDetails /> },
         { path: 'applicationRequests', element: <DICApplications /> },
+        { path: 'application/:id', element: <DICInnerApplication />}
       ]
     }
   ]);

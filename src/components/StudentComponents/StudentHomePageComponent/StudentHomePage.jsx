@@ -13,17 +13,17 @@ const StudentHomePage = () => {
     <div className={StudentHomePageCSS.rules}>
       <h2 className={StudentHomePageCSS.heading}>{t('summerRegulations')}</h2>
       <table className={StudentHomePageCSS.table}>
-        <thead>
-          <tr>
-            <th></th>
-            <th>{t('description')}</th>
+        <thead className={StudentHomePageCSS.thead}>
+          <tr className={StudentHomePageCSS.tr}>
+            <th className={StudentHomePageCSS.th}></th>
+            <th className={StudentHomePageCSS.th}>{t('description')}</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className={StudentHomePageCSS.tbody}>
           {rules.map((rule, index) => (
-            <tr key={index}>
-              <td>{index + 1}</td>
-              <td>{rule}</td>
+            <tr key={index} className={StudentHomePageCSS.tr}>
+              <td className={StudentHomePageCSS.th}>{index + 1}</td>
+              <td className={StudentHomePageCSS.td}>{rule}</td>
             </tr>
           ))}
         </tbody>
