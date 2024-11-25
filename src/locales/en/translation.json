@@ -123,6 +123,18 @@
   "rejected": "Rejected",
   "all": "All",
   "evaluation_phase": "Evaluation Phase",
-  "accepted": "Accepted"
+  "accepted": "Accepted",
+  "internshipTitle":"Continuing Internships",
+  "noApplication": "There are no application requests",
+  "noInternships": "There is no continuing internships",
+  "failedToFetchDetails":"Failed to fetch details",
+  "ok":"Okay",
+  "error":"Error",
+  "error_message":"Failed to download the document. Please try again.",
+  "pleaseUploadPdf": "Please Upload Pdf document",
+  "applicationApprovedByAdmin": "Application approved and sent to Secretary",
+  "applicationDisapprovedByAdmin": "Application rejected",
+  "failedToUpdateApplication": "Application did not updated",
+  "pleaseUploadFile": "Please upload the application form"
 
 } 

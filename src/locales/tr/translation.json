@@ -115,6 +115,18 @@
   "rejected": "Reddedildi",
   "all": "Tümü",
   "evaluation_phase": "Değerlendirme Aşaması",
-  "accepted": "Kabul Edildi"
-  
+  "accepted": "Kabul Edildi",
+  "internshipTitle":"Devam eden stajlar",
+  "noApplication": "Staj başvurusu bulunamadı",
+  "noInternships": "Devam eden staj bulunamadı",
+  "failedToFetchDetails":"Detaylar görüntülenemedi",
+  "ok":"Tamam",
+  "error":"Hata",
+  "error_message":"Dosya indirilirken bir hata oluştu. Lütfen tekrar deneyin.",
+  "pleaseUploadPdf": "Pdf dosyası yükleyiniz",
+  "applicationApprovedByAdmin": "Başvuru kabul edildi ve sekretere yönlendirildi",
+  "applicationDisapprovedByAdmin": "Başvuru reddedildi",
+  "failedToUpdateApplication": "Başvuru güncellenemedi",
+  "pleaseUploadFile": "Başvuru belgesini yükleyiniz"
+
 } 

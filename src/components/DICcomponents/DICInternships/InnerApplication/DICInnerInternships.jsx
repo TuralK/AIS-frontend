@@ -6,7 +6,6 @@ import {
   Card,
   CardHeader,
   CardTitle,
-  CardDescription,
   CardContent,
   CardFooter
 } from '../../../ui/card';
@@ -18,8 +17,9 @@ import { toast } from '../../../ui/use-toast';
 import { Skeleton } from '../../../ui/skeleton';
 import { Download, Upload, Send, X } from 'lucide-react';
 import { fetchApplicationDetails, updateApplicationDetail, downloadFile } from '../../../../api/DICApi/applicationDetails';
+import { fetchInternshipDetails } from '../../../../api/DICApi/internshipDetailApi';
 
-const DICInnerApplication = () => {
+const DICInnerInternships = () => {
     const { id } = useParams();
     const [application, setApplication] = useState(null);
     const [feedback, setFeedback] = useState('');
@@ -30,13 +30,12 @@ const DICInnerApplication = () => {
     const [isFeedbackModalOpen, setFeedbackModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [hasAnimated, setHasAnimated] = useState(false); // Tek seferlik animasyon durumu
   
     useEffect(() => {
       const loadApplicationDetails = async () => {
         try {
           setIsLoading(true);
-          const res = await fetchApplicationDetails(id);
+          const res = await fetchInternshipDetails(id);
           console.log(res);
           setApplication(res.application);
         } catch (error) {
@@ -151,7 +150,7 @@ const DICInnerApplication = () => {
 
   return (
     <motion.div
-    initial={{ opacity: 0, y: 20 }} // Sadece ilk açılışta animasyon
+    initial={{ opacity: 0, y: 20 }} 
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5 }}
     >
@@ -161,6 +160,7 @@ const DICInnerApplication = () => {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid md:grid-cols-2 gap-4 ">
+            
             <div>
               <h3 className="text-lg font-semibold mb-2">{t('studentInfo')}</h3>
               <p><strong>{t('studentName')}:</strong> {application.Student.username}</p>
@@ -250,4 +250,4 @@ const DICInnerApplication = () => {
   );
 };
 
-export default DICInnerApplication;
+export default DICInnerInternships;

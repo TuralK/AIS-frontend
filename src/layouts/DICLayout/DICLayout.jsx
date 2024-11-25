@@ -165,7 +165,7 @@ export const DICLayout = () => {
     { item: t('company'), route: 'companyRequests' },
     { item: t('announcements'), route: 'announcementRequests' },
     { item: t('applications'), route: 'applicationRequests' },
-    { item: t('internship'), route: 'internship' },
+    { item: t('internship'), route: 'internships' },
   ];
 
   const userMenuItems = [

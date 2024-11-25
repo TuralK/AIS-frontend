@@ -56,7 +56,7 @@ const DICApplications = () => {
               </div>
             ))
           ) : (
-            <h2 className="col-span-full text-xl font-semibold text-center text-gray-500">There are no application requests</h2>
+            <h2 className="col-span-full text-xl font-semibold text-center text-gray-500">{t('noApplication')}</h2>
           )}
         </div>
       </div>

@@ -18,6 +18,8 @@ import DICAnnouncementRequest from "./components/DICcomponents/DICAnnouncementRe
 import DICAnouncementDetails from "./components/DICcomponents/DICAnnouncemenDetails/DICAnouncementDetails.jsx";
 import DICApplications from "./components/DICcomponents/DICApplications/DICApplications.jsx";
 import DICInnerApplication from "./components/DICcomponents/DICApplications/InnerApplication/DICInnerApplication.jsx";
+import DICInternships from "./components/DICcomponents/DICInternships/DICInternships.jsx";
+import DICInnerInternships from "./components/DICcomponents/DICInternships/InnerApplication/DICInnerInternships.jsx";
 
 const App = () => {
   const { t, i18n } = useTranslation();
@@ -62,7 +64,9 @@ const App = () => {
         { path: 'announcementRequests', element: <DICAnnouncementRequest /> },
         { path: 'announcement/:id', element: <DICAnouncementDetails /> },
         { path: 'applicationRequests', element: <DICApplications /> },
-        { path: 'application/:id', element: <DICInnerApplication />}
+        { path: 'application/:id', element: <DICInnerApplication />},
+        { path: 'internships', element: <DICInternships />},
+        { path: 'internship/:id', element: <DICInnerInternships />}
       ]
     }
   ]);

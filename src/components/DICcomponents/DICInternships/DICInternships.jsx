@@ -1,27 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import fetchApplicationRequests from '../../../api/DICApi/applicationsApi.js';
+import fetchInternships from '../../../api/DICApi/internshipsApi.js';
 import Loading from '../../LoadingComponent/Loading';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 
-const DICApplications = () => {
-  const [applications, setApplications] = useState([]);
+const DICInternships = () => {
+  const [internships, setInternships] = useState([]);
   const [loading, setLoading] = useState(true);
   const { t } = useTranslation();
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const loadApplications = async () => {
+    const loadInternships = async () => {
       setLoading(true);
-      const data = await fetchApplicationRequests();
-      console.log(data.applications);
-      if (data) {
-        setApplications(data.applications);
+      try {
+        const data = await fetchInternships();
+        console.log(data); // Tam veri yapısını görmek için log ekledim
+        if (data && Array.isArray(data.applications)) { 
+          setInternships(data.applications); // Eğer uygulama varsa kullan
+        } else {
+          setInternships([]); // Uygulama yoksa boş dizi ata
+        }
+      } catch (error) {
+        console.error('Error fetching internships:', error);
+        setInternships([]); // Hata durumunda boş dizi ata
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
-    loadApplications();
+    loadInternships();
   }, []);
 
   if (loading) return <Loading />;
@@ -29,14 +37,14 @@ const DICApplications = () => {
   return (
     <div className="container mx-auto px-4">
       <div className="py-8">
-        <h1 className="text-3xl font-bold text-center mb-6 text-gradient">{t('applicationRequests')}</h1>
+        <h1 className="text-3xl font-bold text-center mb-6 text-gradient">{t('internshipTitle')}</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {applications.length > 0 ? (
-            applications.map(application => (
+          {internships.length > 0 ? (
+            internships.map(application => (
               <div key={application.id} className="bg-white rounded-lg shadow-xl border border-gray-300 transition-transform duration-300 hover:scale-105">
                 <button
                   className="w-full text-left p-6 flex flex-col justify-between h-full"
-                  onClick={() => navigate(`/admin/application/${application.id}`)} // Use navigate
+                  onClick={() => navigate(`/admin/interns/${application.id}`)}
                 >
                   <div>
                     <h5 className="text-xl font-bold text-gray-800 mb-2">{application.Student.username}</h5>
@@ -56,7 +64,7 @@ const DICApplications = () => {
               </div>
             ))
           ) : (
-            <h2 className="col-span-full text-xl font-semibold text-center text-gray-500">There are no application requests</h2>
+            <h2 className="col-span-full text-xl font-semibold text-center text-gray-500">{t('noInternships')}</h2>
           )}
         </div>
       </div>
@@ -64,4 +72,4 @@ const DICApplications = () => {
   );
 };
 
-export default DICApplications;
+export default DICInternships;

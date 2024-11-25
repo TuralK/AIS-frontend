@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-const fetchApplicationDetails = async (applicationId) => {
+const fetchInternshipDetails = async (applicationId) => {
     try {
-        const response = await axios.get(`http://localhost:3003/applications/${applicationId}`, {
+        const response = await axios.get(`http://localhost:3003/interns/${applicationId}`, {
             withCredentials: true,
         });
         return response.data; // This will be the JSON response from the server
@@ -12,9 +12,9 @@ const fetchApplicationDetails = async (applicationId) => {
     }
 };
 
-const updateApplicationDetail = async (applicationId, formData) => {
+const updateApplicationDetail = async (applicationId) => {
     try {
-        const response =await axios.put(`http://localhost:3003/applications/${applicationId}`, formData, {
+        const response =await axios.put(`/admin/applications/${application.id}`, formData, {
             withCredentials: true,
         });
         return response.data; // This will be the JSON response from the server
@@ -26,7 +26,7 @@ const updateApplicationDetail = async (applicationId, formData) => {
 
 const downloadFile = async (id, fileType) => {
     try {
-        const response = await axios.get(`http://localhost:3003/applications/download/${id}/${fileType}`, {
+        const response = await axios.get(`/admin/applications/download/${id}/${fileType}`, {
             responseType: 'blob', // Important to specify responseType for downloading files
             withCredentials: true,
         });
@@ -37,4 +37,6 @@ const downloadFile = async (id, fileType) => {
     }
 };
 
-export {fetchApplicationDetails, updateApplicationDetail, downloadFile};
+
+
+export {fetchInternshipDetails, updateApplicationDetail, downloadFile};
