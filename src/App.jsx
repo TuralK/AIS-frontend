@@ -1,5 +1,5 @@
 import React from "react";
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import './utils/translatePage.js';
 
@@ -20,6 +20,9 @@ import DICApplications from "./components/DICcomponents/DICApplications/DICAppli
 import DICInnerApplication from "./components/DICcomponents/DICApplications/InnerApplication/DICInnerApplication.jsx";
 import DICInternships from "./components/DICcomponents/DICInternships/DICInternships.jsx";
 import DICInnerInternships from "./components/DICcomponents/DICInternships/InnerApplication/DICInnerInternships.jsx";
+import { SecretaryLayout } from "./layouts/SecretaryLayout/SecretaryLayout.jsx";
+import PendingApplicationList from "./components/SecretaryComponents/PendingApplicationList.jsx";
+import SecretarySettings from "./components/SecretaryComponents/SecretarySettings.jsx";
 
 const App = () => {
   const { t, i18n } = useTranslation();
@@ -67,6 +70,15 @@ const App = () => {
         { path: 'application/:id', element: <DICInnerApplication />},
         { path: 'internships', element: <DICInternships />},
         { path: 'internship/:id', element: <DICInnerInternships />}
+      ]
+    },
+    {
+      path: '/secretary',
+      element: <SecretaryLayout />,
+      children: [
+        { index: true, element: <Navigate to="home" replace /> },
+        { path: "home", element: <PendingApplicationList />},
+        { path: "settings", element: <SecretarySettings/> },
       ]
     }
   ]);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
-import { 
+import {
   Card,
   CardHeader,
   CardTitle,
@@ -16,41 +16,40 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { toast } from '../../../ui/use-toast';
 import { Skeleton } from '../../../ui/skeleton';
 import { Download, Upload, Send, X } from 'lucide-react';
-import { fetchApplicationDetails, updateApplicationDetail, downloadFile } from '../../../../api/DICApi/applicationDetails';
+import { updateApplicationDetail, downloadFile } from '../../../../api/DICApi/applicationDetails';
 import { fetchInternshipDetails } from '../../../../api/DICApi/internshipDetailApi';
 
 const DICInnerInternships = () => {
-    const { id } = useParams();
-    const [application, setApplication] = useState(null);
-    const [feedback, setFeedback] = useState('');
-    const [file, setFile] = useState(null);
-    const [fileName, setFileName] = useState('');
-    const { t } = useTranslation();
-    const navigate = useNavigate();
-    const [isFeedbackModalOpen, setFeedbackModalOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-  
-    useEffect(() => {
-      const loadApplicationDetails = async () => {
-        try {
-          setIsLoading(true);
-          const res = await fetchInternshipDetails(id);
-          console.log(res);
-          setApplication(res.application);
-        } catch (error) {
-          toast({
-            title: t('error'),
-            description: t('failedToFetchDetails'),
-            variant: 'destructive',
-          });
-        } finally {
-          setIsLoading(false);
-        }
-      };
-  
-      loadApplicationDetails();
-    }, [id]);
+  const { id } = useParams();
+  const [application, setApplication] = useState(null);
+  const [feedback, setFeedback] = useState('');
+  const [file, setFile] = useState(null);
+  const [fileName, setFileName] = useState('');
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [isFeedbackModalOpen, setFeedbackModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const loadApplicationDetails = async () => {
+      try {
+        setIsLoading(true);
+        const res = await fetchInternshipDetails(id);
+        setApplication(res.application);
+      } catch (error) {
+        toast({
+          title: t('error'),
+          description: t('failedToFetchDetails'),
+          variant: 'destructive',
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadApplicationDetails();
+  }, [id]);
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -112,34 +111,22 @@ const DICInnerInternships = () => {
     }
   };
 
-  const downloadButton = async (fileType) => {
+  const downloadButton = async () => {
     try {
-      const response = await downloadFile(application.id, fileType);
-      const blob = new Blob([response.data]);
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `${fileType}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const response = await downloadFile(application.id);
     } catch (error) {
-      toast({
-        title: t('error'),
-        description: t('failedToDownloadFile'),
-        variant: 'destructive',
-      });
+      console.log(error);
     }
   };
-  
+
   if (isLoading) {
     return (
-      <Card className="w-full max-w-4xl mx-auto p-6">
+      <Card className="w-full max-w-4xl mx-auto mt-5 p-4">
         <CardHeader>
           <Skeleton className="h-8 w-3/4 mb-2" />
           <Skeleton className="h-4 w-1/2" />
-        </CardHeader>
-        <CardContent>
+        </CardHeader >
+        <CardContent className="space-y-6">
           {[1, 2, 3, 4].map((i) => (
             <Skeleton key={i} className="h-12 w-full mb-4" />
           ))}
@@ -150,9 +137,9 @@ const DICInnerInternships = () => {
 
   return (
     <motion.div
-    initial={{ opacity: 0, y: 20 }} 
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.5 }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 50 }}
     >
       <Card className="w-full max-w-4xl mx-auto p-4 mt-5">
         <CardHeader>
@@ -160,7 +147,6 @@ const DICInnerInternships = () => {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="grid md:grid-cols-2 gap-4 ">
-            
             <div>
               <h3 className="text-lg font-semibold mb-2">{t('studentInfo')}</h3>
               <p><strong>{t('studentName')}:</strong> {application.Student.username}</p>
@@ -177,33 +163,33 @@ const DICInnerInternships = () => {
             <p><strong>{t('startDate')}:</strong> {new Date(application.Announcement.startDate).toLocaleDateString()}</p>
             <p><strong>{t('endDate')}:</strong> {new Date(application.Announcement.endDate).toLocaleDateString()}</p>
           </div>
-           <div className="flex flex-col sm:flex-row gap-4 justify-between">
-                <Button
-                    onClick={() => downloadButton('Updated Application Form')}
-                    className="flex-1 w-full hover:border-blue-500 hover:bg-blue-300 transition-colors duration-200"
-                    variant="outline"
-                >
-                    <Download className="mr-2 h-4 w-4" />
-                    {t('downloadForm')}
-                </Button>
-                <div className="relative flex-1 ml-4 mr-5">
-                    <Button
-                        onClick={handleUploadClick}
-                        className="w-full hover:border-green-500 hover:bg-green-300 transition-colors duration-200"
-                        variant="outline"
-                    >
-                        <Upload className="mr-2 h-4 w-4" />
-                        {fileName || t('uploadForm')}
-                    </Button>
-                    <Input
-                        type="file"
-                        id="studentFileInput"
-                        className="hidden"
-                        accept=".pdf,.docx"
-                        onChange={handleFileChange}
-                    />
-                </div>
+          <div className="flex flex-col sm:flex-row gap-4 justify-between">
+            <Button
+              onClick={() => downloadButton()}
+              className="flex-1 w-full hover:border-blue-500 hover:bg-blue-300 transition-colors duration-200"
+              variant="outline"
+            >
+              <Download className="mr-2 h-4 w-4" />
+              {t('downloadForm')}
+            </Button>
+            <div className="relative flex-1 ml-4 mr-5">
+              <Button
+                onClick={handleUploadClick}
+                className="w-full hover:border-green-500 hover:bg-green-300 transition-colors duration-200"
+                variant="outline"
+              >
+                <Upload className="mr-2 h-4 w-4" />
+                {fileName || t('uploadForm')}
+              </Button>
+              <Input
+                type="file"
+                id="studentFileInput"
+                className="hidden"
+                accept=".pdf,.docx"
+                onChange={handleFileChange}
+              />
             </div>
+          </div>
         </CardContent>
         <CardFooter className="flex justify-between gap-4">
           <Button

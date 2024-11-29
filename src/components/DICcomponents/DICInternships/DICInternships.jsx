@@ -15,7 +15,6 @@ const DICInternships = () => {
       setLoading(true);
       try {
         const data = await fetchInternships();
-        console.log(data); // Tam veri yapısını görmek için log ekledim
         if (data && Array.isArray(data.applications)) { 
           setInternships(data.applications); // Eğer uygulama varsa kullan
         } else {

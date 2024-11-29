@@ -29,8 +29,8 @@ const ChangePassword = () => {
     // }, [location, navigate]);    
 
     // const sleep = ms => new Promise(r => setTimeout(r, ms));
-    
-    useEffect( () => {
+
+    useEffect(() => {
         const params = new URLSearchParams(location.search);
         const tokenFromURL = params.get('token');
 
@@ -90,19 +90,19 @@ const ChangePassword = () => {
                 confirmPassword: confirmPassword,
                 token: token,
             });
-            if(response.status === 200){
+            if (response.status === 200) {
                 alert(response.data.success);
             } else {
                 alert('Failed to change password. Please try again.');
             }
             navigate('/');
-        } catch (err) { 
+        } catch (err) {
             if (err.response.data.error === "Token has expired." ||
                 err.response.data.error === "Invalid or expired token.") {
                 alert(err.response.data.error);
                 navigate('/');
             }
-            setError( err.response.data.error || 'Failed to communicate with the server');
+            setError(err.response.data.error || 'Failed to communicate with the server');
         }
     };
 
@@ -110,55 +110,57 @@ const ChangePassword = () => {
         return (
             <Loading />
         )
-      }
+    }
 
     return (
         <div className={ChangePasswordCSS.background}>
-        <div className={ChangePasswordCSS['center-container']}>
-            <div className={ChangePasswordCSS['top-of-center']}>
-                <img src='https://bhib.iyte.edu.tr/wp-content/uploads/sites/115/2018/09/iyte_logo-eng.png' alt="IYTE" />
-            </div>
-            <center><h1>Change Your Password</h1></center>
-            <form onSubmit={handleSubmit}>
-                <input type="hidden" value={token} /> {/* Token field */}
-                <label htmlFor="password">New Password:</label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    style={{
-                        fontSize: '14px',
-                        border: updateBorder('password'),
-                        outline: 'none', // Remove default outline
-                    }}
-                    value={password}
-                    onChange={handlePasswordChange}
-                    required
-                />
-                <label htmlFor="confirmPassword">Confirm Password:</label>
-                <input
-                    type="password"
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    style={{
-                        fontSize: '14px',
-                        border: updateBorder('confirmPassword'),
-                        outline: 'none', // Remove default outline
-                    }}
-                    value={confirmPassword}
-                    onChange={handleConfirmPasswordChange}
-                    required
-                />
-                <div className={ChangePasswordCSS['change-password-error']} style={{ color: 'red', display: error ? 'block' : 'none' }}>
-                    {error}
+            <div className={ChangePasswordCSS['center-container']}>
+                <div className={ChangePasswordCSS['top-of-center']}>
+                    <img src='https://bhib.iyte.edu.tr/wp-content/uploads/sites/115/2018/09/iyte_logo-eng.png' alt="IYTE" />
                 </div>
-                <center>
-                    <button type="submit">Update Password</button>
-                </center>
-                {success && <center><p style={{ color: 'green' }}>{success}</p></center>}
-                <center><a href='/'>Log in.</a></center>
-            </form>
-        </div>
+                <center><h1>Change Your Password</h1></center>
+                <form onSubmit={handleSubmit}>
+                    <input type="hidden" value={token} /> {/* Token field */}
+                    <label htmlFor="password">New Password:</label>
+                    <input
+                        className={ChangePasswordCSS.input}
+                        type="password"
+                        id="password"
+                        name="password"
+                        style={{
+                            fontSize: '14px',
+                            border: updateBorder('password'),
+                            outline: 'none', // Remove default outline
+                        }}
+                        value={password}
+                        onChange={handlePasswordChange}
+                        required
+                    />
+                    <label htmlFor="confirmPassword">Confirm Password:</label>
+                    <input
+                        className={ChangePasswordCSS.input}
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        style={{
+                            fontSize: '14px',
+                            border: updateBorder('confirmPassword'),
+                            outline: 'none', // Remove default outline
+                        }}
+                        value={confirmPassword}
+                        onChange={handleConfirmPasswordChange}
+                        required
+                    />
+                    <div className={ChangePasswordCSS['change-password-error']} style={{ color: 'red', display: error ? 'block' : 'none' }}>
+                        {error}
+                    </div>
+                    <center>
+                        <button className={ChangePasswordCSS.button} type="submit">Update Password</button>
+                    </center>
+                    {success && <center><p style={{ color: 'green' }}>{success}</p></center>}
+                    <center><a href='/'>Log in.</a></center>
+                </form>
+            </div>
         </div>
     );
 };

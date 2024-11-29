@@ -24,16 +24,16 @@ const updateApplicationDetail = async (applicationId, formData) => {
     }
 };
 
-const downloadFile = async (id, fileType) => {
+const downloadFile = async (id) => {
     try {
-        const response = await axios.get(`http://localhost:3003/applications/download/${id}/${fileType}`, {
-            responseType: 'blob', // Important to specify responseType for downloading files
-            withCredentials: true,
+        const response = await axios.get(`http://localhost:3003/applications/download/${id}/Application Form`, {
+            
+            withCredentials: true
         });
-        return response; // Return the entire response object
+        return response;
     } catch (error) {
         console.error('Error fetching application details:', error);
-        throw error; // Rethrow the error for further handling if needed
+        throw error;
     }
 };
 
