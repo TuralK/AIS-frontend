@@ -91,7 +91,7 @@ const styles = {
     textDecoration: 'none',
     color: '#ffffffcc',
   },
-  activeIndicator: {  
+  activeIndicator: {
     position: 'absolute',
     bottom: '-2px', // Çizgiyi tam altında konumlandır
     left: 0,
@@ -122,11 +122,11 @@ export const DICLayout = () => {
   };
 
   const userMenuRef = useRef(null);
-  
+
   useEffect(() => {
     validateDIC()
       .then(userData => {
-        setUserName(userData.username);      
+        setUserName(userData.username);
       })
       .catch(err => {
         alert(err || "An error occurred");
@@ -169,13 +169,16 @@ export const DICLayout = () => {
   ];
 
   const userMenuItems = [
-    {item: t('profile'), route: 'profile'},
-    {item: t('settings'), route: 'settings'},
-    {item: t('logout'), route: 'logout'}
+    { item: t('profile'), route: 'profile' },
+    { item: t('settings'), route: 'settings' },
+    { item: t('logout'), route: 'logout' }
   ];
 
   const handleDropdownItemClick = (action) => {
     console.log(`Performing action: ${action}`);
+    <NavLink
+      key={route}
+      to={`/admin/${route}`}></NavLink>
     setIsUserMenuOpen(false);
   };
 
@@ -207,19 +210,19 @@ export const DICLayout = () => {
 
             {!isMobile && (
               <div style={styles.desktopMenu}>
-                {menuItems.map(({item, route}) => (
-                <NavLink
-                  key={route}
-                  to={`/admin/${route}`}
-                  style={({ isActive }) => ({
-                    ...styles.menuItem,
-                    fontSize: isActive || location.pathname === '/admin' && route === 'home' ? '1.25rem' : '1.125rem',
-                    fontWeight: isActive || location.pathname === '/admin' && route === 'home' ? '600' : '400',
-                    color: isActive || location.pathname === '/admin' && route === 'home' ? '#ffffff' : '#ffffffcc',
-                    borderBottom: (isActive || location.pathname === '/admin' && route === 'home') ? '4px solid #ffffff' : 'none',  
-                    position: 'relative'
-                  })}
-                >
+                {menuItems.map(({ item, route }) => (
+                  <NavLink
+                    key={route}
+                    to={`/admin/${route}`}
+                    style={({ isActive }) => ({
+                      ...styles.menuItem,
+                      fontSize: isActive || location.pathname === '/admin' && route === 'home' ? '1.25rem' : '1.125rem',
+                      fontWeight: isActive || location.pathname === '/admin' && route === 'home' ? '600' : '400',
+                      color: isActive || location.pathname === '/admin' && route === 'home' ? '#ffffff' : '#ffffffcc',
+                      borderBottom: (isActive || location.pathname === '/admin' && route === 'home') ? '4px solid #ffffff' : 'none',
+                      position: 'relative'
+                    })}
+                  >
                     {item}
                   </NavLink>
                 ))}
@@ -231,7 +234,7 @@ export const DICLayout = () => {
                   onMouseEnter={(e) => (e.target.style.backgroundColor = '#7d0e1a')}
                   onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
                 >
-                  <Bell size={24} /> 
+                  <Bell size={24} />
                 </NavLink>
 
                 <div>
@@ -299,30 +302,109 @@ export const DICLayout = () => {
             {isMobile && (
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                style={styles.mobileMenuButton}
+                style={{
+                  ...styles.mobileMenuButton,
+                  display: 'flex',
+                  marginRight: '-0.1rem',
+                  width: '50px',
+                  height: '50px'
+                }}
               >
-                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                <span style={{ position: 'absolute', width: '1px', height: '1px', padding: '0', margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', borderWidth: '0' }}>
+                  Open main menu
+                </span>
+                {isMenuOpen ? <X style={{ width: '32px', height: '32px' }} /> : <Menu style={{ width: '32px', height: '32px' }} />}
               </button>
             )}
           </div>
         </div>
-
         {isMobile && isMenuOpen && (
           <div style={styles.mobileMenu}>
             {menuItems.map(({ item, route }) => (
               <NavLink
                 key={route}
-                to={`/admin/${route}`}
-                style={({ isActive }) => ({
-                  ...styles.menuItem,
-                  backgroundColor: isActive ? '#7d0e1a' : 'transparent',
-                  color: isActive ? '#ffffff' : '#ffffffcc',
-                })}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {item}
+                to={`/admin/${route}`}>
+                <a
+                  key={item}
+                  href="#"
+                  style={{
+                    ...styles.menuItem,
+                    display: 'block',
+                    padding: '0.75rem 0',
+                    ':hover': { backgroundColor: '#7d0e1a' },
+                  }}
+                  onMouseEnter={(e) => (e.target.style.backgroundColor = '#7d0e1a')}
+                  onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
+                >
+                  <center>{item}</center>
+                </a>
               </NavLink>
             ))}
+            <a
+              href="#"
+              style={{
+                ...styles.menuItem,
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0.75rem 0',
+                ':hover': { backgroundColor: '#7d0e1a' },
+              }}
+              onMouseEnter={(e) => (e.target.style.backgroundColor = '#7d0e1a')}
+              onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
+            >
+              <Bell size={24} style={{ marginRight: '0.5rem' }} />
+              {t('notifications')}
+            </a>
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                style={{
+                  ...styles.menuItem,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  color: 'white',
+                  padding: '0.75rem 0',
+                }}
+                onMouseEnter={(e) => (e.target.style.backgroundColor = '#7d0e1a')}
+                onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <img src={IYTElogo} alt="" style={styles.profilePhoto} />
+                  {userName}
+                </div>
+                <ChevronDown style={{ width: '24px', height: '24px' }} />
+              </button>
+              {isUserMenuOpen && (
+                <div style={{ marginTop: '0.5rem' }}>
+                  {userMenuItems.map(({ item, route }) => (
+                    <NavLink
+                    key={route}
+                    to={route !== 'logout' ? `/admin/${route}` : '#'}
+                    style={{
+                      ...styles.menuItem,
+                      display: 'block',
+                      padding: '0.75rem 0',
+                      ':hover': { backgroundColor: '#7d0e1a' },
+                    }}
+                    onClick={(e) => {
+                      if (route === 'logout') {
+                        e.preventDefault();
+                        logout();
+                      } else {
+                        handleDropdownItemClick(item.toLowerCase());
+                      }
+                    }}
+                  >
+                    {item}
+                  </NavLink>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
       </nav>

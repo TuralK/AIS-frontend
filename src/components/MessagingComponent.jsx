@@ -1,24 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MessageCircle, X, Edit, ChevronUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import Conversation from './Conversation';
-import AIComponent from './AIChatComp'; // Import the AIComponent
+import AIComponent from './AIChatComp';
 
-const Messaging = () => {
+const Messaging = ({ messages = [], hasAITab = true }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('odakli');
   const [selectedMessage, setSelectedMessage] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
   const { t } = useTranslation();
 
-  const messages = [
-    { id: 1, text: 'Merhaba, nasıl yardımcı olabilirim?' },
-    { id: 2, text: 'Hesabımda sorun var.' },
-    { id: 3, text: 'Yeni ürünler hakkında bilgi almak istiyorum.' },
-    { id: 4, text: 'Yeni ürünler hakkında bilgi almak istiyorum.' },
-  ];
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 640);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const toggleMessaging = () => {
-    setIsOpen(prev => !prev);
+    setIsOpen((prev) => !prev);
     setSelectedMessage(null);
   };
 
@@ -30,9 +33,20 @@ const Messaging = () => {
     setSelectedMessage(null);
   };
 
+  if (isMobile && !isOpen) {
+    return (
+      <button
+        onClick={toggleMessaging}
+        className="fixed bottom-4 right-4 z-50 bg-white text-gray-700 rounded-full p-3 shadow-lg border border-gray-300 hover:bg-gray-100 transition-colors"
+      >
+        <MessageCircle size={24} />
+      </button>
+    );
+  }
+
   return (
-    <div className="fixed bottom-0 right-4 z-50 border border-black rounded-lg">
-      {!isOpen && (
+    <div className={`fixed ${isMobile ? 'bottom-0 right-0' : 'bottom-0 right-4'} z-55 ${!isOpen && !isMobile ? 'border border-black rounded-lg' : ''}`}>
+      {!isOpen && !isMobile && (
         <button
           onClick={toggleMessaging}
           className="bg-white text-gray-700 rounded-t-lg px-4 py-2 flex items-center justify-between gap-2 border border-gray-300 hover:bg-gray-100 transition-colors w-64"
@@ -46,7 +60,10 @@ const Messaging = () => {
       )}
 
       {isOpen && (
-        <div className="bg-white border border-gray-300 rounded-t-lg shadow-lg w-80 sm:w-96 flex flex-col" style={{ height: 'calc(100vh - 100px)' }}>
+        <div
+          className={`bg-white border border-gray-300 ${!isMobile ? 'rounded-t-lg shadow-lg' : ''} w-80 ${!isMobile ? 'sm:w-96' : ''} flex flex-col`}
+          style={{ height: !isMobile ? 'calc(100vh - 110px)' : '500px' }}
+        >
           {!selectedMessage ? (
             <>
               <div className="flex justify-between items-center p-4 border-b border-gray-200">
@@ -55,9 +72,6 @@ const Messaging = () => {
                   <span className="font-semibold">{t('messaging')}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button className="text-gray-500 hover:text-gray-700">
-                    <Edit size={20} />
-                  </button>
                   <button onClick={toggleMessaging} className="text-gray-500 hover:text-gray-700">
                     <X size={20} />
                   </button>
@@ -71,18 +85,20 @@ const Messaging = () => {
                 >
                   {t('message_tab')}
                 </button>
-                <button
-                  className={`flex-1 py-2 px-4 font-semibold ${activeTab === 'diger' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'}`}
-                  onClick={() => setActiveTab('diger')}
-                >
-                  {t('ai_tab')}
-                </button>
+                {hasAITab && (
+                  <button
+                    className={`flex-1 py-2 px-4 font-semibold ${activeTab === 'diger' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'}`}
+                    onClick={() => setActiveTab('diger')}
+                  >
+                    {t('ai_tab')}
+                  </button>
+                )}
               </div>
 
               <div className="flex-grow overflow-y-auto">
                 {activeTab === 'odakli' ? (
                   messages.length > 0 ? (
-                    messages.map(message => (
+                    messages.map((message) => (
                       <div
                         key={message.id}
                         className="p-4 cursor-pointer hover:bg-gray-100 border-b border-gray-200"
@@ -95,7 +111,7 @@ const Messaging = () => {
                     <div className="text-gray-500 text-center p-4">{t('no_messages')}</div>
                   )
                 ) : (
-                  <AIComponent /> // Render the AIComponent when "diger" tab is active
+                  hasAITab && <AIComponent />
                 )}
               </div>
             </>

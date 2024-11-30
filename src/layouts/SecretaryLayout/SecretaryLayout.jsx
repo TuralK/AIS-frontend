@@ -112,7 +112,7 @@ export const SecretaryLayout = () => {
   const [email, setUserMail] = useState('');
   const [userId, setUserId] = useState();
   const [loading, setLoading] = useState(true);
-  const [applications,setApplications] = useState();
+  const [applications, setApplications] = useState();
   const { t, i18n } = useTranslation();
 
   const location = useLocation();
@@ -300,9 +300,18 @@ export const SecretaryLayout = () => {
             {isMobile && (
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                style={styles.mobileMenuButton}
+                style={{
+                  ...styles.mobileMenuButton,
+                  display: 'flex',
+                  marginRight: '-0.1rem',
+                  width: '50px',
+                  height: '50px'
+                }}
               >
-                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                <span style={{ position: 'absolute', width: '1px', height: '1px', padding: '0', margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', whiteSpace: 'nowrap', borderWidth: '0' }}>
+                  Open main menu
+                </span>
+                {isMenuOpen ? <X style={{ width: '32px', height: '32px' }} /> : <Menu style={{ width: '32px', height: '32px' }} />}
               </button>
             )}
           </div>
@@ -313,21 +322,92 @@ export const SecretaryLayout = () => {
             {menuItems.map(({ item, route }) => (
               <NavLink
                 key={route}
-                to={`/secretary/${route}`}
-                style={({ isActive }) => ({
-                  ...styles.menuItem,
-                  backgroundColor: isActive ? '#7d0e1a' : 'transparent',
-                  color: isActive ? '#ffffff' : '#ffffffcc',
-                })}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {item}
+                to={`/secretary/${route}`}>
+                <a
+                  key={item}
+                  href="#"
+                  style={{
+                    ...styles.menuItem,
+                    display: 'block',
+                    padding: '0.75rem 0',
+                    ':hover': { backgroundColor: '#7d0e1a' },
+                  }}
+                  onMouseEnter={(e) => (e.target.style.backgroundColor = '#7d0e1a')}
+                  onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
+                >
+                  <center>{item}</center>
+                </a>
               </NavLink>
             ))}
+            <a
+              href="#"
+              style={{
+                ...styles.menuItem,
+                display: 'flex',
+                alignItems: 'center',
+                padding: '0.75rem 0',
+                ':hover': { backgroundColor: '#7d0e1a' },
+              }}
+              onMouseEnter={(e) => (e.target.style.backgroundColor = '#7d0e1a')}
+              onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
+            >
+              <Bell size={24} style={{ marginRight: '0.5rem' }} />
+              {t('notifications')}
+            </a>
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                style={{
+                  ...styles.menuItem,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  color: 'white',
+                  padding: '0.75rem 0',
+                }}
+                onMouseEnter={(e) => (e.target.style.backgroundColor = '#7d0e1a')}
+                onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
+              >
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <img src={IYTElogo} alt="" style={styles.profilePhoto} />
+                  {firstName}
+                </div>
+                <ChevronDown style={{ width: '24px', height: '24px' }} />
+              </button>
+              {isUserMenuOpen && (
+                <div style={{ marginTop: '0.5rem' }}>
+                  {userMenuItems.map(({ item, route }) => (
+                    <NavLink
+                    key={route}
+                    to={route !== 'logout' ? `/secretary/${route}` : '#'}
+                    style={{
+                      ...styles.menuItem,
+                      display: 'block',
+                      padding: '0.75rem 0',
+                      ':hover': { backgroundColor: '#7d0e1a' },
+                    }}
+                    onClick={(e) => {
+                      if (route === 'logout') {
+                        e.preventDefault();
+                        logout();
+                      } else {
+                        handleDropdownItemClick(item.toLowerCase());
+                      }
+                    }}
+                  >
+                    {item}
+                  </NavLink>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
       </nav>
-      <Outlet context={{ userId,email,firstName,applications, setApplications }} />
+      <Outlet context={{ userId, email, firstName, applications, setApplications }} />
     </div>
   );
 };

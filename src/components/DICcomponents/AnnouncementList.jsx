@@ -100,7 +100,7 @@ function AnnouncementList({ announcements = [], updateAnnouncement }) {
               transition={{ duration: 0.2 }}
             >
               <Card className="min-h-[200px] overflow-hidden">
-                <CardContent className="flex h-full flex-col justify-between p-6">
+                <CardContent className="flex h-full flex-col justify-between p-2">
                   {editingId === announcement.id ? (
                     <div className="flex h-full flex-col space-y-4">
                       <Textarea
@@ -132,7 +132,7 @@ function AnnouncementList({ announcements = [], updateAnnouncement }) {
                     </div>
                   ) : (
                     <>
-                      <p className="mb-4 text-sm leading-relaxed">
+                      <p className="mb-4 mt-5 text-sm leading-relaxed">
                         {announcement.content}
                       </p>
                       <div className="flex justify-end space-x-2">

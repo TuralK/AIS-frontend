@@ -21,13 +21,13 @@ const RoundedInput = ({ onSend }) => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex items-center overflow-hidden">
+      <div className="flex  items-center overflow-hidden">
         <textarea
           ref={textareaRef}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           placeholder="Type your message..."
-          className="flex-grow ml-1 px-2 py-2 border-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-none"
+          className="flex-grow ml-1 px-2 py-2 border-2 border-gray-200 overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-none"
           style={{ minHeight: '40px', maxHeight: '120px', marginTop:'3px', marginBottom:'3px' }}
           rows={1}
         />

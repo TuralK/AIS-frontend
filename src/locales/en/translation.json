@@ -162,5 +162,8 @@
   "firstNameMinLength": "First name must be at least 2 characters long.",
   "lastNameMinLength": "Last name must be at least 2 characters long.",
   "passwordMinLength": "Password must be at least 6 characters long.",
-  "passwordsDoNotMatch": "Passwords do not match."
+  "passwordsDoNotMatch": "Passwords do not match.",
+  "no_messages": "No messages",
+  "selected_message": "Selected message" 
+
 }

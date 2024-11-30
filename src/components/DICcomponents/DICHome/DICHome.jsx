@@ -12,6 +12,11 @@ const DICHome = () => {
     { id: 5, content: 'Announcement 5' },
   ];
 
+  const sampleMessages = [
+    { id: 1, text: 'Merhaba, nasıl yardımcı olabilirim?' },
+    { id: 2, text: 'Hesabımda sorun var.' },
+  ];
+
   return (
     <div className="flex h-screen">
       <div className="flex-grow p-4">
@@ -19,7 +24,7 @@ const DICHome = () => {
       </div>
       <div className="flex flex-col">
         <div className="flex-1">
-          <Messaging />
+          <Messaging hasAITab={false} messages={sampleMessages} />
         </div>
         <div className="flex-1 p-2 mt-12">
           <ShareAnnouncement />
