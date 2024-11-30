@@ -108,7 +108,9 @@ export const SecretaryLayout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [userName, setUserName] = useState('');
+  const [firstName, setUserName] = useState('');
+  const [email, setUserMail] = useState('');
+  const [userId, setUserId] = useState();
   const [loading, setLoading] = useState(true);
   const [applications,setApplications] = useState();
   const { t, i18n } = useTranslation();
@@ -127,6 +129,8 @@ export const SecretaryLayout = () => {
   useEffect(() => {
     validateSecretary()
       .then(([dataValues, applications]) => {
+        setUserMail(dataValues.email);
+        setUserId(dataValues.id);
         setUserName(dataValues.username);
         setApplications(applications);
       })
@@ -264,7 +268,7 @@ export const SecretaryLayout = () => {
                     onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
                   >
                     <img src={IYTElogo} alt="User profile" style={styles.profilePhoto} />
-                    {userName}
+                    {firstName}
                     <ChevronDown style={{ marginLeft: '0.25rem', width: '24px', height: '24px' }} />
                   </button>
 
@@ -323,7 +327,7 @@ export const SecretaryLayout = () => {
           </div>
         )}
       </nav>
-      <Outlet context={{ applications, setApplications }} />
+      <Outlet context={{ userId,email,firstName,applications, setApplications }} />
     </div>
   );
 };

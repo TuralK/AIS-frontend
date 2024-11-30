@@ -121,7 +121,7 @@ const ChangePassword = () => {
                 <center><h1>Change Your Password</h1></center>
                 <form onSubmit={handleSubmit}>
                     <input type="hidden" value={token} /> {/* Token field */}
-                    <label htmlFor="password">New Password:</label>
+                    <label className={ChangePasswordCSS.label}  htmlFor="password">New Password:</label>
                     <input
                         className={ChangePasswordCSS.input}
                         type="password"
@@ -136,7 +136,7 @@ const ChangePassword = () => {
                         onChange={handlePasswordChange}
                         required
                     />
-                    <label htmlFor="confirmPassword">Confirm Password:</label>
+                    <label className={ChangePasswordCSS.label} htmlFor="confirmPassword">Confirm Password:</label>
                     <input
                         className={ChangePasswordCSS.input}
                         type="password"

@@ -1,5 +1,3 @@
-'use client'
-
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -176,7 +174,7 @@ export default function SettingsForm({ initialData, onSubmit }) {
                             <div className="flex justify-end">
                                 <button
                                     type="submit"
-                                    className="!px-4 !py-2 !text-sm !text-white !bg-[#790000] !hover:bg-[#990000] !rounded-md !focus:outline-none !focus:ring-2 !focus:ring-offset-2 !focus:ring-[#790000]"
+                                    className="px-4 py-2 text-sm text-white bg-[#790000] hover:bg-[#990000] rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#790000]"
                                 >
                                     {t('updatePassword')}
                                 </button>
