@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import Conversation from './Conversation';
 import AIComponent from './AIChatComp';
 
-const Messaging = ({ messages = [], hasAITab = true }) => {
+const Messaging = ({ messages = [], hasAITab, userApi }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('odakli');
   const [selectedMessage, setSelectedMessage] = useState(null);
@@ -111,7 +111,7 @@ const Messaging = ({ messages = [], hasAITab = true }) => {
                     <div className="text-gray-500 text-center p-4">{t('no_messages')}</div>
                   )
                 ) : (
-                  hasAITab && <AIComponent />
+                  hasAITab && <AIComponent api={userApi} />
                 )}
               </div>
             </>

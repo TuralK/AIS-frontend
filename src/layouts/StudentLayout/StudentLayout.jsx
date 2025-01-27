@@ -6,6 +6,8 @@ import Cookies from 'js-cookie';
 import IYTElogo from "../../assets/iyte_logo_eng.png"
 import { validateStudent } from '../../api/StudentApi/validateStudentAPI';
 import Loading from '../../components/LoadingComponent/Loading.jsx';
+import Messaging from '../../components/MessagingComponent.jsx';
+import sendMessageToAI from '../../api/StudentApi/aiChatApi.js';
 
 const styles = {
     nav: {
@@ -429,6 +431,7 @@ export const StudentLayout = () => {
         {/* { navigation.state === "loading" &&  <Loading /> } */}
         <Outlet />
       </main>
+      <Messaging hasAITab={true} userApi={sendMessageToAI}/>
     </div>
   )
 }

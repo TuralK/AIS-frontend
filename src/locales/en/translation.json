@@ -164,6 +164,6 @@
   "passwordMinLength": "Password must be at least 6 characters long.",
   "passwordsDoNotMatch": "Passwords do not match.",
   "no_messages": "No messages",
-  "selected_message": "Selected message" 
-
+  "selected_message": "Selected message",
+  "pleaseLeaveFeedback": "Please leave your feedback"
 }

@@ -1,50 +1,79 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Send } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import RoundedInput from './MessageInputComp';
+import React, { useState, useRef, useEffect } from "react"
+import { Send } from "lucide-react"
+import { useTranslation } from "react-i18next"
+import RoundedInput from "./MessageInputComp"
+import IYTElogo from "../assets/iyte_logo_eng.png"
 
-const AIComponent = ({ onBack }) => {
-  const [inputMessage, setInputMessage] = useState('');
-  const [aiResponses, setAiResponses] = useState([]);
-  const { t } = useTranslation();
-  const textareaRef = useRef(null);
+const AIComponent = ({ onBack, api }) => {
+  const [inputMessage, setInputMessage] = useState("")
+  // Fixed the type error by properly initializing the messages state
+  const [messages, setMessages] = useState([])
+  const { t } = useTranslation()
+  const messagesEndRef = useRef(null)
+  const containerRef = useRef(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
 
   useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto'; // Reset height
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`; // Set to scroll height
-    }
-  }, [inputMessage]);
+    scrollToBottom()
+  }, [messages, scrollToBottom]) // Added scrollToBottom to dependencies
 
-  const handleSend = (message) => {
-    console.log("AI chat comp:"+message);
-    if (inputMessage.trim()) {
-      const newResponse = `AI response to: ${inputMessage}`;
-      setAiResponses((prevResponses) => [...prevResponses, newResponse]);
-      setInputMessage(''); // Clear input
+  const handleSend = async (message) => {
+    if (!message.trim()) return // Prevent empty messages
+
+    // Add user message
+    setMessages((prev) => [...prev, { message: message, fromUser: true }])
+
+    try {
+      const response = await api(message)
+      // Add AI response
+      setMessages((prev) => [...prev, { message: response.aiMessage, fromUser: false }])
+    } catch (error) {
+      console.error("Error getting AI response:", error)
+      // Optionally show error message to user
+      setMessages((prev) => [
+        ...prev,
+        { message: "Sorry, there was an error processing your request.", fromUser: false },
+      ])
     }
-  };
+  }
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-grow overflow-y-auto p-4">
-        {aiResponses.length > 0 ? (
-          aiResponses.map((response, index) => (
-            <div key={index} className="bg-gray-100 p-2 rounded-lg mb-2">
-              {response}
+    <div className="flex flex-col h-full max-w-3xl mx-auto bg-background">
+      {/* Messages container */}
+      <div ref={containerRef} className="flex-grow overflow-y-auto p-4 space-y-4">
+        {messages.length === 0 ? (
+          <div className="flex justify-center items-center h-full text-muted-foreground">{t("start_conversation")}</div>
+        ) : (
+          messages.map((msg, index) => (
+            <div key={index} className={`flex ${msg.fromUser ? "justify-end" : "justify-start"} items-end`}>
+              {!msg.fromUser && <img src={IYTElogo || "/placeholder.svg"} alt="IYTE Logo" className="w-12 h-12 object-contain" />}
+              <div
+                className={`
+                  max-w-[80%] p-3 rounded-lg break-words
+                  ${
+                    msg.fromUser
+                      ? "bg-red-800 text-white ml-auto rounded-br-none"
+                      : "bg-gray-200 text-foreground mr-auto rounded-bl-none"
+                  }
+                `}
+              >
+                {msg.message}
+              </div>
             </div>
           ))
-        ) : (
-          <div className="flex justify-center items-center h-full text-gray-500">
-            {t('start_conversation')}
-          </div>
         )}
+        <div ref={messagesEndRef} />
       </div>
-      <div className="p-2">
+
+      {/* Input area */}
+      <div className="p-4 border-t">
         <RoundedInput onSend={handleSend} />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AIComponent;
+export default AIComponent
