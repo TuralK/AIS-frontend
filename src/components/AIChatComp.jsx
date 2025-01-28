@@ -45,7 +45,7 @@ const AIComponent = ({ onBack, api }) => {
       {/* Messages container */}
       <div ref={containerRef} className="flex-grow overflow-y-auto p-4 space-y-4">
         {messages.length === 0 ? (
-          <div className="flex justify-center items-center h-full text-muted-foreground">{t("start_conversation")}</div>
+          <div className="flex justify-center items-center max-h-full text-muted-foreground">{t("start_conversation")}</div>
         ) : (
           messages.map((msg, index) => (
             <div key={index} className={`flex ${msg.fromUser ? "justify-end" : "justify-start"} items-end`}>
