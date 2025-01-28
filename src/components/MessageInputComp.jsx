@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from "react"
 import { ArrowUp, Square } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 const RoundedInput = ({ onSend }) => {
   const [inputValue, setInputValue] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const textareaRef = useRef(null)
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -40,7 +42,7 @@ const RoundedInput = ({ onSend }) => {
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Type your message..."
+          placeholder={t("type_message")}
           disabled={isLoading}
           className="w-full bg-white border-b border-gray-800 text-black rounded-2xl px-4 py-3 pr-10 min-h-[60px] max-h-[200px] resize-none overflow-y-auto focus:outline-none focus:ring-1 focus:ring-zinc-700 scrollbar-hidden disabled:opacity-50"
           rows={2}
