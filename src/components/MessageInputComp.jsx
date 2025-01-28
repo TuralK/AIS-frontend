@@ -1,53 +1,61 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Send } from 'lucide-react';
+import React, { useState, useRef, useEffect } from "react"
+import { ArrowUp, Square } from "lucide-react"
 
 const RoundedInput = ({ onSend }) => {
-  const [inputValue, setInputValue] = useState('');
-  const textareaRef = useRef(null);
+  const [inputValue, setInputValue] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const textareaRef = useRef(null)
 
   useEffect(() => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto'; // Reset height
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`; // Set to scroll height
+      textareaRef.current.style.height = "auto"
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`
     }
-  }, [inputValue]);
+  }, [])
 
-  const handleSendMessage = () => {
-    if (inputValue.trim()) {
-      onSend(inputValue); // Send input value to parent
-      setInputValue(''); // Clear input
+  const handleSendMessage = async () => {
+    if (inputValue.trim() && !isLoading) {
+      setIsLoading(true)
+      try {
+        await onSend(inputValue)
+        setInputValue("")
+      } finally {
+        setIsLoading(false)
+      }
     }
-  };
+  }
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) { // Detect Enter key (without Shift)
-      e.preventDefault(); // Prevent default newline behavior
-      handleSendMessage(); // Send message
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault()
+      handleSendMessage()
     }
-  };
+  }
 
   return (
-    <div className="flex flex-col">
-      <div className="flex items-center overflow-hidden">
+    <div className="w-full max-w-full mx-auto px-1">
+      <div className="relative">
         <textarea
           ref={textareaRef}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          onKeyDown={handleKeyDown} // Add keydown handler
+          onKeyDown={handleKeyDown}
           placeholder="Type your message..."
-          className="flex-grow ml-1 px-2 py-2 border-2 border-gray-200 overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all resize-none"
-          style={{ minHeight: '40px', maxHeight: '120px', marginTop: '3px', marginBottom: '3px' }}
-          rows={1}
+          disabled={isLoading}
+          className="w-full bg-white border-b border-gray-800 text-black rounded-2xl px-4 py-3 pr-10 min-h-[60px] max-h-[200px] resize-none overflow-y-auto focus:outline-none focus:ring-1 focus:ring-zinc-700 scrollbar-hidden disabled:opacity-50"
+          rows={2}
         />
         <button
           onClick={handleSendMessage}
-          className="w-12 h-12 bg-red-900 ml-1 text-white rounded-full flex items-center justify-center transition-colors hover:bg-red-1000"
+          disabled={isLoading}
+          className="absolute bottom-4 right-2 w-10 h-10 bg-black rounded-full flex items-center justify-center transition-colors hover:bg-zinc-500 active:bg-zinc-200 disabled:cursor-not-allowed"
+          aria-label={isLoading ? "Sending message" : "Send message"}
         >
-          <Send size={20} />
+          {isLoading ? <Square className="w-4 h-4 text-white" /> : <ArrowUp className="w-6 h-6 text-white" />}
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default RoundedInput;
+export default RoundedInput

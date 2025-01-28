@@ -69,7 +69,7 @@ const AIComponent = ({ onBack, api }) => {
       </div>
 
       {/* Input area */}
-      <div className="p-4 border-t">
+      <div className="p-1 border-t">
         <RoundedInput onSend={handleSend} />
       </div>
     </div>
