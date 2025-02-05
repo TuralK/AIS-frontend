@@ -1,8 +1,8 @@
 import axios from "axios";
 
-const getMessages = async (api) => {
+const getMessages = async (apiUrl) => {
     try {
-        const response = await axios.get(api, {
+        const response = await axios.get(apiUrl, {
             withCredentials: true
         });
 
@@ -15,14 +15,14 @@ const getMessages = async (api) => {
     }
 };
 
-const getSentMessages = async (api) => {
+const getSentMessages = async (apiUrl) => {
     try {
-        const response = await axios.get(api, {
+        const response = await axios.get(apiUrl, {
             withCredentials: true
         });
 
         const messages = response.data.messages;
-        
+
         return messages;
     } catch (error) {
         console.error('Failed to fetch messages', error);
@@ -30,22 +30,21 @@ const getSentMessages = async (api) => {
     }
 };
 
-export const updateMessageStatus = async (api, messageId) => {
-  try {
-    
-    const response = await axios.get(`${api+messageId}`,{
-        withCredentials: true
-    });
+export const updateMessageStatus = async (apiUrl, messageId) => {
+    try {
 
-    return response.data;
-  } catch (error) {
-    console.error("Mesaj durumu güncellenemedi:", error);
-    return null;
-  }
+        const response = await axios.get(`${apiUrl + messageId}`, {
+            withCredentials: true
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error("Mesaj durumu güncellenemedi:", error);
+        return null;
+    }
 };
 
-
-const sendMessage = async (api, message, topic, receiverEmail, file = null) => {
+const sendMessage = async (apiUrl, message, topic, receiverEmail, file = null) => {
     try {
         // If there is a file to send, we use FormData, otherwise we send it as JSON.
         let response;
@@ -57,7 +56,7 @@ const sendMessage = async (api, message, topic, receiverEmail, file = null) => {
             formData.append("receiverEmail", receiverEmail);
             formData.append("file", file); // file which backend endpoint expects 
 
-            response = await axios.post(api, formData, {
+            response = await axios.post(apiUrl, formData, {
                 withCredentials: true,
                 headers: {
                     "Content-Type": "multipart/form-data"
@@ -66,7 +65,7 @@ const sendMessage = async (api, message, topic, receiverEmail, file = null) => {
         } else {
             // If there is no file, we send it as JSON body.
             response = await axios.post(
-                api,
+                apiUrl,
                 {
                     message,
                     topic,
@@ -85,4 +84,16 @@ const sendMessage = async (api, message, topic, receiverEmail, file = null) => {
     }
 };
 
-export { getMessages, sendMessage, getSentMessages };
+const deleteMessage = async (apiUrl, messageId) => {
+    try {
+        const response = await axios.delete(`${apiUrl}/deleteMessage/${messageId}`, {
+            withCredentials: true, // Eğer kimlik doğrulama çerezi (cookie) kullanılıyorsa
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Mesaj silinirken hata oluştu:", error);
+        throw error;
+    }
+};
+
+export { getMessages, sendMessage, getSentMessages, deleteMessage};

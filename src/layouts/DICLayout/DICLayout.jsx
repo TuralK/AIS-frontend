@@ -5,7 +5,7 @@ import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import IYTElogo from "../../assets/iyte_logo_eng.png";
 import { validateDIC } from '../../api/DICApi/validateDICApi.js';
 import Loading from '../../components/LoadingComponent/Loading.jsx';
-import Messaging from '../../components/MessagingComponent.jsx';
+import Messaging from '../../components/MessageComponents/MessagingComponent.jsx';
 import { getMessages, getSentMessages } from '../../api/messageApi.js';
 
 const styles = {
@@ -115,6 +115,7 @@ export const DICLayout = () => {
   const [messages, setMessages] = useState([]);
   const [sentMessages, setSentMessages] = useState([]);
   const { t, i18n } = useTranslation();
+  const [ apiUrl, setApiUrl ] = useState('http://localhost:3003');
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -157,8 +158,8 @@ export const DICLayout = () => {
   useEffect(() => {
 
     async function fetchMessages() {
-      const data = await getMessages('http://localhost:3003/messages');
-      const dataSent = await getSentMessages('http://localhost:3003/sentMessages');
+      const data = await getMessages(`${apiUrl}/messages`);
+      const dataSent = await getSentMessages(`${apiUrl}/sentMessages`);
       setMessages(data);
       setSentMessages(dataSent);
     }
@@ -428,7 +429,7 @@ export const DICLayout = () => {
       <main>
         <Outlet />
       </main>
-      <Messaging hasAITab={false} messages={messages} sentMessages={sentMessages} />
+      <Messaging hasAITab={false} messages={messages} sentMessages={sentMessages} apiUrl={apiUrl} />
     </div>
   );
 };

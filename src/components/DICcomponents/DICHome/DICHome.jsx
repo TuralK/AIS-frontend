@@ -1,6 +1,5 @@
 import AnnouncementList from '../AnnouncementList';
 import ShareAnnouncement from '../ShareAnnouncement';
-import Messaging from '../../MessagingComponent';
 import { useEffect, useState } from 'react';
 
 const DICHome = () => {

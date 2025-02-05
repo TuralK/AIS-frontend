@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from "react"
-import { Send } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import RoundedInput from "./MessageInputComp"
-import IYTElogo from "../assets/iyte_logo_eng.png"
+import IYTElogo from "../../assets/iyte_logo_eng.png"
 
 const AIComponent = ({ onBack, api }) => {
   const [inputMessage, setInputMessage] = useState("")
