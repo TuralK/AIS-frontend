@@ -86,8 +86,9 @@ const sendMessage = async (apiUrl, message, topic, receiverEmail, file = null) =
 
 const deleteMessage = async (apiUrl, messageId) => {
     try {
+        console.log(`Mesaj siliniyor... ${messageId}`);
         const response = await axios.delete(`${apiUrl}/deleteMessage/${messageId}`, {
-            withCredentials: true, // Eğer kimlik doğrulama çerezi (cookie) kullanılıyorsa
+            withCredentials: true, 
         });
         return response.data;
     } catch (error) {

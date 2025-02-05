@@ -157,6 +157,7 @@
   "passwordsDoNotMatch": "Şifreler uyuşmuyor.",
   "no_messages": "Mesaj bulunamadı",
   "selected_message": "Seçili mesaj",
-  "pleaseLeaveFeedback": "Geri bildirim gönderin"
-  
+  "pleaseLeaveFeedback": "Geri bildirim gönderin",
+  "delete_selected": "Mesaj seçildi",
+  "search_users": "Kullanıcıları ara"
 }

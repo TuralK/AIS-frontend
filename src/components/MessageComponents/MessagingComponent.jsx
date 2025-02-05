@@ -1,22 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import { MessageCircle, X, ChevronUp, Tag } from 'lucide-react';
+import { MessageCircle, X, ChevronUp, Tag, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import Conversation from './Conversation';
 import AIComponent from './AIChatComp';
 import { groupConversations, checkIsMobile } from '../../utils/messageUtils';
+import { getMessages, getSentMessages } from '../../api/messageApi';
 
-const Messaging = ({ messages = [], sentMessages = [], hasAITab, userApi, apiUrl }) => {
+const Messaging = ({ hasAITab, userApi, apiUrl }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('odakli');
+  const [messages, setMessages] = useState([]);
+  const [sentMessages, setSentMessages] = useState([]);
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isLoadingConversation, setIsLoadingConversation] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredConversations, setFilteredConversations] = useState([]);
+
   const { t } = useTranslation();
 
   useEffect(() => {
     checkIsMobile(setIsMobile);
   }, []);
 
-  const conversations = groupConversations(messages, sentMessages);
+  useEffect(() => {
+    async function fetchMessages() {
+      const data = await getMessages(`${apiUrl}/messages`);
+      const dataSent = await getSentMessages(`${apiUrl}/sentMessages`);
+      setMessages(data);
+      setSentMessages(dataSent);
+    }
+
+    fetchMessages();
+  }, [selectedConversation]);
+
+  useEffect(() => {
+    setFilteredConversations(
+      groupConversations(messages, sentMessages).filter(conversation =>
+        conversation.senderName.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        conversation.receiverName.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    );
+  }, [searchTerm, messages, sentMessages]);
 
   const toggleMessaging = () => {
     setIsOpen((prev) => !prev);
@@ -29,6 +54,10 @@ const Messaging = ({ messages = [], sentMessages = [], hasAITab, userApi, apiUrl
 
   const handleBack = () => {
     setSelectedConversation(null);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
   };
 
   if (isMobile && !isOpen) {
@@ -76,29 +105,43 @@ const Messaging = ({ messages = [], sentMessages = [], hasAITab, userApi, apiUrl
                 )}
               </div>
 
-              <div className="flex-grow overflow-y-auto p-2">
+              <div className="flex-grow overflow-y-auto">
                 {activeTab === 'odakli' ? (
-                  conversations.length > 0 ? (
-                    conversations.map((conversation) => {
-                      const lastReceivedMessage = [...conversation.messages].reverse().find(msg => msg.type === 'received');
-                      return (
-                        <div key={conversation.from} className="p-4 mb-2 cursor-pointer hover:bg-gray-100 border border-gray-300 rounded-md" onClick={() => handleConversationClick(conversation)}>
-                          <div className="font-semibold truncate max-w-full">{conversation.senderName}</div>
-                          {conversation.topic && (
-                            <div className="flex items-center text-sm text-gray-500 mt-1 truncate max-w-full">
-                              <Tag size={14} className="mr-1" />
-                              {conversation.topic}
+                  <div className="flex flex-col h-full">
+                    <div className="p-4 border-b border-gray-200">
+                      <input
+                        type="text"
+                        className="w-full p-2 border rounded-md"
+                        placeholder={t('search_users')}
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                      />
+                    </div>
+                    
+                    <div className="flex-grow overflow-y-auto p-2">
+                      {filteredConversations.length > 0 ? (
+                        filteredConversations.map((conversation) => {
+                          const lastReceivedMessage = [...conversation.messages].reverse().find(msg => msg.type === 'received');
+                          return (
+                            <div key={conversation.from} className="p-4 mb-2 cursor-pointer hover:bg-gray-100 border border-gray-300 rounded-md" onClick={() => handleConversationClick(conversation)}>
+                              <div className="font-semibold truncate max-w-full">{conversation.senderName}</div>
+                              {conversation.topic && (
+                                <div className="flex items-center text-sm text-gray-500 mt-1 truncate max-w-full">
+                                  <Tag size={14} className="mr-1" />
+                                  {conversation.topic}
+                                </div>
+                              )}
+                              <div className="text-sm font-bold mt-1 text-gray-500">
+                                {lastReceivedMessage?.message || ''}
+                              </div>
                             </div>
-                          )}
-                          <div className="text-sm font-bold mt-1 text-gray-500">
-                            {lastReceivedMessage?.message || ''}
-                          </div>
-                        </div>
-                      );
-                    })
-                  ) : (
-                    <div className="text-gray-500 text-center p-4">{t('no_messages')}</div>
-                  )
+                          );
+                        })
+                      ) : (
+                        <div className="text-gray-500 text-center p-4">{t('no_messages')}</div>
+                      )}
+                    </div>
+                  </div>
                 ) : (
                   hasAITab && <AIComponent api={userApi} />
                 )}

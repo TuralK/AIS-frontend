@@ -6,7 +6,6 @@ import IYTElogo from "../../assets/iyte_logo_eng.png";
 import { validateDIC } from '../../api/DICApi/validateDICApi.js';
 import Loading from '../../components/LoadingComponent/Loading.jsx';
 import Messaging from '../../components/MessageComponents/MessagingComponent.jsx';
-import { getMessages, getSentMessages } from '../../api/messageApi.js';
 
 const styles = {
   nav: {
@@ -112,8 +111,6 @@ export const DICLayout = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [userName, setUserName] = useState('');
   const [loading, setLoading] = useState(true);
-  const [messages, setMessages] = useState([]);
-  const [sentMessages, setSentMessages] = useState([]);
   const { t, i18n } = useTranslation();
   const [ apiUrl, setApiUrl ] = useState('http://localhost:3003');
 
@@ -144,7 +141,7 @@ export const DICLayout = () => {
         }
         setLoading(false);
       });
-  }, [location, navigate]);
+  }, [location]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -153,19 +150,6 @@ export const DICLayout = () => {
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  useEffect(() => {
-
-    async function fetchMessages() {
-      const data = await getMessages(`${apiUrl}/messages`);
-      const dataSent = await getSentMessages(`${apiUrl}/sentMessages`);
-      setMessages(data);
-      setSentMessages(dataSent);
-    }
-
-    // fetchAnnouncements();
-    fetchMessages();
   }, []);
 
   useEffect(() => {
@@ -429,7 +413,7 @@ export const DICLayout = () => {
       <main>
         <Outlet />
       </main>
-      <Messaging hasAITab={false} messages={messages} sentMessages={sentMessages} apiUrl={apiUrl} />
+      <Messaging hasAITab={false} apiUrl={apiUrl} />
     </div>
   );
 };

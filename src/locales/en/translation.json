@@ -165,5 +165,7 @@
   "passwordsDoNotMatch": "Passwords do not match.",
   "no_messages": "No messages",
   "selected_message": "Selected message",
-  "pleaseLeaveFeedback": "Please leave your feedback"
+  "pleaseLeaveFeedback": "Please leave your feedback",
+  "delete_selected": "Selected to delete",
+  "search_users": "Search users"
 }
