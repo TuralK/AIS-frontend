@@ -5,6 +5,8 @@ import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import IYTElogo from "../../assets/iyte_logo_eng.png";
 import { validateDIC } from '../../api/DICApi/validateDICApi.js';
 import Loading from '../../components/LoadingComponent/Loading.jsx';
+import Messaging from '../../components/MessagingComponent.jsx';
+import { getMessages, getSentMessages } from '../../api/messageApi.js';
 
 const styles = {
   nav: {
@@ -110,6 +112,8 @@ export const DICLayout = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [userName, setUserName] = useState('');
   const [loading, setLoading] = useState(true);
+  const [messages, setMessages] = useState([]);
+  const [sentMessages, setSentMessages] = useState([]);
   const { t, i18n } = useTranslation();
 
   const location = useLocation();
@@ -148,6 +152,19 @@ export const DICLayout = () => {
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+
+    async function fetchMessages() {
+      const data = await getMessages('http://localhost:3003/messages');
+      const dataSent = await getSentMessages('http://localhost:3003/sentMessages');
+      setMessages(data);
+      setSentMessages(dataSent);
+    }
+
+    // fetchAnnouncements();
+    fetchMessages();
   }, []);
 
   useEffect(() => {
@@ -382,25 +399,25 @@ export const DICLayout = () => {
                 <div style={{ marginTop: '0.5rem' }}>
                   {userMenuItems.map(({ item, route }) => (
                     <NavLink
-                    key={route}
-                    to={route !== 'logout' ? `/admin/${route}` : '#'}
-                    style={{
-                      ...styles.menuItem,
-                      display: 'block',
-                      padding: '0.75rem 0',
-                      ':hover': { backgroundColor: '#7d0e1a' },
-                    }}
-                    onClick={(e) => {
-                      if (route === 'logout') {
-                        e.preventDefault();
-                        logout();
-                      } else {
-                        handleDropdownItemClick(item.toLowerCase());
-                      }
-                    }}
-                  >
-                    {item}
-                  </NavLink>
+                      key={route}
+                      to={route !== 'logout' ? `/admin/${route}` : '#'}
+                      style={{
+                        ...styles.menuItem,
+                        display: 'block',
+                        padding: '0.75rem 0',
+                        ':hover': { backgroundColor: '#7d0e1a' },
+                      }}
+                      onClick={(e) => {
+                        if (route === 'logout') {
+                          e.preventDefault();
+                          logout();
+                        } else {
+                          handleDropdownItemClick(item.toLowerCase());
+                        }
+                      }}
+                    >
+                      {item}
+                    </NavLink>
                   ))}
                 </div>
               )}
@@ -408,7 +425,10 @@ export const DICLayout = () => {
           </div>
         )}
       </nav>
-      <Outlet />
+      <main>
+        <Outlet />
+      </main>
+      <Messaging hasAITab={false} messages={messages} sentMessages={sentMessages} />
     </div>
   );
 };

@@ -1,9 +1,11 @@
-import React from 'react';
 import AnnouncementList from '../AnnouncementList';
 import ShareAnnouncement from '../ShareAnnouncement';
 import Messaging from '../../MessagingComponent';
+import { useEffect, useState } from 'react';
 
 const DICHome = () => {
+  const [announcements, setAnnouncements] = useState([]);
+
   const sampleAnnouncements = [
     { id: 1, content: "Lorem Ipsum, dizgi ve baskı endüstrisinde kullanılan mıgır metinlerdir. Lorem Ipsum, adı bilinmeyen bir matbaacının bir hurufat numune kitabı oluşturmak üzere bir yazı galerisini alarak karıştırdığı 1500'lerden beri endüstri standardı sahte metinler olarak kullanılmıştır. Beşyüz yıl boyunca varlığını sürdürmekle kalmamış, aynı zamanda pek değişmeden elektronik dizgiye de sıçramıştır. 1960'larda Lorem Ipsum pasajları da içeren Letraset yapraklarının yayınlanması ile ve yakın zamanda Aldus PageMaker gibi Lorem Ipsum sürümleri içeren masaüstü yayıncılık yazılımları ile popüler olmuştur." },
     { id: 2, content: "Lorem Ipsum, dizgi ve baskı endüstrisinde kullanılan mıgır metinlerdir. Lorem Ipsum, adı bilinmeyen bir matbaacının bir hurufat numune kitabı oluşturmak üzere bir yazı galerisini alarak karıştırdığı 1500'lerden beri endüstri standardı sahte metinler olarak kullanılmıştır. Beşyüz yıl boyunca varlığını sürdürmekle kalmamış, aynı zamanda pek değişmeden elektronik dizgiye de sıçramıştır. 1960'larda Lorem Ipsum pasajları da içeren Letraset yapraklarının yayınlanması ile ve yakın zamanda Aldus PageMaker gibi Lorem Ipsum sürümleri içeren masaüstü yayıncılık yazılımları ile popüler olmuştur." },
@@ -12,6 +14,7 @@ const DICHome = () => {
     { id: 5, content: 'Announcement 5' },
   ];
 
+  
   const sampleMessages = [
     { id: 1, text: 'Merhaba, nasıl yardımcı olabilirim?' },
     { id: 2, text: 'Hesabımda sorun var.' },
@@ -23,9 +26,6 @@ const DICHome = () => {
         <AnnouncementList announcements={sampleAnnouncements} />
       </div>
       <div className="flex flex-col">
-        <div className="flex-1">
-          <Messaging hasAITab={false} messages={sampleMessages} />
-        </div>
         <div className="flex-1 p-2 mt-12">
           <ShareAnnouncement />
         </div>
