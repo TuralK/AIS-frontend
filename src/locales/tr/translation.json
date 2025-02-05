@@ -159,5 +159,11 @@
   "selected_message": "Seçili mesaj",
   "pleaseLeaveFeedback": "Geri bildirim gönderin",
   "delete_selected": "Mesaj seçildi",
-  "search_users": "Kullanıcıları ara"
+  "search_users": "Kullanıcıları ara",
+  "username": "Kullanıcı Adı",
+  "updateAdminInfo": "Aşağıdan bilgilerinizi güncelleyebilirsiniz.",
+  "adminInformation": "Koordinatör Bilgileri",
+  "currentPasswordRequired": "Mevcut şifre gereklidir",
+  "newPasswordRequired": "Yeni şifre gereklidir",
+  "usernameMinLength": "Kullanıcı adı en az 3 karakter uzunluğunda olmalıdır."
 }

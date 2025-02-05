@@ -115,6 +115,7 @@ export const StudentLayout = () => {
   const [loading, setLoading] = useState(true);
   // const [isValidating, setIsValidating] = useState(false); // show loading while validating
   const { t, i18n } = useTranslation();
+  const [ apiUrl, setApiUrl ] = useState('http://localhost:3004');
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -431,7 +432,7 @@ export const StudentLayout = () => {
         {/* { navigation.state === "loading" &&  <Loading /> } */}
         <Outlet />
       </main>
-      <Messaging hasAITab={true} userApi={sendMessageToAI}/>
+      <Messaging hasAITab={true} userApi={sendMessageToAI} apiUrl={apiUrl}/>
     </div>
   )
 }

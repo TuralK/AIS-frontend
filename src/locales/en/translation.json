@@ -167,5 +167,11 @@
   "selected_message": "Selected message",
   "pleaseLeaveFeedback": "Please leave your feedback",
   "delete_selected": "Selected to delete",
-  "search_users": "Search users"
+  "search_users": "Search users",
+  "username": "Username",
+  "updateAdminInfo": "Update your information below.",
+  "adminInformation": "Coordinator Information",
+  "currentPasswordRequired": "Current password is required",
+  "newPasswordRequired": "New password is required",
+  "usernameMinLength": "Username must be at least 3 characters long"
 }

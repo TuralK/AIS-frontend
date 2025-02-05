@@ -23,6 +23,8 @@ import DICInnerInternships from "./components/DICcomponents/DICInternships/Inner
 import { SecretaryLayout } from "./layouts/SecretaryLayout/SecretaryLayout.jsx";
 import PendingApplicationList from "./components/SecretaryComponents/PendingApplicationList.jsx";
 import SecretarySettings from "./components/SecretaryComponents/SecretarySettings.jsx";
+import { Settings } from "lucide-react";
+import DICSettings from "./components/DICcomponents/DICSettings.jsx";
 
 const App = () => {
   const { t, i18n } = useTranslation();
@@ -63,6 +65,7 @@ const App = () => {
       children: [
         { index: true, element: <DICHome /> },
         { path: "home", element: <DICHome /> },
+        { path: "settings", element: <DICSettings /> },
         { path: "companyRequests", element: <CompanyCards /> },
         { path: 'announcementRequests', element: <DICAnnouncementRequest /> },
         { path: 'announcement/:id', element: <DICAnouncementDetails /> },
