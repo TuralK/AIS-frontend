@@ -184,7 +184,9 @@ const StudentAnnouncementComponent = () => {
           return newRemainingSeconds;
         } else {
           clearInterval(timer);
-          navigate('/student/announcements');
+          if(!announcement.isApplied) {
+            navigate('/student/announcements');
+          }
           return 0;
         }
       });
@@ -209,9 +211,13 @@ const StudentAnnouncementComponent = () => {
     } else if (minutes > 0) {
       setRemainingTime(t('application_close_minute', { count: minutes }));
       setRemainingTimeStuck(t('application_left_minute', { count: minutes }));
-    } else {
+    } else if (seconds > 0) {
       setRemainingTime(t('application_close_second', { count: seconds }));
-      setRemainingTimeStuck(t('application_left_second', { count: seconds })); }
+      setRemainingTimeStuck(t('application_left_second', { count: seconds })); 
+    } else {
+      setRemainingTime(t('application_closed'));
+      setRemainingTimeStuck(t('application_closed'));
+    }
   };
 
   if (loading) {
@@ -225,6 +231,7 @@ const StudentAnnouncementComponent = () => {
       {loadingApply && <Loading />}
         {announcement ? 
             (
+              <div className={StudentAnnouncementCSS.studentAnnouncement}>
               <div className={StudentAnnouncementCSS.card}>
                 <header className={StudentAnnouncementCSS.header}>
                     <h1 className={StudentAnnouncementCSS.announcementNameHeader}>{announcement.announcementName}</h1>
@@ -359,6 +366,7 @@ const StudentAnnouncementComponent = () => {
 
                 
               </div>
+            </div>
             )
         : 
         (

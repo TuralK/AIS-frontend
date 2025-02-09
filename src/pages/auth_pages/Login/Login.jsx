@@ -3,7 +3,7 @@ import LoginCSS from './Login.module.css';
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import IYTElogo from '../../../assets/iyte_logo_eng.png'
+import IYTElogo from '../../../assets/iyte_logo_eng.png';
 import { getUserType } from '../../../api/LoginApi/getUserTypeAPI';
 import { forgotPassword } from '../../../api/ChangePasswordApi/forgotPasswordAPI';
 import Loading from '../../../components/LoadingComponent/Loading';
@@ -20,15 +20,53 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  const handleGoogleSignIn = async (event) => {
+    event.preventDefault();
+    window.location.href = 'http://localhost:8092/api/v1/auth';
+  }
+
+  const handleGoogleSignIn2 = async (event) => {
+    event.preventDefault();
+    
+    try {
+        const response = await axios.get('http://localhost:8092/api/v1/auth/signin', { withCredentials: true });
+        
+        console.log(response);
+        if (response.status === 302) {
+            window.location.href = response.headers.location;
+        }
+    } catch (error) {
+        console.error("Error during sign-in:", error);
+    }
+};
+
+const handleGoogleSignIn3 = () => {
+  const authWindow = window.open(
+      'http://localhost:8092/api/v1/auth',
+      '_blank',
+      'width=500,height=600'
+  );
+
+  const checkPopup = setInterval(() => {
+      if (!authWindow || authWindow.closed) {
+          clearInterval(checkPopup);
+          console.log('Popup closed');
+      }
+  }, 1000);
+};
+
+
+
   const resetLoginForm = () => {
     setLoginError('');
     setEmail('');
     setPassword('');
-  }
+  };
+  
   const resetForgotPasswordForm = () => {
     setForgotEmail('');
     setForgotEmailError('');
-  }
+  };
 
   useEffect(() => {
     const fetchUserTypeAndNavigate = async () => {
@@ -124,11 +162,13 @@ const Login = () => {
     if (isForgotPasswordActive) {
       resetForgotPasswordForm();
     }
-  }
+  };
+
+  const googleLoginURL = 'http://localhost:8080/realms/LSM_REALM/protocol/openid-connect/auth?client_id=LSM_CLIENT&redirect_uri=https://example.com/&response_type=code&scope=openid&kc_idp_hint=google';
 
   if (loading) {
     return (
-        <Loading />
+      <Loading />
     )
   }
 
@@ -183,7 +223,7 @@ const Login = () => {
               loginError.length > 0 && <div className={LoginCSS['login-error']}>{loginError}</div>
               }
               <label>
-              <input
+                <input
                   type='checkbox'
                   id='remember'
                   name='remember'
@@ -222,6 +262,13 @@ const Login = () => {
           <br />
           <center>
             <Link to='/signup'>Don't have an account? Sign up.</Link>
+          </center>
+          <br />
+          {/* Google Sign In Button */}
+          <center>
+            {/* <a href={googleLoginURL} className={LoginCSS['google-button']}> */}
+              <button onClick={handleGoogleSignIn2} className={LoginCSS['google-button-style']}>Sign in with Google</button>
+            {/* </a> */}
           </center>
         </div>
       </div>

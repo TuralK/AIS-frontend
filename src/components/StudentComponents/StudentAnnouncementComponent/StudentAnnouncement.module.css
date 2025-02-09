@@ -314,3 +314,17 @@ html, body {
   width: 82%;
   margin: 13px auto;
 }
+
+.studentAnnouncement input[type="text"], input[type="password"], input[type="email"] {
+  width: 82%;
+  height: 45px;
+  display: block;
+  box-sizing: border-box;
+  padding: 1px 10px;
+  margin: 13px auto;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(204, 204, 204);
+  border-image: initial;
+  font-size: 14px;
+}
