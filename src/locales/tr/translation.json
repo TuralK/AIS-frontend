@@ -165,5 +165,9 @@
   "adminInformation": "Koordinatör Bilgileri",
   "currentPasswordRequired": "Mevcut şifre gereklidir",
   "newPasswordRequired": "Yeni şifre gereklidir",
-  "usernameMinLength": "Kullanıcı adı en az 3 karakter uzunluğunda olmalıdır."
+  "usernameMinLength": "Kullanıcı adı en az 3 karakter uzunluğunda olmalıdır.",
+  "search_conversations" : "Sohbetleri ara",
+  "conversation_exists": "Bu sohbet zaten var",
+  "confirm_delete" : "Silmeyi onayla",
+  "delete_conversation_error": "Sohbet silinemedi"
 }

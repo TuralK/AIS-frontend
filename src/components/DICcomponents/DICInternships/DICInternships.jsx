@@ -16,13 +16,13 @@ const DICInternships = () => {
       try {
         const data = await fetchInternships();
         if (data && Array.isArray(data.applications)) { 
-          setInternships(data.applications); // Eğer uygulama varsa kullan
+          setInternships(data.applications); 
         } else {
-          setInternships([]); // Uygulama yoksa boş dizi ata
+          setInternships([]); 
         }
       } catch (error) {
         console.error('Error fetching internships:', error);
-        setInternships([]); // Hata durumunda boş dizi ata
+        setInternships([]); 
       } finally {
         setLoading(false);
       }

@@ -1,100 +1,93 @@
+// src/api/conversationApi.js
 import axios from "axios";
 
-const getMessages = async (apiUrl) => {
-    try {
-        const response = await axios.get(apiUrl, {
-            withCredentials: true
-        });
-
-        const messages = response.data.messages;
-
-        return messages;
-    } catch (error) {
-        console.error('Failed to fetch messages', error);
-        return null;
-    }
+// Kullanıcıları getir (secretary, students, companies birleşik)
+export const getUsers = async (apiUrl) => {
+  try {
+    const response = await axios.get(`${apiUrl}/users`, {
+      withCredentials: true,
+    });
+    console.log("Users:", response.data.allUsers);
+    return response.data.allUsers;
+  } catch (error) {
+    console.error("Kullanıcılar getirilemedi:", error);
+    throw error;
+  }
 };
 
-const getSentMessages = async (apiUrl) => {
-    try {
-        const response = await axios.get(apiUrl, {
-            withCredentials: true
-        });
-
-        const messages = response.data.messages;
-
-        return messages;
-    } catch (error) {
-        console.error('Failed to fetch messages', error);
-        return null;
-    }
+// Konuşmaları getir
+export const getConversations = async (apiUrl) => {
+  try {
+    const response = await axios.get(`${apiUrl}/conversations`, {
+      withCredentials: true,
+    });
+    console.log("Conversations:", response.data);
+    return response.data.conversations;
+  } catch (error) {
+    console.error("Konuşmalar getirilemedi:", error);
+    throw error;
+  }
 };
 
-export const updateMessageStatus = async (apiUrl, messageId) => {
-    try {
-
-        const response = await axios.get(`${apiUrl + messageId}`, {
-            withCredentials: true
-        });
-
-        return response.data;
-    } catch (error) {
-        console.error("Mesaj durumu güncellenemedi:", error);
-        return null;
-    }
+// Yeni bir konuşma oluştur
+export const createConversation = async (apiUrl, receiverEmail, receiverName) => {
+  try {
+    const response = await axios.post(
+      `${apiUrl}/conversations`,
+      { receiverEmail, receiverName },
+      { withCredentials: true }
+    );
+    return response.data.conversations;
+  } catch (error) {
+    console.error("Konuşma oluşturulamadı:", error);
+    throw error;
+  }
 };
 
-const sendMessage = async (apiUrl, message, topic, receiverEmail, file = null) => {
-    try {
-        // If there is a file to send, we use FormData, otherwise we send it as JSON.
-        let response;
-
-        if (file) {
-            const formData = new FormData();
-            formData.append("message", message);
-            formData.append("topic", topic);
-            formData.append("receiverEmail", receiverEmail);
-            formData.append("file", file); // file which backend endpoint expects 
-
-            response = await axios.post(apiUrl, formData, {
-                withCredentials: true,
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                }
-            });
-        } else {
-            // If there is no file, we send it as JSON body.
-            response = await axios.post(
-                apiUrl,
-                {
-                    message,
-                    topic,
-                    receiverEmail
-                },
-                {
-                    withCredentials: true
-                }
-            );
-        }
-
-        return response.data;
-    } catch (error) {
-        console.error("Failed to send message", error);
-        throw error;
-    }
+// Belirli bir konuşmanın mesajlarını getir
+export const getConversationMessages = async (apiUrl, conversationId) => {
+  try {
+    const response = await axios.get(`${apiUrl}/conversations/${conversationId}`, {
+      withCredentials: true,
+    });
+    console.log("Messages:", response.data.messages);
+    return response.data.messages;
+  } catch (error) {
+    console.error("Konuşma mesajları getirilemedi:", error);
+    throw error;
+  }
 };
 
-const deleteMessage = async (apiUrl, messageId) => {
-    try {
-        console.log(`Mesaj siliniyor... ${messageId}`);
-        const response = await axios.delete(`${apiUrl}/deleteMessage/${messageId}`, {
-            withCredentials: true, 
-        });
-        return response.data;
-    } catch (error) {
-        console.error("Mesaj silinirken hata oluştu:", error);
-        throw error;
-    }
+// Bir konuşmayı sil (veya soft-delete yap)
+export const deleteConversation = async (apiUrl, conversationId) => {
+  try {
+    const response = await axios.delete(`${apiUrl}/conversations/${conversationId}`, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Konuşma silinemedi:", error);
+    throw error;
+  }
 };
 
-export { getMessages, sendMessage, getSentMessages, deleteMessage};
+// Bir mesaj gönderme api
+export const sendMessageApi = async (apiUrl, conversationId, message, file = null) => {
+  // FormData oluşturuluyor
+  const formData = new FormData();
+  formData.append('conversationId', conversationId);
+  formData.append('message', message);
+  if (file) {
+    formData.append('file', file);
+  }
+
+  // API isteği gönderiliyor
+  const response = await axios.post(`${apiUrl}/sendMessage`, formData, {
+    withCredentials: true,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
+  
+  return response.data;
+};

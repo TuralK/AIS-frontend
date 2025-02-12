@@ -1,170 +1,137 @@
+"use client"
+
 import { useState, useEffect, useRef } from "react"
-import { ArrowLeft, MoreVertical, Trash2, Check } from "lucide-react"
+import { useDispatch, useSelector } from "react-redux"
+import { ArrowLeft, MoreVertical, Trash2, X } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import RoundedInput from "./MessageInputComp"
-import { sendMessage, deleteMessage } from "../../api/messageApi"
-import { scrollToBottom, markMessagesAsRead } from "../../utils/conversationUtils"
+import { sendMessageThunk, fetchConversationMessagesThunk, deleteConversationThunk } from "../../thunks/messageThunks"
+import { scrollToBottom } from "../../utils/conversationUtils"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown"
 import { Checkbox } from "../ui/checkbox"
-import { Button } from "../ui/button"
-import ErrorMessage from "../ui/error_message"  
+import ErrorMessage from "../ui/error_message"
+import { selectConversationMessages } from "../../selectors/conversation_selector"
 
 const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => {
   const { t } = useTranslation()
-  const [conversation, setConversation] = useState(initialConversation)
-  const [errorSendingMessage, setErrorSendingMessage] = useState(false) // Track if there was an error
-  const messagesEndRef = useRef(null)
+  const dispatch = useDispatch()
+  const conversationId = initialConversation.id
+
+  const messages = useSelector((state) => selectConversationMessages(state, conversationId))
+  const conversation = useSelector((state) =>
+    state.messaging.conversations.find((conv) => conv.id === conversationId)
+  );
+
+  // Find the other person's name
+  const otherPersonName = conversation.user2_name;
+  const senderName = conversation.user1_email;
+
+  const [errorSendingMessage, setErrorSendingMessage] = useState(false)
   const [isSelectionMode, setIsSelectionMode] = useState(false)
   const [selectedMessages, setSelectedMessages] = useState([])
+  const [isDeletingConversation, setIsDeletingConversation] = useState(false)
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
+  const messagesEndRef = useRef(null)
 
-  // Scroll ve okundu işaretleme
+  useEffect(() => {
+    dispatch(fetchConversationMessagesThunk({ apiUrl, conversationId }))
+  }, [dispatch, apiUrl, conversationId])
+
   useEffect(() => {
     scrollToBottom(messagesEndRef)
-    markMessagesAsRead(conversation, apiUrl)
-  }, [conversation])
+  }, [messages])
 
-  // Mesaj gönderme
   const handleSend = async (newMessage) => {
     if (!newMessage.trim()) return
 
-    const tempMessage = {
-      type: "sent",
-      message: newMessage,
-      id: `temp-${Date.now()}`, 
-      isTemp: true
-    }
-
-    setConversation(prev => ({
-      ...prev,
-      messages: [...prev.messages, tempMessage]
-    }))
-
     try {
-      const topic = conversation.messages[0]?.topic || ""
-      const receiverEmail = conversation.from
+      const topic = initialConversation.messages?.[0]?.topic || ""
+      const receiverEmail = initialConversation.from
 
-      const sentMessage = await sendMessage(
-        `${apiUrl}/sendMessage`,
-        newMessage,
-        topic,
-        receiverEmail
-      )
-      
-      setConversation(prev => ({
-        ...prev,
-        messages: prev.messages.map(msg => 
-          msg.id === tempMessage.id ? { ...sentMessage, type: "sent" } : msg
-        )
-      }))
-      console.log("Mesajlar:", conversation.messages)
-      setErrorSendingMessage(false) 
-
+      await dispatch(sendMessageThunk({ apiUrl, conversationId, message: newMessage, topic, receiverEmail })).unwrap()
+      setErrorSendingMessage(false)
+      dispatch(fetchConversationMessagesThunk({ apiUrl, conversationId }))
     } catch (error) {
-      
-      setConversation(prev => ({
-        ...prev,
-        messages: prev.messages.filter(msg => msg.id !== tempMessage.id)
-      }))
-      setErrorSendingMessage(true) 
-
-      
+      setErrorSendingMessage(true)
       setTimeout(() => setErrorSendingMessage(false), 4000)
     }
   }
 
-  
-  const handleDeleteMessage = async (messageId) => {
+  const handleDeleteConversation = async () => {
+    setIsDeletingConversation(true)
     try {
-      
-      await deleteMessage(apiUrl, messageId)
-      
-      setConversation(prev => ({
-        ...prev,
-        messages: prev.messages.filter(msg => msg.id !== messageId)
-      }))
+      await dispatch(deleteConversationThunk({ apiUrl, conversationId })).unwrap()
+      onBack()
     } catch (error) {
-      console.error("Silme hatası:", error)
+      console.error("Conversation deletion failed:", error)
+      setShowDeleteConfirmation(false)
+      alert(t("delete_conversation_error"))
+    } finally {
+      setIsDeletingConversation(false)
     }
   }
 
-  
-  const handleBulkDelete = async () => {
-    try {
-      await Promise.all(selectedMessages.map((id) => deleteMessage(apiUrl, id)))
-      setConversation((prev) => ({
-        ...prev,
-        messages: prev.messages.filter((msg) => !selectedMessages.includes(msg.id)),
-      }))
-      setSelectedMessages([])
-      setIsSelectionMode(false)
-    } catch (error) {
-      console.error("Toplu silme işlemi başarısız:", error)
-    }
-  }
-
-  // Mesaj seçimini yönet
   const toggleMessageSelection = (messageId) => {
-    setSelectedMessages(prev => 
-      prev.includes(messageId) 
-        ? prev.filter(id => id !== messageId) 
-        : [...prev, messageId]
+    setSelectedMessages((prev) =>
+      prev.includes(messageId) ? prev.filter((id) => id !== messageId) : [...prev, messageId],
     )
   }
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
       <div className="flex justify-between items-center p-4 border-b-2 border-gray-300 shadow-sm">
         <div className="flex items-center gap-2">
           <button onClick={onBack} className="text-gray-800 hover:text-gray-900">
             <ArrowLeft size={20} />
           </button>
-          <span className="font-semibold">{conversation.senderName}</span>
+          <span className="font-semibold">{otherPersonName}</span>
         </div>
-        
-        {/* Silme kontrolleri */}
+
         <div className="flex items-center gap-2">
-          {isSelectionMode && selectedMessages.length > 0 && (
-            <Button 
-              variant="destructive" 
-              size="sm" 
-              onClick={handleBulkDelete}
-              className="flex items-center gap-1"
+          {showDeleteConfirmation ? (
+            <>
+              <button
+                onClick={handleDeleteConversation}
+                disabled={isDeletingConversation}
+                className="flex items-center gap-1 px-2 py-1 text-xs sm:text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+              >
+                <Trash2 size={16} />
+                <span className="hidden sm:inline">{t("confirm_delete")}</span>
+              </button>
+              <button onClick={() => setShowDeleteConfirmation(false)} className="text-gray-600 hover:text-gray-800">
+                <X size={20} />
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => setShowDeleteConfirmation(true)}
+              className="p-2 rounded-full text-gray-600 hover:bg-gray-100 transition-colors"
             >
-              <Trash2 size={16} />
-              <span>{selectedMessages.length} {t("delete_selected")}</span>
-            </Button>
+              <Trash2 size={20} />
+            </button>
           )}
-          
-          <button
-            onClick={() => {
-              setIsSelectionMode(!isSelectionMode)
-              setSelectedMessages([]) 
-            }}
-            className={`p-2 rounded-full transition-colors ${isSelectionMode ? "bg-red-100 text-red-600" : "text-gray-600 hover:bg-gray-100"}`}
-          >
-            {isSelectionMode ? <Check size={20} /> : <Trash2 size={20} />}
-          </button>
         </div>
       </div>
 
-      {/* Mesaj listesi */}
-      <div className="flex-grow overflow-y-auto p-4">
+      <div className="flex-grow overflow-y-auto pt-2 mx-auto w-full max-w-2xl">
         <div className="flex flex-col space-y-2">
-          {conversation.messages.length > 0 ? (
-            conversation.messages.map((msg) => (
-              <div key={msg.id} className="w-full flex group items-center gap-2">
-                {/* Seçim/İşlem alanı */}
-                {msg.type === "sent" && (
-                  <>
-                    {isSelectionMode ? (
-                      <Checkbox
-                        checked={selectedMessages.includes(msg.id)}
-                        onCheckedChange={() => toggleMessageSelection(msg.id)}
-                        className="ml-2"
-                      />
-                    ) : (
-                      <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+          {messages.length > 0 ? (
+            messages.map((msg) => {
+              const isSender = msg.from === senderName
+              return (
+                <div
+                  key={msg.id}
+                  className={`w-full flex ${isSender ? 'justify-end' : 'justify-start'} group items-center gap-2`}
+                >
+                  {!isSender && (
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                      {isSelectionMode ? (
+                        <Checkbox
+                          checked={selectedMessages.includes(msg.id)}
+                          onCheckedChange={() => toggleMessageSelection(msg.id)}
+                          className="ml-2"
+                        />
+                      ) : (
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <button className="p-1 rounded-full hover:bg-gray-200 transition-colors">
@@ -181,40 +148,66 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
-                      </div>
-                    )}
-                  </>
-                )}
+                      )}
+                    </div>
+                  )}
 
-                {/* Mesaj balonu */}
-                <div
-                  className={`inline-block rounded-lg ${
-                    msg.type === "sent" 
-                      ? "bg-[rgb(154,18,32)] text-white ml-auto" 
-                      : "bg-gray-300 text-black mr-auto"
-                  } ${msg.isTemp ? "opacity-50" : ""}`} 
-                >
-                  <p className={`px-3 py-2 ${msg.type === "sent" ? "text-right" : ""}`}>
-                    {msg.message}
-                    {msg.isTemp && <span className="text-xs ml-2">⌛</span>}
-                  </p>
+                  <div
+                    className={`max-w-[75%] rounded-lg p-3 ${isSender
+                        ? "bg-[rgb(154,18,32)] text-white"
+                        : "bg-gray-300 text-black"
+                      } ${msg.isTemp ? "opacity-50" : ""}`}
+                  >
+                    <p className={`${isSender ? 'text-right' : 'text-left'}`}>
+                      {msg.message}
+                      {msg.isTemp && <span className="text-xs ml-2">⌛</span>}
+                    </p>
+                  </div>
+
+                  {isSender && (
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                      {isSelectionMode ? (
+                        <Checkbox
+                          checked={selectedMessages.includes(msg.id)}
+                          onCheckedChange={() => toggleMessageSelection(msg.id)}
+                          className="mr-2"
+                        />
+                      ) : (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="p-1 rounded-full hover:bg-gray-200 transition-colors">
+                              <MoreVertical size={16} className="text-gray-600" />
+                            </button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-24">
+                            <DropdownMenuItem
+                              onClick={() => handleDeleteMessage(msg.id)}
+                              className="text-red-600 focus:text-red-600 focus:bg-red-50 cursor-pointer"
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              <span>{t("delete")}</span>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))
+              )
+            })
           ) : (
-            <p className="text-gray-500">{t("no_messages_in_conversation")}</p>
+            <p className="text-gray-500">{t("start_conversation")}</p>
           )}
-
           <div ref={messagesEndRef} />
         </div>
       </div>
-      {/* Error Message */}
+
       {errorSendingMessage && (
-            <div className="mt-2 p-2">
-              <ErrorMessage message="Mesaj gönderilemedi" />
-            </div>
-          )}
-      {/* Mesaj giriş alanı */}
+        <div className="mt-2 p-2">
+          <ErrorMessage message="Mesaj gönderilemedi" />
+        </div>
+      )}
+
       <div className="p-2">
         <RoundedInput onSend={handleSend} />
       </div>

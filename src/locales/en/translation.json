@@ -173,5 +173,10 @@
   "adminInformation": "Coordinator Information",
   "currentPasswordRequired": "Current password is required",
   "newPasswordRequired": "New password is required",
-  "usernameMinLength": "Username must be at least 3 characters long"
+  "usernameMinLength": "Username must be at least 3 characters long",
+  "search_conversations": "Search conversations",
+  "conversation_exists": "Conversation already exists",
+  "confirm_delete": "Are you sure?",
+  "delete_conversation_error": "Failed to delete conversation"
+  
 }

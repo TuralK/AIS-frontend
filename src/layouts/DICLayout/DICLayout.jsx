@@ -171,13 +171,11 @@ export const DICLayout = () => {
   ];
 
   const userMenuItems = [
-    { item: t('profile'), route: 'profile' },
     { item: t('settings'), route: 'settings' },
     { item: t('logout'), route: 'logout' }
   ];
 
   const handleDropdownItemClick = (action) => {
-    console.log(`Performing action: ${action}`);
     <NavLink
       key={route}
       to={`/admin/${route}`}></NavLink>

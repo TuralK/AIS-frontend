@@ -1,159 +1,274 @@
-import React, { useState, useEffect } from 'react';
-import { MessageCircle, X, ChevronUp, Tag, Search } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import Conversation from './Conversation';
-import AIComponent from './AIChatComp';
-import { groupConversations, checkIsMobile } from '../../utils/messageUtils';
-import { getMessages, getSentMessages } from '../../api/messageApi';
+"use client"
 
-const Messaging = ({ hasAITab, userApi, apiUrl }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('odakli');
-  const [messages, setMessages] = useState([]);
-  const [sentMessages, setSentMessages] = useState([]);
-  const [selectedConversation, setSelectedConversation] = useState(null);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isLoadingConversation, setIsLoadingConversation] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filteredConversations, setFilteredConversations] = useState([]);
+import { useState, useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { MessageCircle, X, ChevronUp, UserPlus } from "lucide-react"
+import { useTranslation } from "react-i18next"
+import Conversation from "./Conversation"
+import AIComponent from "./AIChatComp"
+import PollingComponent from "../PollingComponent"
+import { fetchConversationsThunk, fetchUsersThunk, createConversationThunk } from "../../thunks/messageThunks"
+import { cn } from "../../utils/utils"
+import { Input } from "../ui/input"
+import { ScrollArea } from "../ui/scroll_area"
 
-  const { t } = useTranslation();
+const Messaging = ({ hasAITab, apiUrl }) => {
+  const { t } = useTranslation()
+  const dispatch = useDispatch()
+  const { conversations, loading, error, users, usersLoading } = useSelector((state) => state.messaging)
+  const [isOpen, setIsOpen] = useState(false)
+  const [activeTab, setActiveTab] = useState("odakli")
+  const [selectedConversation, setSelectedConversation] = useState(null)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [isMobile, setIsMobile] = useState(false)
+  const [showUsersList, setShowUsersList] = useState(false)
 
   useEffect(() => {
-    checkIsMobile(setIsMobile);
-  }, []);
-
-  useEffect(() => {
-    async function fetchMessages() {
-      const data = await getMessages(`${apiUrl}/messages`);
-      const dataSent = await getSentMessages(`${apiUrl}/sentMessages`);
-      setMessages(data);
-      setSentMessages(dataSent);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640)
     }
-
-    fetchMessages();
-  }, [selectedConversation]);
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [])
 
   useEffect(() => {
-    setFilteredConversations(
-      groupConversations(messages, sentMessages).filter(conversation =>
-        conversation.senderName.toLowerCase().includes(searchTerm.toLowerCase()) || 
-        conversation.receiverName.toLowerCase().includes(searchTerm.toLowerCase())
+    dispatch(fetchUsersThunk(apiUrl))
+    dispatch(fetchConversationsThunk(apiUrl))
+  }, [dispatch, apiUrl])
+
+  const filteredUsers = users.filter(
+    (user) =>
+      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()),
+  )
+
+  const hasExistingConversation = (userEmail) => {
+    return conversations.some((conv) => conv.user1_email === userEmail || conv.user2_email === userEmail)
+  }
+
+  const handleCreateConversation = async (user) => {
+    if (!hasExistingConversation(user.email)) {
+      await dispatch(
+        createConversationThunk({
+          apiUrl,
+          receiverEmail: user.email,
+          receiverName: user.username,
+        }),
       )
-    );
-  }, [searchTerm, messages, sentMessages]);
+      setShowUsersList(false)
+      setSearchTerm("")
+    }
+  }
 
   const toggleMessaging = () => {
-    setIsOpen((prev) => !prev);
-    setSelectedConversation(null);
-  };
-
-  const handleConversationClick = (conversation) => {
-    setSelectedConversation(conversation);
-  };
-
-  const handleBack = () => {
-    setSelectedConversation(null);
-  };
-
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
+    setIsOpen((prev) => !prev)
+    setSelectedConversation(null)
+    setShowUsersList(false)
+  }
 
   if (isMobile && !isOpen) {
     return (
-      <button onClick={toggleMessaging} className="fixed bottom-4 right-4 z-50 bg-white text-gray-700 rounded-full p-3 shadow-lg border border-gray-300 hover:bg-gray-100 transition-colors">
+      <button
+        onClick={toggleMessaging}
+        className="fixed bottom-4 right-4 z-50 bg-white text-gray-700 rounded-full p-3 shadow-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+      >
         <MessageCircle size={24} />
       </button>
-    );
+    )
   }
 
   return (
-    <div className={`fixed ${isMobile ? 'bottom-0 right-0' : 'bottom-0 right-4'} z-55 ${!isOpen && !isMobile ? 'border border-black rounded-lg' : ''}`}>
+    <div
+      className={cn(
+        "fixed z-50",
+        isMobile ? "bottom-0 right-0 left-0" : "bottom-0 right-4",
+        !isOpen && !isMobile && "w-64",
+      )}
+    >
       {!isOpen && !isMobile && (
-        <button onClick={toggleMessaging} className="bg-white text-gray-700 rounded-t-lg px-4 py-2 flex items-center justify-between gap-2 border border-gray-300 hover:bg-gray-100 transition-colors w-64">
+        <button
+          onClick={toggleMessaging}
+          className="w-full bg-white text-gray-700 rounded-t-lg px-4 py-2.5 flex items-center justify-between border border-gray-800 hover:bg-gray-200 transition-colors"
+        >
           <div className="flex items-center gap-2">
-            <MessageCircle size={20} />
-            <span className="font-semibold truncate">{t('messaging')}</span>
+            <MessageCircle size={20} className="text-gray-600" />
+            <span className="font-medium font-semibold text-gray-900">{t("messaging")}</span>
           </div>
-          <ChevronUp size={20} />
+          <ChevronUp size={18} className="text-gray-500" />
         </button>
       )}
 
       {isOpen && (
-        <div className={`bg-white border border-gray-300 ${!isMobile ? 'rounded-t-lg shadow-lg' : ''} w-80 ${!isMobile ? 'sm:w-96' : ''} flex flex-col`} style={{ height: !isMobile ? 'calc(100vh - 110px)' : '500px' }}>
-          {!selectedConversation ? (
-            <>
-              <div className="flex justify-between items-center p-4 border-b border-gray-200">
-                <div className="flex items-center gap-2">
-                  <MessageCircle size={20} />
-                  <span className="font-semibold truncate">{t('messaging')}</span>
-                </div>
-                <button onClick={toggleMessaging} className="text-gray-500 hover:text-gray-700">
-                  <X size={20} />
-                </button>
-              </div>
+        <div
+          className={cn(
+            "bg-white border border-gray-200 flex flex-col",
+            isMobile ? "fixed left-4 right-3 bottom-1 rounded-lg shadow-xl" : "rounded-t-lg shadow-xl w-[380px]",
+          )}
+          style={{
+            height: isMobile ? "auto" : "calc(100vh - 110px)",
+            maxHeight: isMobile ? "calc(100vh - 100px)" : "calc(100vh - 110px)",
+          }}
+        >
+          <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200">
+            <div className="flex items-center gap-2">
+              <MessageCircle size={20} className="text-blue-600" />
+              <span className="font-medium text-gray-900">{t("messaging")}</span>
+            </div>
+            <button
+              onClick={toggleMessaging}
+              className="text-gray-500 hover:text-gray-700 rounded-full p-1 hover:bg-gray-100 transition-colors"
+            >
+              <X size={20} />
+            </button>
+          </div>
 
-              <div className="flex border-b border-gray-200">
-                <button className={`flex-1 py-2 px-4 font-semibold ${activeTab === 'odakli' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'}`} onClick={() => setActiveTab('odakli')}>
-                  {t('message_tab')}
-                </button>
-                {hasAITab && (
-                  <button className={`flex-1 py-2 px-4 font-semibold ${activeTab === 'diger' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500'}`} onClick={() => setActiveTab('diger')}>
-                    {t('ai_tab')}
-                  </button>
+          {/* Only show tabs if hasAITab is true */}
+          {hasAITab && (
+            <div className="flex border-b border-gray-200">
+              <button
+                className={cn(
+                  "flex-1 py-2.5 px-4 font-medium text-sm transition-colors relative",
+                  activeTab === "odakli"
+                    ? "text-blue-600 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-blue-600"
+                    : "text-gray-600 hover:text-blue-600",
                 )}
-              </div>
+                onClick={() => {
+                  setActiveTab("odakli")
+                  setShowUsersList(false)
+                }}
+              >
+                {t("message_tab")}
+              </button>
+              <button
+                className={cn(
+                  "flex-1 py-2.5 px-4 font-medium text-sm transition-colors relative",
+                  activeTab === "diger"
+                    ? "text-blue-600 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-blue-600"
+                    : "text-gray-600 hover:text-blue-600",
+                )}
+                onClick={() => {
+                  setActiveTab("diger")
+                  setShowUsersList(false)
+                }}
+              >
+                {t("ai_tab")}
+              </button>
+            </div>
+          )}
 
-              <div className="flex-grow overflow-y-auto">
-                {activeTab === 'odakli' ? (
-                  <div className="flex flex-col h-full">
-                    <div className="p-4 border-b border-gray-200">
-                      <input
-                        type="text"
-                        className="w-full p-2 border rounded-md"
-                        placeholder={t('search_users')}
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                      />
+          {!selectedConversation && activeTab === "odakli" ? (
+            <>
+              <div className="p-4 border-b border-gray-200 bg-gray-50">
+                <div className="flex items-center gap-2 bg-white rounded-lg shadow-sm">
+                  <Input
+                    type="text"
+                    placeholder={showUsersList ? t("search_users") : t("search_conversations")}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                  />
+                  <button
+                    onClick={() => {
+                      setShowUsersList((prev) => !prev)
+                      setSearchTerm("")
+                    }}
+                    className={cn(
+                      "p-2 rounded-md transition-colors",
+                      showUsersList
+                        ? "text-blue-600 hover:bg-blue-50"
+                        : "text-gray-400 hover:text-blue-600 hover:bg-gray-100",
+                    )}
+                    title={showUsersList ? t("show_conversations") : t("new_conversation")}
+                  >
+                    <UserPlus size={20} />
+                  </button>
+                </div>
+              </div>
+              <ScrollArea
+                className="flex-1 overflow-y-auto"
+                style={{
+                  maxHeight: isMobile ? "calc(100vh - 280px)" : undefined,
+                }}
+              >
+                <div className="p-3">
+                  {(loading || usersLoading) && (
+                    <p className="text-sm text-gray-500 text-center py-4">{t("loading")}</p>
+                  )}
+                  {error && (
+                    <p className="text-sm text-red-500 text-center py-4">
+                      {t("error")} {error}
+                    </p>
+                  )}
+
+                  {showUsersList ? (
+                    <div className="space-y-2">
+                      {filteredUsers.map((user) => (
+                        <div
+                          key={user.email}
+                          onClick={() => handleCreateConversation(user)}
+                          className={cn(
+                            "p-4 rounded-lg border transition-all",
+                            hasExistingConversation(user.email)
+                              ? "border-gray-200 bg-gray-50 cursor-not-allowed opacity-50"
+                              : "border-gray-200 hover:border-blue-200 hover:bg-blue-50 cursor-pointer shadow-sm",
+                          )}
+                        >
+                          <div className="font-medium text-gray-900">{user.username}</div>
+                          <div className="text-sm text-gray-500 mt-1">{user.email}</div>
+                          {hasExistingConversation(user.email) && (
+                            <div className="text-xs text-gray-500 mt-2 bg-gray-100 px-2 py-1 rounded w-fit">
+                              {t("conversation_exists")}
+                            </div>
+                          )}
+                        </div>
+                      ))}
                     </div>
-                    
-                    <div className="flex-grow overflow-y-auto p-2">
-                      {filteredConversations.length > 0 ? (
-                        filteredConversations.map((conversation) => {
-                          const lastReceivedMessage = [...conversation.messages].reverse().find(msg => msg.type === 'received');
-                          return (
-                            <div key={conversation.from} className="p-4 mb-2 cursor-pointer hover:bg-gray-100 border border-gray-300 rounded-md" onClick={() => handleConversationClick(conversation)}>
-                              <div className="font-semibold truncate max-w-full">{conversation.senderName}</div>
+                  ) : (
+                    <div className="space-y-2">
+                      {conversations.length > 0 ? (
+                        conversations
+                          .filter((conversation) =>
+                            conversation.user2_name.toLowerCase().includes(searchTerm.toLowerCase()),
+                          )
+                          .map((conversation) => (
+                            <div
+                              key={conversation.id}
+                              onClick={() => setSelectedConversation(conversation)}
+                              className="p-4 rounded-lg border border-gray-200 hover:border-blue-200 hover:bg-blue-50 cursor-pointer transition-all shadow-sm"
+                            >
+                              <div className="font-medium text-gray-900">{conversation.user2_name}</div>
                               {conversation.topic && (
-                                <div className="flex items-center text-sm text-gray-500 mt-1 truncate max-w-full">
-                                  <Tag size={14} className="mr-1" />
+                                <div className="text-sm text-gray-500 mt-2 bg-gray-50 px-2 py-1 rounded-md">
                                   {conversation.topic}
                                 </div>
                               )}
-                              <div className="text-sm font-bold mt-1 text-gray-500">
-                                {lastReceivedMessage?.message || ''}
-                              </div>
                             </div>
-                          );
-                        })
+                          ))
                       ) : (
-                        <div className="text-gray-500 text-center p-4">{t('no_messages')}</div>
+                        <div className="text-sm text-gray-500 text-center py-8">{t("no_messages")}</div>
                       )}
                     </div>
-                  </div>
-                ) : (
-                  hasAITab && <AIComponent api={userApi} />
-                )}
-              </div>
+                  )}
+                </div>
+              </ScrollArea>
             </>
           ) : (
-            <Conversation conversation={selectedConversation} onBack={handleBack} apiUrl={apiUrl} />
+            selectedConversation && (
+              <Conversation
+                conversation={selectedConversation}
+                onBack={() => setSelectedConversation(null)}
+                apiUrl={apiUrl}
+              />
+            )
           )}
+
+          {hasAITab && activeTab === "diger" && <AIComponent api={(msg) => {}} />}
         </div>
       )}
+      <PollingComponent apiUrl={apiUrl} />
     </div>
-  );
-};
+  )
+}
 
-export default Messaging;
+export default Messaging
