@@ -177,6 +177,7 @@
   "search_conversations": "Search conversations",
   "conversation_exists": "Conversation already exists",
   "confirm_delete": "Are you sure?",
-  "delete_conversation_error": "Failed to delete conversation"
-  
+  "delete_conversation_error": "Failed to delete conversation",
+  "delete_message_error": "Failed to delete message"
+
 }

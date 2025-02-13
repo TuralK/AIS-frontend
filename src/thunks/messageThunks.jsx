@@ -1,8 +1,7 @@
-// src/redux/slices/messagingSlice.js
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { getConversations, getConversationMessages, createConversation, deleteConversation, sendMessageApi, getUsers } from '../api/messageApi';
+import { getConversations, getConversationMessages, createConversation, deleteConversation, sendMessageApi, getUsers, deleteMessage } from '../api/messageApi';
 
-// Konuşmaları çekmek için thunk
+// To fetch all conversations of user
 export const fetchConversationsThunk = createAsyncThunk(
     'messaging/fetchConversations',
     async (apiUrl, thunkAPI) => {
@@ -15,7 +14,7 @@ export const fetchConversationsThunk = createAsyncThunk(
     }
 );
 
-// Belirli bir konuşmanın mesajlarını çekmek için thunk
+// To fetch messages of a conversation with using conversationId parameter
 export const fetchConversationMessagesThunk = createAsyncThunk(
     'messaging/fetchConversationMessages',
     async ({ apiUrl, conversationId }, thunkAPI) => {
@@ -28,7 +27,7 @@ export const fetchConversationMessagesThunk = createAsyncThunk(
     }
 );
 
-// Konuşma oluşturmak için thunk
+// To create a conversation
 export const createConversationThunk = createAsyncThunk(
     'messaging/createConversation',
     async ({ apiUrl, receiverEmail, receiverName }, thunkAPI) => {
@@ -43,7 +42,7 @@ export const createConversationThunk = createAsyncThunk(
     }
 );
 
-// Konuşma silmek için thunk
+// To delete a conversation
 export const deleteConversationThunk = createAsyncThunk(
     'messaging/deleteConversation',
     async ({ apiUrl, conversationId }, thunkAPI) => {
@@ -58,6 +57,7 @@ export const deleteConversationThunk = createAsyncThunk(
     }
 );
 
+// To send a message
 export const sendMessageThunk = createAsyncThunk(
     'messages/sendMessage',
     async ({ apiUrl, conversationId, message, file = null }, thunkAPI) => {
@@ -70,7 +70,7 @@ export const sendMessageThunk = createAsyncThunk(
     }
 );
 
-// Kullanıcıları çekme thunk
+// To fetch users
 export const fetchUsersThunk = createAsyncThunk(
     'messaging/fetchUsers',
     async (apiUrl, { rejectWithValue }) => {
@@ -80,4 +80,18 @@ export const fetchUsersThunk = createAsyncThunk(
         } catch (error) {
             return rejectWithValue(error.response?.data || error.message);
         }
-    });
+});
+
+// To delete a message
+export const deleteMessageThunk = createAsyncThunk(
+    "messaging/deleteMessage",
+    async ({ apiUrl, messageId }, thunkAPI) => {
+        try {
+            const result = await deleteMessage(apiUrl, messageId);
+            //thunkAPI.dispatch(fetchConversationMessagesThunk({ apiUrl, conversationId }));
+            return result;
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error.message);
+        }
+    }
+);

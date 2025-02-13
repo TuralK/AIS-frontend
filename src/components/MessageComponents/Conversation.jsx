@@ -7,7 +7,7 @@ import {
   sendMessageThunk,
   fetchConversationMessagesThunk,
   deleteConversationThunk,
-  
+  deleteMessageThunk,
 } from "../../thunks/messageThunks"
 import { scrollToBottom } from "../../utils/conversationUtils"
 import {
@@ -28,11 +28,11 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
   const messages = useSelector((state) =>
     selectConversationMessages(state, conversationId)
   )
+  const loading = useSelector((state) => state.messaging.loading)
   const conversation = useSelector((state) =>
     state.messaging.conversations.find((conv) => conv.id === conversationId)
   )
 
-  // Find the other person's name
   const otherPersonName = conversation.user2_name
   const senderName = conversation.user1_email
 
@@ -49,7 +49,7 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
 
   useEffect(() => {
     scrollToBottom(messagesEndRef)
-  }, [messages]) // Mesajlar her güncellendiğinde en alta kaydır
+  }, [messages])
 
   const handleSend = async (newMessage) => {
     if (!newMessage.trim()) return
@@ -109,7 +109,7 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
   }
 
   return (
-    <div className="flex flex-col h-full max-h-[470px] w-full border bg-white">
+    <div className="flex flex-col h-full max-h-[90%] w-full border bg-white">
       {/* Header */}
       <div className="flex justify-between items-center p-4 border-b">
         <div className="flex items-center gap-2">
@@ -149,10 +149,16 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto flex flex-col">
-        {messages.length > 0 ? (
-          <div className="p-1 space-y-2">
+        {loading ? (
+          <div className="flex-1 flex items-center justify-center">
+            {/* Loading spinner */}
+            <div className="w-8 h-8 border-4 border-t-[#8B0000] border-gray-200 rounded-full animate-spin"></div>
+          </div>
+        ) : messages.length > 0 ? (
+          <div className="p-4 space-y-2">
             {messages.map((msg) => {
               const isSender = msg.from === senderName
+
               return (
                 <div
                   key={msg.id}
@@ -160,47 +166,6 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
                     isSender ? "justify-end" : "justify-start"
                   } group items-center gap-2`}
                 >
-                  {!isSender && (
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                      {isSelectionMode ? (
-                        <Checkbox
-                          checked={selectedMessages.includes(msg.id)}
-                          onCheckedChange={() => toggleMessageSelection(msg.id)}
-                          className="ml-2"
-                        />
-                      ) : (
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <button className="p-1 rounded-full hover:bg-gray-200 transition-colors">
-                              <MoreVertical size={16} className="text-gray-600" />
-                            </button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="start" className="w-24">
-                            <DropdownMenuItem
-                              onClick={() => handleDeleteMessage(msg.id)}
-                              className="text-red-600 focus:text-red-600 focus:bg-red-50 cursor-pointer"
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              <span>{t("delete")}</span>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      )}
-                    </div>
-                  )}
-                  <div
-                    className={`max-w-[75%] rounded-lg p-3 ${
-                      isSender
-                        ? "bg-[rgb(154,18,32)] text-white"
-                        : "bg-gray-300 text-black"
-                    } ${msg.isTemp ? "opacity-50" : ""}`}
-                  >
-                    <p className={`${isSender ? "text-right" : "text-left"}`}>
-                      {msg.message}
-                      {msg.isTemp && <span className="text-xs ml-2">⌛</span>}
-                    </p>
-                  </div>
-
                   {isSender && (
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity">
                       {isSelectionMode ? (
@@ -229,13 +194,26 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
                       )}
                     </div>
                   )}
+
+                  {/* Message box */}
+                  <div
+                    className={`max-w-[75%] rounded-lg p-3 ${
+                      isSender
+                        ? "bg-[rgb(154,18,32)] text-white"
+                        : "bg-gray-200 text-black"
+                    } ${msg.isTemp ? "opacity-50" : ""}`}
+                  >
+                    <p className={`${isSender ? "text-right" : "text-left"}`}>
+                      {msg.message}
+                      {msg.isTemp && <span className="text-xs ml-2">⌛</span>}
+                    </p>
+                  </div>
                 </div>
               )
             })}
             <div ref={messagesEndRef} />
           </div>
         ) : (
-          
           <div className="flex-1 flex items-center justify-center text-gray-500">
             {t("start_conversation")}
           </div>

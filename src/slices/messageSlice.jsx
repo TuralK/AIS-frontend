@@ -51,9 +51,7 @@ const messagingSlice = createSlice({
       })
       .addCase(sendMessageThunk.fulfilled, (state, action) => {
         state.loading = false;
-        // Örneğin, gönderilen mesajı ilgili conversationMessages altına ekleyebilirsiniz.
-        // state.conversationMessages[conversationId] = updatedMessages; 
-        // Veya güncel veriyi yeniden çekmek için farklı bir thunk kullanabilirsiniz.
+        
       })
       .addCase(sendMessageThunk.rejected, (state, action) => {
         state.loading = false;

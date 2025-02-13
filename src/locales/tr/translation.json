@@ -169,5 +169,6 @@
   "search_conversations" : "Sohbetleri ara",
   "conversation_exists": "Bu sohbet zaten var",
   "confirm_delete" : "Silmeyi onayla",
-  "delete_conversation_error": "Sohbet silinemedi"
+  "delete_conversation_error": "Sohbet silinemedi",
+  "delete_message_error": "Mesaj silinemedi"
 }

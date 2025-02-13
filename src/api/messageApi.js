@@ -1,7 +1,5 @@
-// src/api/conversationApi.js
 import axios from "axios";
 
-// Kullanıcıları getir (secretary, students, companies birleşik)
 export const getUsers = async (apiUrl) => {
   try {
     const response = await axios.get(`${apiUrl}/users`, {
@@ -10,12 +8,11 @@ export const getUsers = async (apiUrl) => {
     
     return response.data.allUsers;
   } catch (error) {
-    console.error("Kullanıcılar getirilemedi:", error);
+    console.error("Users could not fetch:", error);
     throw error;
   }
 };
 
-// Konuşmaları getir
 export const getConversations = async (apiUrl) => {
   try {
     const response = await axios.get(`${apiUrl}/conversations`, {
@@ -24,12 +21,11 @@ export const getConversations = async (apiUrl) => {
     
     return response.data.conversations;
   } catch (error) {
-    console.error("Konuşmalar getirilemedi:", error);
+    console.error("Conversations could not fetch:", error);
     throw error;
   }
 };
 
-// Yeni bir konuşma oluştur
 export const createConversation = async (apiUrl, receiverEmail, receiverName) => {
   try {
     const response = await axios.post(
@@ -39,12 +35,11 @@ export const createConversation = async (apiUrl, receiverEmail, receiverName) =>
     );
     return response.data.conversations;
   } catch (error) {
-    console.error("Konuşma oluşturulamadı:", error);
+    console.error("Conversation could not create:", error);
     throw error;
   }
 };
 
-// Belirli bir konuşmanın mesajlarını getir
 export const getConversationMessages = async (apiUrl, conversationId) => {
   try {
     const response = await axios.get(`${apiUrl}/conversations/${conversationId}`, {
@@ -53,12 +48,12 @@ export const getConversationMessages = async (apiUrl, conversationId) => {
     
     return response.data.messages;
   } catch (error) {
-    console.error("Konuşma mesajları getirilemedi:", error);
+    console.error("Messages did not fetch:", error);
     throw error;
   }
 };
 
-// Bir konuşmayı sil (veya soft-delete yap)
+
 export const deleteConversation = async (apiUrl, conversationId) => {
   try {
     const response = await axios.delete(`${apiUrl}/conversations/${conversationId}`, {
@@ -66,14 +61,14 @@ export const deleteConversation = async (apiUrl, conversationId) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Konuşma silinemedi:", error);
+    console.error("Conversation did not delete:", error);
     throw error;
   }
 };
 
-// Bir mesaj gönderme api
+
 export const sendMessageApi = async (apiUrl, conversationId, message, file = null) => {
-  // FormData oluşturuluyor
+  
   const formData = new FormData();
   formData.append('conversationId', conversationId);
   formData.append('message', message);
@@ -90,4 +85,17 @@ export const sendMessageApi = async (apiUrl, conversationId, message, file = nul
   });
   
   return response.data;
+};
+
+
+export const deleteMessage = async (apiUrl, messageId) => {
+  try {
+    const response = await axios.delete(`${apiUrl}/deleteMessage/${messageId}`, {
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Message could not delete:", error);
+    throw error;
+  }
 };
