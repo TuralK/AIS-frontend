@@ -7,7 +7,7 @@ export const getUsers = async (apiUrl) => {
     const response = await axios.get(`${apiUrl}/users`, {
       withCredentials: true,
     });
-    console.log("Users:", response.data.allUsers);
+    
     return response.data.allUsers;
   } catch (error) {
     console.error("Kullanıcılar getirilemedi:", error);
@@ -21,7 +21,7 @@ export const getConversations = async (apiUrl) => {
     const response = await axios.get(`${apiUrl}/conversations`, {
       withCredentials: true,
     });
-    console.log("Conversations:", response.data);
+    
     return response.data.conversations;
   } catch (error) {
     console.error("Konuşmalar getirilemedi:", error);
@@ -50,7 +50,7 @@ export const getConversationMessages = async (apiUrl, conversationId) => {
     const response = await axios.get(`${apiUrl}/conversations/${conversationId}`, {
       withCredentials: true,
     });
-    console.log("Messages:", response.data.messages);
+    
     return response.data.messages;
   } catch (error) {
     console.error("Konuşma mesajları getirilemedi:", error);

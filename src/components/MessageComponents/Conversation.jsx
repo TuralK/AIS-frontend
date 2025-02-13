@@ -1,13 +1,21 @@
-"use client"
-
 import { useState, useEffect, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { ArrowLeft, MoreVertical, Trash2, X } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import RoundedInput from "./MessageInputComp"
-import { sendMessageThunk, fetchConversationMessagesThunk, deleteConversationThunk } from "../../thunks/messageThunks"
+import {
+  sendMessageThunk,
+  fetchConversationMessagesThunk,
+  deleteConversationThunk,
+  
+} from "../../thunks/messageThunks"
 import { scrollToBottom } from "../../utils/conversationUtils"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown"
 import { Checkbox } from "../ui/checkbox"
 import ErrorMessage from "../ui/error_message"
 import { selectConversationMessages } from "../../selectors/conversation_selector"
@@ -17,14 +25,16 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
   const dispatch = useDispatch()
   const conversationId = initialConversation.id
 
-  const messages = useSelector((state) => selectConversationMessages(state, conversationId))
+  const messages = useSelector((state) =>
+    selectConversationMessages(state, conversationId)
+  )
   const conversation = useSelector((state) =>
     state.messaging.conversations.find((conv) => conv.id === conversationId)
-  );
+  )
 
   // Find the other person's name
-  const otherPersonName = conversation.user2_name;
-  const senderName = conversation.user1_email;
+  const otherPersonName = conversation.user2_name
+  const senderName = conversation.user1_email
 
   const [errorSendingMessage, setErrorSendingMessage] = useState(false)
   const [isSelectionMode, setIsSelectionMode] = useState(false)
@@ -39,7 +49,7 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
 
   useEffect(() => {
     scrollToBottom(messagesEndRef)
-  }, [messages])
+  }, [messages]) // Mesajlar her güncellendiğinde en alta kaydır
 
   const handleSend = async (newMessage) => {
     if (!newMessage.trim()) return
@@ -48,7 +58,16 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
       const topic = initialConversation.messages?.[0]?.topic || ""
       const receiverEmail = initialConversation.from
 
-      await dispatch(sendMessageThunk({ apiUrl, conversationId, message: newMessage, topic, receiverEmail })).unwrap()
+      await dispatch(
+        sendMessageThunk({
+          apiUrl,
+          conversationId,
+          message: newMessage,
+          topic,
+          receiverEmail,
+        })
+      ).unwrap()
+
       setErrorSendingMessage(false)
       dispatch(fetchConversationMessagesThunk({ apiUrl, conversationId }))
     } catch (error) {
@@ -73,20 +92,32 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
 
   const toggleMessageSelection = (messageId) => {
     setSelectedMessages((prev) =>
-      prev.includes(messageId) ? prev.filter((id) => id !== messageId) : [...prev, messageId],
+      prev.includes(messageId)
+        ? prev.filter((id) => id !== messageId)
+        : [...prev, messageId]
     )
   }
 
+  const handleDeleteMessage = async (messageId) => {
+    try {
+      await dispatch(deleteMessageThunk({ apiUrl, messageId })).unwrap()
+      dispatch(fetchConversationMessagesThunk({ apiUrl, conversationId }))
+    } catch (error) {
+      console.error("Message deletion failed:", error)
+      alert(t("delete_message_error"))
+    }
+  }
+
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex justify-between items-center p-4 border-b-2 border-gray-300 shadow-sm">
+    <div className="flex flex-col h-full max-h-[470px] w-full border bg-white">
+      {/* Header */}
+      <div className="flex justify-between items-center p-4 border-b">
         <div className="flex items-center gap-2">
           <button onClick={onBack} className="text-gray-800 hover:text-gray-900">
             <ArrowLeft size={20} />
           </button>
           <span className="font-semibold">{otherPersonName}</span>
         </div>
-
         <div className="flex items-center gap-2">
           {showDeleteConfirmation ? (
             <>
@@ -98,7 +129,10 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
                 <Trash2 size={16} />
                 <span className="hidden sm:inline">{t("confirm_delete")}</span>
               </button>
-              <button onClick={() => setShowDeleteConfirmation(false)} className="text-gray-600 hover:text-gray-800">
+              <button
+                onClick={() => setShowDeleteConfirmation(false)}
+                className="text-gray-600 hover:text-gray-800"
+              >
                 <X size={20} />
               </button>
             </>
@@ -113,15 +147,18 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
         </div>
       </div>
 
-      <div className="flex-grow overflow-y-auto pt-2 mx-auto w-full max-w-2xl">
-        <div className="flex flex-col space-y-2">
-          {messages.length > 0 ? (
-            messages.map((msg) => {
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto flex flex-col">
+        {messages.length > 0 ? (
+          <div className="p-1 space-y-2">
+            {messages.map((msg) => {
               const isSender = msg.from === senderName
               return (
                 <div
                   key={msg.id}
-                  className={`w-full flex ${isSender ? 'justify-end' : 'justify-start'} group items-center gap-2`}
+                  className={`w-full flex ${
+                    isSender ? "justify-end" : "justify-start"
+                  } group items-center gap-2`}
                 >
                   {!isSender && (
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity">
@@ -151,14 +188,14 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
                       )}
                     </div>
                   )}
-
                   <div
-                    className={`max-w-[75%] rounded-lg p-3 ${isSender
+                    className={`max-w-[75%] rounded-lg p-3 ${
+                      isSender
                         ? "bg-[rgb(154,18,32)] text-white"
                         : "bg-gray-300 text-black"
-                      } ${msg.isTemp ? "opacity-50" : ""}`}
+                    } ${msg.isTemp ? "opacity-50" : ""}`}
                   >
-                    <p className={`${isSender ? 'text-right' : 'text-left'}`}>
+                    <p className={`${isSender ? "text-right" : "text-left"}`}>
                       {msg.message}
                       {msg.isTemp && <span className="text-xs ml-2">⌛</span>}
                     </p>
@@ -194,21 +231,26 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
                   )}
                 </div>
               )
-            })
-          ) : (
-            <p className="text-gray-500">{t("start_conversation")}</p>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
+            })}
+            <div ref={messagesEndRef} />
+          </div>
+        ) : (
+          
+          <div className="flex-1 flex items-center justify-center text-gray-500">
+            {t("start_conversation")}
+          </div>
+        )}
       </div>
 
+      {/* Error message */}
       {errorSendingMessage && (
-        <div className="mt-2 p-2">
+        <div className="p-2">
           <ErrorMessage message="Mesaj gönderilemedi" />
         </div>
       )}
 
-      <div className="p-2">
+      {/* Bottom part: Input component */}
+      <div className="border-t p-2 bg-white">
         <RoundedInput onSend={handleSend} />
       </div>
     </div>
