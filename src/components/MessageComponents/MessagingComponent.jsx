@@ -12,11 +12,10 @@ import { cn } from "../../utils/utils"
 import { Input } from "../ui/input"
 import { ScrollArea } from "../ui/scroll_area"
 
-const Messaging = ({ hasAITab, apiUrl }) => {
+const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle }) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { conversations, loading, error, users, usersLoading } = useSelector((state) => state.messaging)
-  const [isOpen, setIsOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("odakli")
   const [selectedConversation, setSelectedConversation] = useState(null)
   const [searchTerm, setSearchTerm] = useState("")
@@ -62,7 +61,7 @@ const Messaging = ({ hasAITab, apiUrl }) => {
   }
 
   const toggleMessaging = () => {
-    setIsOpen((prev) => !prev)
+    onToggle(!isOpen)
     setSelectedConversation(null)
     setShowUsersList(false)
   }

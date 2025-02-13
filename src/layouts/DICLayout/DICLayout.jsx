@@ -112,7 +112,8 @@ export const DICLayout = () => {
   const [userName, setUserName] = useState('');
   const [loading, setLoading] = useState(true);
   const { t, i18n } = useTranslation();
-  const [ apiUrl, setApiUrl ] = useState('http://localhost:3003');
+  const [isMessagingOpen, setIsMessagingOpen] = useState(false)
+  const [apiUrl, setApiUrl] = useState('http://localhost:3003');
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -257,7 +258,10 @@ export const DICLayout = () => {
 
                 <div style={{ position: 'relative' }} ref={userMenuRef}>
                   <button
-                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    onClick={() => {
+                      setIsUserMenuOpen(!isUserMenuOpen)
+                      setIsMessagingOpen(false)
+                    }}
                     style={{
                       ...styles.menuItem,
                       display: 'flex',
@@ -411,7 +415,12 @@ export const DICLayout = () => {
       <main>
         <Outlet />
       </main>
-      <Messaging hasAITab={false} apiUrl={apiUrl} />
+      <Messaging
+        hasAITab={false}
+        apiUrl={apiUrl}
+        isOpen={isMessagingOpen}
+        onToggle={setIsMessagingOpen}
+      />
     </div>
   );
 };
