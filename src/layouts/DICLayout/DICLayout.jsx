@@ -112,7 +112,7 @@ export const DICLayout = () => {
   const [userName, setUserName] = useState('');
   const [loading, setLoading] = useState(true);
   const { t, i18n } = useTranslation();
-  const [isMessagingOpen, setIsMessagingOpen] = useState(false)
+  const [isMessagingOpen, setIsMessagingOpen] = useState(false);
   const [apiUrl, setApiUrl] = useState('http://localhost:3003');
 
   const location = useLocation();
@@ -305,7 +305,10 @@ export const DICLayout = () => {
 
             {isMobile && (
               <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              onClick={() => {
+                setIsUserMenuOpen(!isUserMenuOpen)
+                setIsMessagingOpen(false)
+              }}
                 style={{
                   ...styles.mobileMenuButton,
                   display: 'flex',

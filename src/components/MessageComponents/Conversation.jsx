@@ -43,6 +43,17 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const [attachedFile, setAttachedFile] = useState(null)
   const messagesEndRef = useRef(null)
+  
+  // Ekran boyutuna göre isMobile ayarı
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    handleResize()
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
 
   useEffect(() => {
     dispatch(fetchConversationMessagesThunk({ apiUrl, conversationId }))
@@ -142,7 +153,12 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
   }
 
   return (
-    <div className="flex flex-col h-full max-h-[90%] w-full border bg-white">
+    // Mobilde tam ekran, genişte eski stil
+    <div
+      className={`flex flex-col w-full border bg-white ${
+        isMobile ? "h-screen" : "h-full max-h-[90%]"
+      }`}
+    >
       {/* Header */}
       <div className="flex justify-between items-center p-4 border-b">
         <div className="flex items-center gap-2">
@@ -181,13 +197,13 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto flex flex-col">
+      <div className={`flex-1 overflow-y-auto flex flex-col ${isMobile ? "pb-36" : "pb-0"}`}>
         {loading ? (
           <div className="flex-1 flex items-center justify-center">
             <div className="w-8 h-8 border-4 border-t-[#8B0000] border-gray-200 rounded-full animate-spin"></div>
           </div>
         ) : messages.length > 0 ? (
-          <div className="p-4 space-y-2">
+          <div className={`p-4  space-y-2`}>
             {messages.map((msg) => {
               const isSender = msg.from === senderName
 
@@ -218,7 +234,7 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
                           </DropdownMenuTrigger>
                           <DropdownMenuContent
                             align="start"
-                            className="min-w-[120px] bg-white border border-gray-200 rounded-lg shadow-lg"
+                            className="min-w-[120px] bg-white border border-gray-200 rounded-lg shadow-lg mr-50"
                             sideOffset={5}
                             collisionPadding={10}
                             style={{
@@ -300,8 +316,8 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
         </div>
       )}
 
-      {/* Bottom part: File attachment + Input */}
-      <div className="border-t p-2 bg-white">
+      {/* Alt input (mobilde de görünür) */}
+      <div className="sticky bottom-0 border-t p-2 bg-white">
         {attachedFile && (
           <div className="mb-2 flex items-center justify-between bg-gray-100 p-2 rounded">
             <span className="text-sm text-gray-800 truncate">{attachedFile.name}</span>

@@ -12,7 +12,7 @@ import { cn } from "../../utils/utils"
 import { Input } from "../ui/input"
 import { ScrollArea } from "../ui/scroll_area"
 
-const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle }) => {
+const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle, userApi }) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { conversations, loading, error, users, usersLoading } = useSelector((state) => state.messaging)
@@ -196,7 +196,7 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle }) => {
                     </div>
                   ) : error ? (
                     <p className="text-sm text-red-500 text-center py-4">
-                      {t("error")} {error}
+                      {t("error")} 
                     </p>
                   ) : showUsersList ? (
                     <div className="space-y-2">
@@ -264,7 +264,7 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle }) => {
             )
           )}
 
-          {hasAITab && activeTab === "diger" && <AIComponent api={(msg) => { }} />}
+          {hasAITab && activeTab === "diger" && <AIComponent api={userApi} />}
         </div>
       )}
       <PollingComponent apiUrl={apiUrl} />

@@ -10,102 +10,102 @@ import Messaging from '../../components/MessageComponents/MessagingComponent.jsx
 import sendMessageToAI from '../../api/StudentApi/aiChatApi.js';
 
 const styles = {
-    nav: {
-      backgroundColor: '#9a1220',
-      color: 'white',
-    },
-    container: {
-      maxWidth: '1280px',
-      margin: '0 auto',
-      padding: '0 1rem',
-    },
-    flexBetween: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      height: '100px',
-    },
-    flexCenter: {
-      display: 'flex',
-      alignItems: 'center',
-    },
-    logo: {
-      height: '70px',
-      width: 'auto',
-    },
-    titleContainer: {
-      marginLeft: '1rem',
-    },
-    title: {
-      fontSize: '1.75rem',
-      fontWeight: 'bold',
-    },
-    subtitle: {
-      fontSize: '1.25rem',
-    },
-    desktopMenu: {
-      display: 'flex',
-      alignItems: 'center',
-    },
-    mobileMenuButton: {
-      display: 'none',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '0.5rem',
-      color: 'white',
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: '0.375rem',
-      cursor: 'pointer',
-    },
-    mobileMenu: {
-      padding: '0.5rem 1rem 1rem',
-    },
-    dropdownMenu: {
-      position: 'absolute',
-      right: 0,
-      marginTop: '0.5rem',
-      width: '12rem',
-      backgroundColor: 'white',
-      borderRadius: '0.375rem',
-      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-      zIndex: 10,
-    },
-    dropdownItem: {
-      display: 'block',
-      padding: '0.75rem 1rem',
-      fontSize: '1.125rem',
-      color: '#333',
-      transition: 'background-color 0.3s ease',
-    },
-    profilePhoto: {
-      width: '40px',
-      height: '40px',
-      borderRadius: '50%',
-      marginRight: '0.5rem',
-    },
-    menuItem: {
-      padding: '0.75rem 1rem',
-      fontSize: '1.125rem', // Normal durumdaki yazı boyutu
-      fontWeight: '400',    // Normal durumdaki yazı kalınlığı
-      cursor: 'pointer',
-      transition: 'all 0.3s ease',
-      position: 'relative',
-      textDecoration: 'none',
-      color: '#ffffffcc',
-    },
-    activeIndicator: {  
-      position: 'absolute',
-      bottom: '-2px', // Çizgiyi tam altında konumlandır
-      left: 0,
-      width: '100%',
-      height: '3px', // Çizgi kalınlığı
-      backgroundColor: '#00ffff', // Çizgi rengi - istediğiniz renge değiştirebilirsiniz
-      transform: 'scaleX(0)',
-      transition: 'transform 0.3s ease',
-      transformOrigin: 'left'
-    },
-  }
+  nav: {
+    backgroundColor: '#9a1220',
+    color: 'white',
+  },
+  container: {
+    maxWidth: '1280px',
+    margin: '0 auto',
+    padding: '0 1rem',
+  },
+  flexBetween: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: '100px',
+  },
+  flexCenter: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  logo: {
+    height: '70px',
+    width: 'auto',
+  },
+  titleContainer: {
+    marginLeft: '1rem',
+  },
+  title: {
+    fontSize: '1.75rem',
+    fontWeight: 'bold',
+  },
+  subtitle: {
+    fontSize: '1.25rem',
+  },
+  desktopMenu: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  mobileMenuButton: {
+    display: 'none',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '0.5rem',
+    color: 'white',
+    backgroundColor: 'transparent',
+    border: 'none',
+    borderRadius: '0.375rem',
+    cursor: 'pointer',
+  },
+  mobileMenu: {
+    padding: '0.5rem 1rem 1rem',
+  },
+  dropdownMenu: {
+    position: 'absolute',
+    right: 0,
+    marginTop: '0.5rem',
+    width: '12rem',
+    backgroundColor: 'white',
+    borderRadius: '0.375rem',
+    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+    zIndex: 10,
+  },
+  dropdownItem: {
+    display: 'block',
+    padding: '0.75rem 1rem',
+    fontSize: '1.125rem',
+    color: '#333',
+    transition: 'background-color 0.3s ease',
+  },
+  profilePhoto: {
+    width: '40px',
+    height: '40px',
+    borderRadius: '50%',
+    marginRight: '0.5rem',
+  },
+  menuItem: {
+    padding: '0.75rem 1rem',
+    fontSize: '1.125rem', // Normal durumdaki yazı boyutu
+    fontWeight: '400',    // Normal durumdaki yazı kalınlığı
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    position: 'relative',
+    textDecoration: 'none',
+    color: '#ffffffcc',
+  },
+  activeIndicator: {
+    position: 'absolute',
+    bottom: '-2px', // Çizgiyi tam altında konumlandır
+    left: 0,
+    width: '100%',
+    height: '3px', // Çizgi kalınlığı
+    backgroundColor: '#00ffff', // Çizgi rengi - istediğiniz renge değiştirebilirsiniz
+    transform: 'scaleX(0)',
+    transition: 'transform 0.3s ease',
+    transformOrigin: 'left'
+  },
+}
 
 export const StudentLayout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -115,7 +115,8 @@ export const StudentLayout = () => {
   const [loading, setLoading] = useState(true);
   // const [isValidating, setIsValidating] = useState(false); // show loading while validating
   const { t, i18n } = useTranslation();
-  const [ apiUrl, setApiUrl ] = useState('http://localhost:3004');
+  const [isMessagingOpen, setIsMessagingOpen] = useState(false);
+  const [apiUrl, setApiUrl] = useState('http://localhost:3004');
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -129,12 +130,12 @@ export const StudentLayout = () => {
 
   //is mobile <a> hey!
   const userMenuRef = useRef(null)
-  
+
   //check if cookie exists in frontend
   useEffect(() => {
     validateStudent()
       .then(userData => {
-        setUserName(userData.username);      
+        setUserName(userData.username);
       })
       .catch(err => {
         alert(err || "An error occured");
@@ -175,9 +176,9 @@ export const StudentLayout = () => {
   ];
 
   const userMenuItems = [
-    {item: t('profile'), route: 'profile'},
-    {item: t('settings'), route: 'settings'},
-    {item: t('logout'), route: 'logout'}
+    { item: t('profile'), route: 'profile' },
+    { item: t('settings'), route: 'settings' },
+    { item: t('logout'), route: 'logout' }
   ];
 
   const handleDropdownItemClick = (action) => {
@@ -197,7 +198,7 @@ export const StudentLayout = () => {
 
   if (loading) {
     return (
-        <Loading />
+      <Loading />
     )
   }
 
@@ -216,7 +217,7 @@ export const StudentLayout = () => {
 
             {!isMobile && (
               <div style={styles.desktopMenu}>
-                {menuItems.map(({item, route}) => (
+                {menuItems.map(({ item, route }) => (
                   <NavLink
                     key={route}
                     to={`/student/${route}`}
@@ -225,7 +226,7 @@ export const StudentLayout = () => {
                       fontSize: isActive || location.pathname === '/student' && route === 'home' ? '1.25rem' : '1.125rem',
                       fontWeight: isActive || location.pathname === '/student' && route === 'home' ? '600' : '400',
                       color: isActive || location.pathname === '/student' && route === 'home' ? '#ffffff' : '#ffffffcc',
-                      borderBottom: isActive || location.pathname === '/student' && route === 'home' ? '4px solid #ffffff' : 'none',  
+                      borderBottom: isActive || location.pathname === '/student' && route === 'home' ? '4px solid #ffffff' : 'none',
                       position: 'relative'
                     })}
                     onMouseEnter={(e) => (e.target.style.backgroundColor = '#7d0e1a')}
@@ -235,7 +236,7 @@ export const StudentLayout = () => {
                   </NavLink>
                 ))}
 
-                <NavLink to={"/student/notifications" }
+                <NavLink to={"/student/notifications"}
                   href="#"
                   style={{
                     ...styles.menuItem,
@@ -244,7 +245,7 @@ export const StudentLayout = () => {
                   onMouseEnter={(e) => (e.target.style.backgroundColor = '#7d0e1a')}
                   onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
                 >
-                  <Bell size={24} /> 
+                  <Bell size={24} />
                 </NavLink>
 
                 <div>
@@ -268,7 +269,10 @@ export const StudentLayout = () => {
 
                 <div style={{ position: 'relative' }} ref={userMenuRef}>
                   <button
-                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    onClick={() => {
+                      setIsUserMenuOpen(!isUserMenuOpen)
+                      setIsMessagingOpen(false)
+                    }}
                     style={{
                       ...styles.menuItem,
                       display: 'flex',
@@ -287,11 +291,11 @@ export const StudentLayout = () => {
 
                   {isUserMenuOpen && (
                     <div style={styles.dropdownMenu}>
-                      {userMenuItems.map(({item, route}) => (
+                      {userMenuItems.map(({ item, route }) => (
                         <NavLink
                           key={route}
                           to={route !== 'logout' ? `/student/${route}` : '#'}
-                          >
+                        >
                           <a
                             key={item}
                             href="#"
@@ -310,7 +314,7 @@ export const StudentLayout = () => {
                             onMouseEnter={(e) => (e.target.style.backgroundColor = '#f3f4f6')}
                             onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
                           >
-                          {item}
+                            {item}
                           </a>
                         </NavLink>
                       ))}
@@ -321,7 +325,10 @@ export const StudentLayout = () => {
             )}
             {isMobile && (
               <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                onClick={() => {
+                  setIsUserMenuOpen(!isUserMenuOpen)
+                  setIsMessagingOpen(false)
+                }}
                 style={{
                   ...styles.mobileMenuButton,
                   display: 'flex',
@@ -341,7 +348,7 @@ export const StudentLayout = () => {
 
         {isMobile && isMenuOpen && (
           <div style={styles.mobileMenu}>
-            {menuItems.map(({item, route}) => (
+            {menuItems.map(({ item, route }) => (
               <NavLink
                 key={route}
                 to={`/student/${route}`}>
@@ -428,11 +435,11 @@ export const StudentLayout = () => {
           </div>
         )}
       </nav>
-      <main>    
+      <main>
         {/* { navigation.state === "loading" &&  <Loading /> } */}
         <Outlet />
       </main>
-      <Messaging hasAITab={true} userApi={sendMessageToAI} apiUrl={apiUrl}/>
+      <Messaging hasAITab={true} userApi={sendMessageToAI} apiUrl={apiUrl} isOpen={isMessagingOpen} onToggle={setIsMessagingOpen} />
     </div>
   )
 }
