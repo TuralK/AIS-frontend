@@ -2,37 +2,38 @@ import React, { useState, useRef, useEffect } from "react"
 import { ArrowUp, Square } from "lucide-react"
 import { useTranslation } from "react-i18next"
 
-const RoundedInput = ({ onSend }) => {
-  const [inputValue, setInputValue] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const textareaRef = useRef(null)
-  const { t } = useTranslation()
+const RoundedInput = ({ onSend, attachedFile }) => {
+  const [inputValue, setInputValue] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const textareaRef = useRef(null);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto"
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
-  }, [])
+  }, [inputValue]); 
 
   const handleSendMessage = async () => {
-    if (inputValue.trim() && !isLoading) {
-      setIsLoading(true)
-      try {
-        await onSend(inputValue)
-        setInputValue("")
-      } finally {
-        setIsLoading(false)
-      }
+    
+    if (!inputValue.trim() && !attachedFile) return;
+
+    setIsLoading(true);
+    try {
+      await onSend(inputValue);
+      setInputValue(""); 
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      handleSendMessage()
+      e.preventDefault();
+      handleSendMessage();
     }
-  }
+  };
 
   return (
     <div className="w-full max-w-full mx-auto px-1">
@@ -57,7 +58,8 @@ const RoundedInput = ({ onSend }) => {
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
+
 
 export default RoundedInput

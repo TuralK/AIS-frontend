@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { ArrowLeft, MoreVertical, Trash2, X } from "lucide-react"
+import { ArrowLeft, MoreVertical, Trash2, X, Paperclip } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import RoundedInput from "./MessageInputComp"
 import {
@@ -41,6 +41,7 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
   const [selectedMessages, setSelectedMessages] = useState([])
   const [isDeletingConversation, setIsDeletingConversation] = useState(false)
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
+  const [attachedFile, setAttachedFile] = useState(null)
   const messagesEndRef = useRef(null)
 
   useEffect(() => {
@@ -52,29 +53,30 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
   }, [messages])
 
   const handleSend = async (newMessage) => {
-    if (!newMessage.trim()) return
-
+    // Eğer hem mesaj hem de dosya yoksa gönderme yapma.
+    if (!newMessage.trim() && !attachedFile) return;
+  
+    // Eğer mesaj metni boşsa ama dosya varsa, mesajı boş string olarak gönderelim.
+    const messageToSend = newMessage.trim() ? newMessage : "";
+  
     try {
-      const topic = initialConversation.messages?.[0]?.topic || ""
-      const receiverEmail = initialConversation.from
-
       await dispatch(
         sendMessageThunk({
           apiUrl,
           conversationId,
-          message: newMessage,
-          topic,
-          receiverEmail,
+          message: messageToSend,
+          file: attachedFile,
         })
-      ).unwrap()
-
-      setErrorSendingMessage(false)
-      dispatch(fetchConversationMessagesThunk({ apiUrl, conversationId }))
+      ).unwrap();
+  
+      setErrorSendingMessage(false);
+      setAttachedFile(null);
+      dispatch(fetchConversationMessagesThunk({ apiUrl, conversationId }));
     } catch (error) {
-      setErrorSendingMessage(true)
-      setTimeout(() => setErrorSendingMessage(false), 4000)
+      setErrorSendingMessage(true);
+      setTimeout(() => setErrorSendingMessage(false), 4000);
     }
-  }
+  };    
 
   const handleDeleteConversation = async () => {
     setIsDeletingConversation(true)
@@ -105,6 +107,24 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
     } catch (error) {
       console.error("Message deletion failed:", error)
       alert(t("delete_message_error"))
+    }
+  }
+
+ 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      
+      const allowedTypes = [
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ]
+      if (allowedTypes.includes(file.type)) {
+        setAttachedFile(file)
+      } else {
+        alert(t("invalid_file_type"))
+      }
     }
   }
 
@@ -151,7 +171,6 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
       <div className="flex-1 overflow-y-auto flex flex-col">
         {loading ? (
           <div className="flex-1 flex items-center justify-center">
-            {/* Loading spinner */}
             <div className="w-8 h-8 border-4 border-t-[#8B0000] border-gray-200 rounded-full animate-spin"></div>
           </div>
         ) : messages.length > 0 ? (
@@ -195,12 +214,11 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
                     </div>
                   )}
 
-                  {/* Message box */}
                   <div
                     className={`max-w-[75%] rounded-lg p-3 ${
                       isSender
                         ? "bg-[rgb(154,18,32)] text-white"
-                        : "bg-gray-200 text-black"
+                        : "bg-gray-300 text-black"
                     } ${msg.isTemp ? "opacity-50" : ""}`}
                   >
                     <p className={`${isSender ? "text-right" : "text-left"}`}>
@@ -227,9 +245,31 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
         </div>
       )}
 
-      {/* Bottom part: Input component */}
+      {/* Bottom part: File attachment + Input */}
       <div className="border-t p-2 bg-white">
-        <RoundedInput onSend={handleSend} />
+        {/* Eklenen dosya varsa dosya adını göster */}
+        {attachedFile && (
+          <div className="mb-2 flex items-center justify-between bg-gray-100 p-2 rounded">
+            <span className="text-sm text-gray-800 truncate">{attachedFile.name}</span>
+            <button onClick={() => setAttachedFile(null)} className="text-gray-600 hover:text-gray-800">
+              <X size={16} />
+            </button>
+          </div>
+        )}
+        <div className="flex items-center">
+          <RoundedInput onSend={handleSend} attachedFile={attachedFile} />
+          {/* Ataç butonu */}
+          <label htmlFor="fileInput" className="mr-2 ml-2 cursor-pointer">
+            <Paperclip size={20} className="text-gray-600 hover:text-gray-800" />
+          </label>
+          <input
+            id="fileInput"
+            type="file"
+            className="hidden"
+            accept=".pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            onChange={handleFileChange}
+          />
+        </div>
       </div>
     </div>
   )
