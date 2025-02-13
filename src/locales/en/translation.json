@@ -167,18 +167,19 @@
   "selected_message": "Selected message",
   "pleaseLeaveFeedback": "Please leave your feedback",
   "delete_selected": "Selected to delete",
-  "search_users": "Search users",
+  "search_users": "Search a user",
   "username": "Username",
   "updateAdminInfo": "Update your information below.",
   "adminInformation": "Coordinator Information",
   "currentPasswordRequired": "Current password is required",
   "newPasswordRequired": "New password is required",
   "usernameMinLength": "Username must be at least 3 characters long",
-  "search_conversations": "Search conversations",
+  "search_conversations": "Search a conversation",
   "conversation_exists": "Conversation already exists",
   "confirm_delete": "Are you sure?",
   "delete_conversation_error": "Failed to delete conversation",
   "delete_message_error": "Failed to delete message",
-  "invalid_file_type": "Only PDF, DOC and DOCx files are allowed"
+  "invalid_file_type": "Only PDF, DOC and DOCx files are allowed",
+  "no_conversation": "No conversation"
 
 }

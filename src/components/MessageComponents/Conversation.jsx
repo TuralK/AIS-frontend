@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { ArrowLeft, MoreVertical, Trash2, X, Paperclip } from "lucide-react"
+import { ArrowLeft, MoreVertical, Trash2, X, Paperclip, Download } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import RoundedInput from "./MessageInputComp"
 import {
@@ -53,12 +53,9 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
   }, [messages])
 
   const handleSend = async (newMessage) => {
-    // Eğer hem mesaj hem de dosya yoksa gönderme yapma.
-    if (!newMessage.trim() && !attachedFile) return;
-  
-    // Eğer mesaj metni boşsa ama dosya varsa, mesajı boş string olarak gönderelim.
-    const messageToSend = newMessage.trim() ? newMessage : "";
-  
+    if (!newMessage.trim() && !attachedFile) return
+    const messageToSend = newMessage.trim() ? newMessage : ""
+
     try {
       await dispatch(
         sendMessageThunk({
@@ -67,16 +64,16 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
           message: messageToSend,
           file: attachedFile,
         })
-      ).unwrap();
-  
-      setErrorSendingMessage(false);
-      setAttachedFile(null);
-      dispatch(fetchConversationMessagesThunk({ apiUrl, conversationId }));
+      ).unwrap()
+
+      setErrorSendingMessage(false)
+      setAttachedFile(null)
+      dispatch(fetchConversationMessagesThunk({ apiUrl, conversationId }))
     } catch (error) {
-      setErrorSendingMessage(true);
-      setTimeout(() => setErrorSendingMessage(false), 4000);
+      setErrorSendingMessage(true)
+      setTimeout(() => setErrorSendingMessage(false), 4000)
     }
-  };    
+  }
 
   const handleDeleteConversation = async () => {
     setIsDeletingConversation(true)
@@ -110,11 +107,27 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
     }
   }
 
- 
+  const downloadFile = (fileName, data) => {
+    const byteCharacters = atob(data)
+    const byteNumbers = new Array(byteCharacters.length)
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i)
+    }
+    const byteArray = new Uint8Array(byteNumbers)
+    const blob = new Blob([byteArray], { type: "application/octet-stream" })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = fileName
+    document.body.appendChild(a)
+    a.click()
+    window.URL.revokeObjectURL(url)
+    document.body.removeChild(a)
+  }
+
   const handleFileChange = (e) => {
     const file = e.target.files[0]
     if (file) {
-      
       const allowedTypes = [
         "application/pdf",
         "application/msword",
@@ -195,25 +208,39 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
                         />
                       ) : (
                         <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
+                          <DropdownMenuTrigger 
+                            asChild
+                            className="dropdown-trigger"
+                          >
                             <button className="p-1 rounded-full hover:bg-gray-200 transition-colors">
                               <MoreVertical size={16} className="text-gray-600" />
                             </button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-24">
+                          <DropdownMenuContent
+                            align="start"
+                            className="min-w-[120px] bg-white border border-gray-200 rounded-lg shadow-lg"
+                            sideOffset={5}
+                            collisionPadding={10}
+                            style={{
+                              position: 'fixed',
+                              zIndex: 999
+                            }}
+                          >
                             <DropdownMenuItem
-                              onClick={() => handleDeleteMessage(msg.id)}
-                              className="text-red-600 focus:text-red-600 focus:bg-red-50 cursor-pointer"
+                              onClick={(e) => {
+                                e.preventDefault()
+                                handleDeleteMessage(msg.id)
+                              }}
+                              className="text-red-600 hover:bg-red-50 focus:bg-red-50 cursor-pointer px-3 py-2 text-sm"
                             >
                               <Trash2 className="mr-2 h-4 w-4" />
-                              <span>{t("delete")}</span>
+                              {t("delete")}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       )}
                     </div>
                   )}
-
                   <div
                     className={`max-w-[75%] rounded-lg p-3 ${
                       isSender
@@ -221,10 +248,38 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
                         : "bg-gray-300 text-black"
                     } ${msg.isTemp ? "opacity-50" : ""}`}
                   >
-                    <p className={`${isSender ? "text-right" : "text-left"}`}>
-                      {msg.message}
-                      {msg.isTemp && <span className="text-xs ml-2">⌛</span>}
-                    </p>
+                    {msg.fileName && (
+                      <div
+                        className={`p-2 mb-2 rounded-md flex items-center gap-2 ${
+                          isSender 
+                            ? "bg-red-100" 
+                            : "bg-gray-400"
+                        }`}
+                      >
+                        <Download 
+                          size={16} 
+                          className={`flex-shrink-0 ${
+                            isSender ? "text-red-700" : "text-gray-600"
+                          }`}
+                        />
+                        <button
+                          onClick={() => downloadFile(msg.fileName, msg.data)}
+                          className={`text-sm truncate max-w-[180px] ${
+                            isSender ? "text-red-900" : "text-gray-700"
+                          } hover:underline`}
+                          title={msg.fileName}
+                        >
+                          {msg.fileName}
+                        </button>
+                      </div>
+                    )}
+
+                    {msg.message && (
+                      <p className={`${isSender ? "text-right" : "text-left"}`}>
+                        {msg.message}
+                        {msg.isTemp && <span className="text-xs ml-2">⌛</span>}
+                      </p>
+                    )}
                   </div>
                 </div>
               )
@@ -247,7 +302,6 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
 
       {/* Bottom part: File attachment + Input */}
       <div className="border-t p-2 bg-white">
-        {/* Eklenen dosya varsa dosya adını göster */}
         {attachedFile && (
           <div className="mb-2 flex items-center justify-between bg-gray-100 p-2 rounded">
             <span className="text-sm text-gray-800 truncate">{attachedFile.name}</span>
@@ -258,7 +312,6 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
         )}
         <div className="flex items-center">
           <RoundedInput onSend={handleSend} attachedFile={attachedFile} />
-          {/* Ataç butonu */}
           <label htmlFor="fileInput" className="mr-2 ml-2 cursor-pointer">
             <Paperclip size={20} className="text-gray-600 hover:text-gray-800" />
           </label>

@@ -123,7 +123,6 @@ const Messaging = ({ hasAITab, apiUrl }) => {
             </button>
           </div>
 
-          {/* Only show tabs if hasAITab is true */}
           {hasAITab && (
             <div className="flex border-b border-gray-200">
               <button
@@ -192,16 +191,15 @@ const Messaging = ({ hasAITab, apiUrl }) => {
                 }}
               >
                 <div className="p-3">
-                  {(loading || usersLoading) && (
-                    <p className="text-sm text-gray-500 text-center py-4">{t("loading")}</p>
-                  )}
-                  {error && (
+                  {(loading || usersLoading) ? (
+                    <div className="h-full flex items-center justify-center min-h-[200px]">
+                      <div className="w-8 h-8 border-4 border-gray-200 border-t-[#8B0000] rounded-full animate-spin"></div>
+                    </div>
+                  ) : error ? (
                     <p className="text-sm text-red-500 text-center py-4">
                       {t("error")} {error}
                     </p>
-                  )}
-
-                  {showUsersList ? (
+                  ) : showUsersList ? (
                     <div className="space-y-2">
                       {filteredUsers.map((user) => (
                         <div
@@ -246,7 +244,11 @@ const Messaging = ({ hasAITab, apiUrl }) => {
                             </div>
                           ))
                       ) : (
-                        <div className="text-sm text-gray-500 text-center py-8">{t("no_messages")}</div>
+                        <div className="h-full flex items-center justify-center min-h-[200px]">
+                          <p className="text-sm text-gray-500 text-center">
+                            {t("no_conversation")}
+                          </p>
+                        </div>
                       )}
                     </div>
                   )}
@@ -263,7 +265,7 @@ const Messaging = ({ hasAITab, apiUrl }) => {
             )
           )}
 
-          {hasAITab && activeTab === "diger" && <AIComponent api={(msg) => {}} />}
+          {hasAITab && activeTab === "diger" && <AIComponent api={(msg) => { }} />}
         </div>
       )}
       <PollingComponent apiUrl={apiUrl} />
