@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { MessageCircle, X, ChevronUp, UserPlus } from "lucide-react"
@@ -11,8 +9,9 @@ import { fetchConversationsThunk, fetchUsersThunk, createConversationThunk } fro
 import { cn } from "../../utils/utils"
 import { Input } from "../ui/input"
 import { ScrollArea } from "../ui/scroll_area"
+import { UserAvatar } from "./UserAvatar"
 
-const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle, userApi }) => {
+const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle }) => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
   const { conversations, loading, error, users, usersLoading } = useSelector((state) => state.messaging)
@@ -23,9 +22,7 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle, userApi }) => {
   const [showUsersList, setShowUsersList] = useState(false)
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 640)
-    }
+    const checkMobile = () => setIsMobile(window.innerWidth < 640)
     checkMobile()
     window.addEventListener("resize", checkMobile)
     return () => window.removeEventListener("resize", checkMobile)
@@ -36,28 +33,23 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle, userApi }) => {
     dispatch(fetchConversationsThunk(apiUrl))
   }, [dispatch, apiUrl])
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
-
   const hasExistingConversation = (userEmail) => {
-    return conversations.some((conv) => conv.user1_email === userEmail || conv.user2_email === userEmail)
+    return conversations.some(conv => conv.user1_email === userEmail || conv.user2_email === userEmail)
   }
 
+  const filteredUsers = users.filter(user => 
+    (user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  )).filter(user => !hasExistingConversation(user.email))
+
   const handleCreateConversation = async (user) => {
-    if (!hasExistingConversation(user.email)) {
-      await dispatch(
-        createConversationThunk({
-          apiUrl,
-          receiverEmail: user.email,
-          receiverName: user.username,
-        }),
-      )
-      setShowUsersList(false)
-      setSearchTerm("")
-    }
+    await dispatch(createConversationThunk({
+      apiUrl,
+      receiverEmail: user.email,
+      receiverName: user.username,
+    }))
+    setShowUsersList(false)
+    setSearchTerm("")
   }
 
   const toggleMessaging = () => {
@@ -78,13 +70,11 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle, userApi }) => {
   }
 
   return (
-    <div
-      className={cn(
-        "fixed z-50",
-        isMobile ? "bottom-0 right-0 left-0" : "bottom-0 right-4",
-        !isOpen && !isMobile && "w-64",
-      )}
-    >
+    <div className={cn(
+      "fixed z-50",
+      isMobile ? "bottom-0 right-0 left-0" : "bottom-0 right-4",
+      !isOpen && !isMobile && "w-64",
+    )}>
       {!isOpen && !isMobile && (
         <button
           onClick={toggleMessaging}
@@ -99,16 +89,14 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle, userApi }) => {
       )}
 
       {isOpen && (
-        <div
-          className={cn(
-            "bg-white border border-gray-200 flex flex-col",
-            isMobile ? "fixed left-4 right-3 bottom-1 rounded-lg shadow-xl" : "rounded-t-lg shadow-xl w-[380px]",
-          )}
-          style={{
-            height: isMobile ? "auto" : "calc(100vh - 110px)",
-            maxHeight: isMobile ? "calc(100vh - 100px)" : "calc(100vh - 110px)",
-          }}
-        >
+        <div className={cn(
+          "bg-white border border-gray-200 flex flex-col",
+          isMobile ? "fixed left-4 right-3 bottom-1 rounded-lg shadow-xl" : "rounded-t-lg shadow-xl w-[380px]",
+        )}
+        style={{
+          height: isMobile ? "auto" : "calc(100vh - 110px)",
+          maxHeight: isMobile ? "calc(100vh - 100px)" : "calc(100vh - 110px)",
+        }}>
           <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200">
             <div className="flex items-center gap-2">
               <MessageCircle size={20} className="text-blue-600" />
@@ -134,9 +122,8 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle, userApi }) => {
                 onClick={() => {
                   setActiveTab("odakli")
                   setShowUsersList(false)
-                  setSelectedConversation(null) // Düzeltme burada
-                }}
-              >
+                  setSelectedConversation(null)
+                }}>
                 {t("message_tab")}
               </button>
               <button
@@ -149,9 +136,8 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle, userApi }) => {
                 onClick={() => {
                   setActiveTab("diger")
                   setShowUsersList(false)
-                  setSelectedConversation(null) // Düzeltme burada
-                }}
-              >
+                  setSelectedConversation(null)
+                }}>
                 {t("ai_tab")}
               </button>
             </div>
@@ -170,7 +156,7 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle, userApi }) => {
                   />
                   <button
                     onClick={() => {
-                      setShowUsersList((prev) => !prev)
+                      setShowUsersList(prev => !prev)
                       setSearchTerm("")
                     }}
                     className={cn(
@@ -179,47 +165,33 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle, userApi }) => {
                         ? "text-blue-600 hover:bg-blue-50"
                         : "text-gray-400 hover:text-blue-600 hover:bg-gray-100",
                     )}
-                    title={showUsersList ? t("show_conversations") : t("new_conversation")}
-                  >
+                    title={showUsersList ? t("show_conversations") : t("new_conversation")}>
                     <UserPlus size={20} />
                   </button>
                 </div>
               </div>
-              <ScrollArea
-                className="flex-1 overflow-y-auto"
-                style={{
-                  maxHeight: isMobile ? "calc(100vh - 280px)" : undefined,
-                }}
-              >
+              <ScrollArea className="flex-1 overflow-y-auto" style={{ maxHeight: isMobile ? "calc(100vh - 280px)" : undefined }}>
                 <div className="p-3">
                   {(loading || usersLoading) ? (
                     <div className="h-full flex items-center justify-center min-h-[200px]">
                       <div className="w-8 h-8 border-4 border-gray-200 border-t-[#8B0000] rounded-full animate-spin"></div>
                     </div>
                   ) : error ? (
-                    <p className="text-sm text-red-500 text-center py-4">
-                      {t("error")} 
-                    </p>
+                    <p className="text-sm text-red-500 text-center py-4">{t("error")}</p>
                   ) : showUsersList ? (
                     <div className="space-y-2">
-                      {filteredUsers.map((user) => (
+                      {filteredUsers.map(user => (
                         <div
                           key={user.email}
                           onClick={() => handleCreateConversation(user)}
-                          className={cn(
-                            "p-4 rounded-lg border transition-all",
-                            hasExistingConversation(user.email)
-                              ? "border-gray-200 bg-gray-50 cursor-not-allowed opacity-50"
-                              : "border-gray-200 hover:border-blue-200 hover:bg-blue-50 cursor-pointer shadow-sm",
-                          )}
-                        >
-                          <div className="font-medium text-gray-900">{user.username}</div>
-                          <div className="text-sm text-gray-500 mt-1">{user.email}</div>
-                          {hasExistingConversation(user.email) && (
-                            <div className="text-xs text-gray-500 mt-2 bg-gray-100 px-2 py-1 rounded w-fit">
-                              {t("conversation_exists")}
+                          className="p-4 rounded-lg border border-gray-200 hover:border-blue-200 hover:bg-blue-50 cursor-pointer transition-all shadow-sm">
+                          <div className="flex items-center gap-3">
+                            <UserAvatar email={user.email} />
+                            <div>
+                              <div className="font-medium text-gray-900">{user.username}</div>
+                              <div className="text-sm text-gray-500 mt-1">{user.email}</div>
                             </div>
-                          )}
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -227,28 +199,28 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle, userApi }) => {
                     <div className="space-y-2">
                       {conversations.length > 0 ? (
                         conversations
-                          .filter((conversation) =>
-                            conversation.user2_name.toLowerCase().includes(searchTerm.toLowerCase()),
-                          )
-                          .map((conversation) => (
+                          .filter(conv => conv.user2_name.toLowerCase().includes(searchTerm.toLowerCase()))
+                          .map(conv => (
                             <div
-                              key={conversation.id}
-                              onClick={() => setSelectedConversation(conversation)}
-                              className="p-4 rounded-lg border border-gray-200 hover:border-blue-200 hover:bg-blue-50 cursor-pointer transition-all shadow-sm"
-                            >
-                              <div className="font-medium text-gray-900">{conversation.user2_name}</div>
-                              {conversation.topic && (
-                                <div className="text-sm text-gray-500 mt-2 bg-gray-50 px-2 py-1 rounded-md">
-                                  {conversation.topic}
+                              key={conv.id}
+                              onClick={() => setSelectedConversation(conv)}
+                              className="p-4 rounded-lg border border-gray-200 hover:border-blue-200 hover:bg-blue-50 cursor-pointer transition-all shadow-sm">
+                              <div className="flex items-center gap-3">
+                                <UserAvatar email={conv.user2_email} />
+                                <div>
+                                  <div className="font-medium text-gray-900">{conv.user2_name}</div>
+                                  {conv.topic && (
+                                    <div className="text-sm text-gray-500 mt-2 bg-gray-50 px-2 py-1 rounded-md">
+                                      {conv.topic}
+                                    </div>
+                                  )}
                                 </div>
-                              )}
+                              </div>
                             </div>
                           ))
                       ) : (
                         <div className="h-full flex items-center justify-center min-h-[200px]">
-                          <p className="text-sm text-gray-500 text-center">
-                            {t("no_conversation")}
-                          </p>
+                          <p className="text-sm text-gray-500 text-center">{t("no_conversation")}</p>
                         </div>
                       )}
                     </div>
@@ -256,17 +228,15 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle, userApi }) => {
                 </div>
               </ScrollArea>
             </>
-          ) : (
-            selectedConversation && (
-              <Conversation
-                conversation={selectedConversation}
-                onBack={() => setSelectedConversation(null)}
-                apiUrl={apiUrl}
-              />
-            )
+          ) : selectedConversation && (
+            <Conversation
+              conversation={selectedConversation}
+              onBack={() => setSelectedConversation(null)}
+              apiUrl={apiUrl}
+            />
           )}
 
-          {hasAITab && activeTab === "diger" && <AIComponent api={userApi} />}
+          {hasAITab && activeTab === "diger" && <AIComponent apiUrl={apiUrl} />}
         </div>
       )}
       <PollingComponent apiUrl={apiUrl} />

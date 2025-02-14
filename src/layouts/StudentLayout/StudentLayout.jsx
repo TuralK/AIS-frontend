@@ -7,7 +7,6 @@ import IYTElogo from "../../assets/iyte_logo_eng.png"
 import { validateStudent } from '../../api/StudentApi/validateStudentAPI';
 import Loading from '../../components/LoadingComponent/Loading.jsx';
 import Messaging from '../../components/MessageComponents/MessagingComponent.jsx';
-import sendMessageToAI from '../../api/StudentApi/aiChatApi.js';
 
 const styles = {
   nav: {
@@ -439,7 +438,7 @@ export const StudentLayout = () => {
         {/* { navigation.state === "loading" &&  <Loading /> } */}
         <Outlet />
       
-      <Messaging hasAITab={true} userApi={sendMessageToAI} apiUrl={apiUrl} isOpen={isMessagingOpen} onToggle={setIsMessagingOpen} />
+      <Messaging hasAITab={true} apiUrl={apiUrl} isOpen={isMessagingOpen} onToggle={setIsMessagingOpen} />
     </div>
   )
 }

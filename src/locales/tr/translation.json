@@ -172,5 +172,7 @@
   "delete_conversation_error": "Sohbet silinemedi",
   "delete_message_error": "Mesaj silinemedi",
   "invalid_file_type": "Sadece PDF, DOC ve DOCX dosyalarına izin verilmektedir.",
-  "no_conversation": "Sohbet bulunamadı"
+  "no_conversation": "Sohbet bulunamadı",
+  "secretary": "Sekreter",
+  "coordinator": "Koordinatör"
 }

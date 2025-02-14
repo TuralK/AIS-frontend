@@ -18,7 +18,6 @@ export const getConversations = async (apiUrl) => {
     const response = await axios.get(`${apiUrl}/conversations`, {
       withCredentials: true,
     });
-    console.log("conversations", JSON.stringify(response.data.conversations, null, 2));
 
     return response.data.conversations;
   } catch (error) {
@@ -46,7 +45,7 @@ export const getConversationMessages = async (apiUrl, conversationId) => {
     const response = await axios.get(`${apiUrl}/conversations/${conversationId}`, {
       withCredentials: true,
     });
-    console.log(response.data.messages);
+    
     return response.data.messages;
   } catch (error) {
     console.error("Messages did not fetch:", error);

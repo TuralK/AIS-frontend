@@ -180,6 +180,8 @@
   "delete_conversation_error": "Failed to delete conversation",
   "delete_message_error": "Failed to delete message",
   "invalid_file_type": "Only PDF, DOC and DOCx files are allowed",
-  "no_conversation": "No conversation"
+  "no_conversation": "No conversation",
+  "secretary": "Secretary", 
+  "coordinator": "Coordinator"
 
 }
