@@ -435,10 +435,10 @@ export const StudentLayout = () => {
           </div>
         )}
       </nav>
-      <main>
+      
         {/* { navigation.state === "loading" &&  <Loading /> } */}
         <Outlet />
-      </main>
+      
       <Messaging hasAITab={true} userApi={sendMessageToAI} apiUrl={apiUrl} isOpen={isMessagingOpen} onToggle={setIsMessagingOpen} />
     </div>
   )

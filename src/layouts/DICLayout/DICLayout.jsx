@@ -228,6 +228,7 @@ export const DICLayout = () => {
                   </NavLink>
                 ))}
                 <NavLink to="/admin/notifications"
+                  href="#"
                   style={{
                     ...styles.menuItem,
                     ':hover': { backgroundColor: '#7d0e1a' },
@@ -284,17 +285,27 @@ export const DICLayout = () => {
                         <NavLink
                           key={route}
                           to={route !== 'logout' ? `/admin/${route}` : '#'}
-                          style={styles.dropdownItem}
-                          onClick={(e) => {
-                            if (route === 'logout') {
-                              e.preventDefault();
-                              logout();
-                            } else {
-                              handleDropdownItemClick(item.toLowerCase());
-                            }
-                          }}
                         >
-                          {item}
+                          <a
+                            key={item}
+                            href="#"
+                            style={{
+                              ...styles.dropdownItem,
+                              ':hover': { backgroundColor: '#f3f4f6' },
+                            }}
+                            onClick={(e) => {
+                              if (route === 'logout') {
+                                e.preventDefault();
+                                logout();
+                              } else {
+                                handleDropdownItemClick(item.toLowerCase());
+                              }
+                            }}
+                            onMouseEnter={(e) => (e.target.style.backgroundColor = '#f3f4f6')}
+                            onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
+                          >
+                            {item}
+                          </a>
                         </NavLink>
                       ))}
                     </div>
@@ -364,7 +375,10 @@ export const DICLayout = () => {
             </a>
             <div style={{ position: 'relative' }}>
               <button
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                onClick={() => {
+                  setIsUserMenuOpen(!isUserMenuOpen)
+                  setIsMessagingOpen(false)
+                }}
                 style={{
                   ...styles.menuItem,
                   display: 'flex',

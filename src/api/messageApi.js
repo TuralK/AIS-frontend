@@ -5,7 +5,7 @@ export const getUsers = async (apiUrl) => {
     const response = await axios.get(`${apiUrl}/users`, {
       withCredentials: true,
     });
-    
+    console.log(response.data.allUsers);
     return response.data.allUsers;
   } catch (error) {
     console.error("Users could not fetch:", error);
@@ -18,7 +18,8 @@ export const getConversations = async (apiUrl) => {
     const response = await axios.get(`${apiUrl}/conversations`, {
       withCredentials: true,
     });
-    
+    console.log("conversations", JSON.stringify(response.data.conversations, null, 2));
+
     return response.data.conversations;
   } catch (error) {
     console.error("Conversations could not fetch:", error);

@@ -5,6 +5,7 @@ import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import IYTElogo from "../../assets/iyte_logo_eng.png";
 import { validateSecretary } from '../../api/SecretaryApi/validateSecretaryApi.js';
 import Loading from '../../components/LoadingComponent/Loading.jsx';
+import Messaging from '../../components/MessageComponents/MessagingComponent.jsx';
 
 const styles = {
   nav: {
@@ -114,6 +115,8 @@ export const SecretaryLayout = () => {
   const [loading, setLoading] = useState(true);
   const [applications, setApplications] = useState();
   const { t, i18n } = useTranslation();
+  const [isMessagingOpen, setIsMessagingOpen] = useState(false);
+  const [apiUrl, setApiUrl] = useState('http://localhost:3006');
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -255,7 +258,10 @@ export const SecretaryLayout = () => {
 
                 <div style={{ position: 'relative' }} ref={userMenuRef}>
                   <button
-                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    onClick={() => {
+                      setIsUserMenuOpen(!isUserMenuOpen)
+                      setIsMessagingOpen(false)
+                    }}
                     style={{
                       ...styles.menuItem,
                       display: 'flex',
@@ -299,7 +305,10 @@ export const SecretaryLayout = () => {
 
             {isMobile && (
               <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                onClick={() => {
+                  setIsUserMenuOpen(!isUserMenuOpen)
+                  setIsMessagingOpen(false)
+                }}
                 style={{
                   ...styles.mobileMenuButton,
                   display: 'flex',
@@ -356,7 +365,10 @@ export const SecretaryLayout = () => {
             </a>
             <div style={{ position: 'relative' }}>
               <button
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                onClick={() => {
+                  setIsUserMenuOpen(!isUserMenuOpen)
+                  setIsMessagingOpen(false)
+                }}
                 style={{
                   ...styles.menuItem,
                   display: 'flex',
@@ -381,25 +393,25 @@ export const SecretaryLayout = () => {
                 <div style={{ marginTop: '0.5rem' }}>
                   {userMenuItems.map(({ item, route }) => (
                     <NavLink
-                    key={route}
-                    to={route !== 'logout' ? `/secretary/${route}` : '#'}
-                    style={{
-                      ...styles.menuItem,
-                      display: 'block',
-                      padding: '0.75rem 0',
-                      ':hover': { backgroundColor: '#7d0e1a' },
-                    }}
-                    onClick={(e) => {
-                      if (route === 'logout') {
-                        e.preventDefault();
-                        logout();
-                      } else {
-                        handleDropdownItemClick(item.toLowerCase());
-                      }
-                    }}
-                  >
-                    {item}
-                  </NavLink>
+                      key={route}
+                      to={route !== 'logout' ? `/secretary/${route}` : '#'}
+                      style={{
+                        ...styles.menuItem,
+                        display: 'block',
+                        padding: '0.75rem 0',
+                        ':hover': { backgroundColor: '#7d0e1a' },
+                      }}
+                      onClick={(e) => {
+                        if (route === 'logout') {
+                          e.preventDefault();
+                          logout();
+                        } else {
+                          handleDropdownItemClick(item.toLowerCase());
+                        }
+                      }}
+                    >
+                      {item}
+                    </NavLink>
                   ))}
                 </div>
               )}
@@ -407,7 +419,15 @@ export const SecretaryLayout = () => {
           </div>
         )}
       </nav>
-      <Outlet context={{ userId, email, firstName, applications, setApplications }} />
+      <main>
+        <Outlet context={{ userId, email, firstName, applications, setApplications }} />
+      </main>
+      <Messaging
+        hasAITab={false}
+        apiUrl={apiUrl}
+        isOpen={isMessagingOpen}
+        onToggle={setIsMessagingOpen}
+      />
     </div>
   );
 };

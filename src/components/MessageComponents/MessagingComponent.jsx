@@ -134,6 +134,7 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle, userApi }) => {
                 onClick={() => {
                   setActiveTab("odakli")
                   setShowUsersList(false)
+                  setSelectedConversation(null) // Düzeltme burada
                 }}
               >
                 {t("message_tab")}
@@ -148,6 +149,7 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle, userApi }) => {
                 onClick={() => {
                   setActiveTab("diger")
                   setShowUsersList(false)
+                  setSelectedConversation(null) // Düzeltme burada
                 }}
               >
                 {t("ai_tab")}
