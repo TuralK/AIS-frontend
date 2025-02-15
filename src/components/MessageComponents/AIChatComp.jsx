@@ -16,9 +16,8 @@ const AIComponent = ({ apiUrl }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const messagesEndRef = useRef(null);
-
-  // Ekran boyutunu takip edip isMobile state'ini belirliyoruz
   const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
@@ -28,7 +27,6 @@ const AIComponent = ({ apiUrl }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Redux store'dan gerekli verileri çekiyoruz
   const {
     messages,
     loading: aiLoading,
@@ -37,7 +35,6 @@ const AIComponent = ({ apiUrl }) => {
     conversationId,
   } = useSelector((state) => state.aiMessaging);
 
-  // Bileşen ilk yüklendiğinde veya conversationId değiştiğinde çalışacak efekt
   useEffect(() => {
     const createAndFetchConversation = async () => {
       const action = await dispatch(createConversationThunk(apiUrl));
@@ -74,12 +71,12 @@ const AIComponent = ({ apiUrl }) => {
     }
   }, [dispatch, apiUrl, conversationId]);
 
-  // Mesajlar güncellenince otomatik olarak en sona kay
+  
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, historyLoading]);
 
-  // Hata varsa 5 saniye sonra temizle
+  
   useEffect(() => {
     if (aiError) {
       const timer = setTimeout(() => dispatch(clearAIError()), 5000);
@@ -87,20 +84,18 @@ const AIComponent = ({ apiUrl }) => {
     }
   }, [aiError, dispatch]);
 
-  // Mesaj gönderme
+  
   const handleSend = (message) => {
     if (!message.trim() || !conversationId) return;
     dispatch(sendMessageToAI({ message, apiUrl, conversationId }));
   };
 
   return (
-    // isMobile ise h-screen, değilse h-full + max-h-[90%] şeklinde benzer yaklaşımla
     <div
       className={`flex flex-col w-full bg-background ${
         isMobile ? "h-screen" : "h-full max-h-[90%]"
       }`}
     >
-      {/* Mesajlar alanı: flex-1 + scroll + mobilde alt boşluk (pb-36) */}
       <div
         className={`flex-1 overflow-y-auto flex flex-col ${
           isMobile ? "pb-36" : "pb-0"
@@ -120,14 +115,14 @@ const AIComponent = ({ apiUrl }) => {
               key={index}
               className={`flex ${
                 msg.isSentByUser ? "justify-end" : "justify-start"
-              } items-end gap-2`}
+              } items-end gap-1`}
             >
               {/* Yapay zeka mesajı ise logo gösterelim */}
               {!msg.isSentByUser && (
                 <img
                   src={IYTElogo}
                   alt="IYTE Logo"
-                  className="w-8 h-8 object-contain hidden xs:block"
+                  className="w-9 h-9 object-contain hidden sm:block"
                 />
               )}
               <div
@@ -143,18 +138,15 @@ const AIComponent = ({ apiUrl }) => {
             </div>
           ))
         )}
-        {/* Otomatik scroll için referans */}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Hata mesajı (varsa) */}
       {aiError && (
         <div className="px-4">
           <ErrorMessage message={aiError} />
         </div>
       )}
 
-      {/* Input alanı: sticky bottom-0 ile alt kısma sabitlenir */}
       <div className="sticky bottom-0 border-t p-2 bg-background">
         <div className="max-w-3xl mx-auto w-full">
           <RoundedInput onSend={handleSend} fullWidth disabled={aiLoading} />
