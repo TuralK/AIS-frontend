@@ -55,7 +55,7 @@ const AIComponent = ({ apiUrl }) => {
           dispatch(getMessages({ apiUrl, conversationId: existingConversationId }));
         }
       } else {
-        console.error("Error creating conversation", action.error);
+        //console.error("Error creating conversation", action.error);
       }
     };
 
@@ -65,7 +65,6 @@ const AIComponent = ({ apiUrl }) => {
         dispatch(setConversationId(storedId));
         dispatch(getMessages({ apiUrl, conversationId: storedId }));
       } else {
-        console.log("Creating new conversation");
         createAndFetchConversation();
       }
     }

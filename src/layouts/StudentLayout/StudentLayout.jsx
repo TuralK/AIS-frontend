@@ -7,6 +7,8 @@ import IYTElogo from "../../assets/iyte_logo_eng.png"
 import { validateStudent } from '../../api/StudentApi/validateStudentAPI';
 import Loading from '../../components/LoadingComponent/Loading.jsx';
 import Messaging from '../../components/MessageComponents/MessagingComponent.jsx';
+import { resetAIChat } from '../../slices/aiChatSlice.jsx';
+import { useDispatch } from "react-redux";
 
 const styles = {
   nav: {
@@ -116,7 +118,7 @@ export const StudentLayout = () => {
   const { t, i18n } = useTranslation();
   const [isMessagingOpen, setIsMessagingOpen] = useState(false);
   const [apiUrl, setApiUrl] = useState('http://localhost:3004');
-
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -190,6 +192,8 @@ export const StudentLayout = () => {
   };
 
   const logout = () => {
+    dispatch(resetAIChat());
+    localStorage.removeItem("conversationId");
     deleteCookie('jwt');
     navigate('/');
   };
