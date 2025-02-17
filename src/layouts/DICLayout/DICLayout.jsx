@@ -6,6 +6,8 @@ import IYTElogo from "../../assets/iyte_logo_eng.png";
 import { validateDIC } from '../../api/DICApi/validateDICApi.js';
 import Loading from '../../components/LoadingComponent/Loading.jsx';
 import Messaging from '../../components/MessageComponents/MessagingComponent.jsx';
+import { useDispatch } from "react-redux";
+import { resetMessaging } from '../../slices/messageSlice.jsx';
 
 const styles = {
   nav: {
@@ -114,7 +116,7 @@ export const DICLayout = () => {
   const { t, i18n } = useTranslation();
   const [isMessagingOpen, setIsMessagingOpen] = useState(false);
   const [apiUrl, setApiUrl] = useState('http://localhost:3003');
-
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -188,6 +190,8 @@ export const DICLayout = () => {
   };
 
   const logout = () => {
+    dispatch(resetMessaging());
+    localStorage.removeItem("conversationId");
     deleteCookie('jwt');
     navigate('/');
   };

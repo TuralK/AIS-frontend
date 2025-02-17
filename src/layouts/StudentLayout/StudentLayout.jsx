@@ -9,6 +9,7 @@ import Loading from '../../components/LoadingComponent/Loading.jsx';
 import Messaging from '../../components/MessageComponents/MessagingComponent.jsx';
 import { resetAIChat } from '../../slices/aiChatSlice.jsx';
 import { useDispatch } from "react-redux";
+import { resetMessaging } from '../../slices/messageSlice.jsx';
 
 const styles = {
   nav: {
@@ -193,6 +194,7 @@ export const StudentLayout = () => {
 
   const logout = () => {
     dispatch(resetAIChat());
+    dispatch(resetMessaging());
     localStorage.removeItem("conversationId");
     deleteCookie('jwt');
     navigate('/');

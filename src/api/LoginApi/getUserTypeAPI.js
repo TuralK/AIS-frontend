@@ -5,6 +5,7 @@ export const getUserType = async () => {
         const response = await axios.get(`http://localhost:3001/`, {
           withCredentials: true
         });
+        localStorage.removeItem("conversationId");
         return response.data.userType;
     } catch (err) {
         return "";

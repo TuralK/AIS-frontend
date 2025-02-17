@@ -15,6 +15,10 @@ const messagingSlice = createSlice({
   name: 'messaging',
   initialState,
   reducers: {
+    clearError: (state) => {
+      state.error = null;
+    },
+    resetMessaging: () => initialState
   },
   extraReducers: (builder) => {
     builder
@@ -72,4 +76,5 @@ const messagingSlice = createSlice({
   },
 });
 
+export const { clearError, resetMessaging } = messagingSlice.actions;
 export default messagingSlice.reducer;
