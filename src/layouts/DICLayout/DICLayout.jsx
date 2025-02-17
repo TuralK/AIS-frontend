@@ -5,6 +5,7 @@ import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import IYTElogo from "../../assets/iyte_logo_eng.png";
 import { validateDIC } from '../../api/DICApi/validateDICApi.js';
 import Loading from '../../components/LoadingComponent/Loading.jsx';
+import Messaging from '../../components/MessageComponents/MessagingComponent.jsx';
 
 const styles = {
   nav: {
@@ -111,6 +112,8 @@ export const DICLayout = () => {
   const [userName, setUserName] = useState('');
   const [loading, setLoading] = useState(true);
   const { t, i18n } = useTranslation();
+  const [isMessagingOpen, setIsMessagingOpen] = useState(false);
+  const [apiUrl, setApiUrl] = useState('http://localhost:3003');
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -139,7 +142,7 @@ export const DICLayout = () => {
         }
         setLoading(false);
       });
-  }, [location, navigate]);
+  }, [location]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -169,13 +172,11 @@ export const DICLayout = () => {
   ];
 
   const userMenuItems = [
-    { item: t('profile'), route: 'profile' },
     { item: t('settings'), route: 'settings' },
     { item: t('logout'), route: 'logout' }
   ];
 
   const handleDropdownItemClick = (action) => {
-    console.log(`Performing action: ${action}`);
     <NavLink
       key={route}
       to={`/admin/${route}`}></NavLink>
@@ -227,6 +228,7 @@ export const DICLayout = () => {
                   </NavLink>
                 ))}
                 <NavLink to="/admin/notifications"
+                  href="#"
                   style={{
                     ...styles.menuItem,
                     ':hover': { backgroundColor: '#7d0e1a' },
@@ -257,7 +259,10 @@ export const DICLayout = () => {
 
                 <div style={{ position: 'relative' }} ref={userMenuRef}>
                   <button
-                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    onClick={() => {
+                      setIsUserMenuOpen(!isUserMenuOpen)
+                      setIsMessagingOpen(false)
+                    }}
                     style={{
                       ...styles.menuItem,
                       display: 'flex',
@@ -280,17 +285,27 @@ export const DICLayout = () => {
                         <NavLink
                           key={route}
                           to={route !== 'logout' ? `/admin/${route}` : '#'}
-                          style={styles.dropdownItem}
-                          onClick={(e) => {
-                            if (route === 'logout') {
-                              e.preventDefault();
-                              logout();
-                            } else {
-                              handleDropdownItemClick(item.toLowerCase());
-                            }
-                          }}
                         >
-                          {item}
+                          <a
+                            key={item}
+                            href="#"
+                            style={{
+                              ...styles.dropdownItem,
+                              ':hover': { backgroundColor: '#f3f4f6' },
+                            }}
+                            onClick={(e) => {
+                              if (route === 'logout') {
+                                e.preventDefault();
+                                logout();
+                              } else {
+                                handleDropdownItemClick(item.toLowerCase());
+                              }
+                            }}
+                            onMouseEnter={(e) => (e.target.style.backgroundColor = '#f3f4f6')}
+                            onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
+                          >
+                            {item}
+                          </a>
                         </NavLink>
                       ))}
                     </div>
@@ -301,7 +316,10 @@ export const DICLayout = () => {
 
             {isMobile && (
               <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              onClick={() => {
+                setIsUserMenuOpen(!isUserMenuOpen)
+                setIsMessagingOpen(false)
+              }}
                 style={{
                   ...styles.mobileMenuButton,
                   display: 'flex',
@@ -357,7 +375,10 @@ export const DICLayout = () => {
             </a>
             <div style={{ position: 'relative' }}>
               <button
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                onClick={() => {
+                  setIsUserMenuOpen(!isUserMenuOpen)
+                  setIsMessagingOpen(false)
+                }}
                 style={{
                   ...styles.menuItem,
                   display: 'flex',
@@ -382,25 +403,25 @@ export const DICLayout = () => {
                 <div style={{ marginTop: '0.5rem' }}>
                   {userMenuItems.map(({ item, route }) => (
                     <NavLink
-                    key={route}
-                    to={route !== 'logout' ? `/admin/${route}` : '#'}
-                    style={{
-                      ...styles.menuItem,
-                      display: 'block',
-                      padding: '0.75rem 0',
-                      ':hover': { backgroundColor: '#7d0e1a' },
-                    }}
-                    onClick={(e) => {
-                      if (route === 'logout') {
-                        e.preventDefault();
-                        logout();
-                      } else {
-                        handleDropdownItemClick(item.toLowerCase());
-                      }
-                    }}
-                  >
-                    {item}
-                  </NavLink>
+                      key={route}
+                      to={route !== 'logout' ? `/admin/${route}` : '#'}
+                      style={{
+                        ...styles.menuItem,
+                        display: 'block',
+                        padding: '0.75rem 0',
+                        ':hover': { backgroundColor: '#7d0e1a' },
+                      }}
+                      onClick={(e) => {
+                        if (route === 'logout') {
+                          e.preventDefault();
+                          logout();
+                        } else {
+                          handleDropdownItemClick(item.toLowerCase());
+                        }
+                      }}
+                    >
+                      {item}
+                    </NavLink>
                   ))}
                 </div>
               )}
@@ -408,7 +429,15 @@ export const DICLayout = () => {
           </div>
         )}
       </nav>
-      <Outlet />
+      <main>
+        <Outlet />
+      </main>
+      <Messaging
+        hasAITab={false}
+        apiUrl={apiUrl}
+        isOpen={isMessagingOpen}
+        onToggle={setIsMessagingOpen}
+      />
     </div>
   );
 };

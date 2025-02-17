@@ -1,117 +1,94 @@
-import React, { useState, useEffect } from 'react';
-import { fetchCompanyRequests } from '../../../api/DICApi/getCompanyRequests';
-import Loading from '../../LoadingComponent/Loading';
-import { useTranslation } from 'react-i18next';
-import axios from "axios";
-import './CompanyTestimonialCard.css';
+"use client"
 
-const CompanyTestimonialCard = ({ company, onApprove, onReject }) => {
-  const { t } = useTranslation();
-
-  return (
-    <div className="company-card">
-      <div className="card-content">
-        {/* <img
-          src="/placeholder.svg?height=100&width=100"
-          alt={company.name}
-          className="company-image"
-        /> */}
-        <h2 className="company-name">{company.name}</h2>
-        <p className="company-details">
-          <strong>{t('representativeName')}:</strong> {company.username} 
-        </p>
-        <p className="company-details">
-          <strong>{t('email')}:</strong> {company.email}
-        </p>
-        
-        <p className="company-address"> <strong>{t('address')}: </strong> {company.address}</p>
-        <div className="button-container">
-          <button
-            onClick={() => onApprove(company.id)}
-            className="approve-button"
-          >
-            {t('approve')}
-          </button>
-          <button
-            onClick={() => onReject(company.id)}
-            className="reject-button"
-          >
-            {t('reject')}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
+import React, { useState, useEffect } from "react"
+import { useTranslation } from "react-i18next"
+import axios from "axios"
+import { motion } from "framer-motion"
+import CompanyTestimonialCard from "./CompanyCard"
+import { fetchCompanyRequests } from "../../../api/DICApi/getCompanyRequests"
+import Loading from "../../LoadingComponent/Loading"
 
 const CompanyTestimonialCards = () => {
-  const [companies, setCompanies] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const { t } = useTranslation();
+  const [companies, setCompanies] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [activeCard, setActiveCard] = useState(null)
+  const { t } = useTranslation()
 
   useEffect(() => {
     const getCompanyRequests = async () => {
       try {
-        const data = await fetchCompanyRequests();
-        setCompanies(data);
-        setLoading(false);
+        const data = await fetchCompanyRequests()
+        setCompanies(data)
+        setLoading(false)
       } catch (err) {
-        setError('Failed to fetch company requests');
-        setLoading(false);
+        setError("Failed to fetch company requests")
+        setLoading(false)
       }
-    };
+    }
 
-    getCompanyRequests();
-  }, []);
+    getCompanyRequests()
+  }, [])
 
   const updateCompanyRequest = async (companyId, isApproved) => {
     try {
-      const response = await axios.put(`http://localhost/admin/company/${companyId}`, {
-        isApproved: isApproved,
-      }, {
-        withCredentials: true
-      });
-  
+      const response = await axios.put(
+        `http://localhost/admin/company/${companyId}`,
+        {
+          isApproved: isApproved,
+        },
+        {
+          withCredentials: true,
+        },
+      )
+
       if (response.data.message) {
-        alert(response.data.message);
-        setCompanies(companies.filter((company) => company.id !== companyId));
+        alert(response.data.message)
+        setCompanies(companies.filter((company) => company.id !== companyId))
+        setActiveCard(null)
       } else {
-        alert("Action failed: " + (response.data.errors || "Unknown error"));
+        alert("Action failed: " + (response.data.errors || "Unknown error"))
       }
     } catch (error) {
-      console.error("Error processing the request:", error);
-      alert("An error occurred. Please try again later.");
+      console.error("Error processing the request:", error)
+      alert("An error occurred. Please try again later.")
     }
-  };
+  }
 
   if (loading) {
-    return <Loading />;
+    return <Loading />
   }
 
   if (error) {
-    return <div className="error-message">{error}</div>;
+    return <div className="text-red-500 text-center py-8">{error}</div>
   }
 
   return (
-    <div className="container">
-      <h1 className="title">{t('pendingCompanyRequest')}</h1>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">{t("pendingCompanyRequest")}</h1>
       {companies.length > 0 ? (
-        <div className="card-grid">
-          {companies.map(company => (
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 gap-y-24"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          {companies.map((company) => (
             <CompanyTestimonialCard
               key={company.id}
               company={company}
+              isActive={activeCard === company.id}
+              onHover={setActiveCard}
               onApprove={() => updateCompanyRequest(company.id, true)}
               onReject={() => updateCompanyRequest(company.id, false)}
             />
           ))}
-        </div>
+        </motion.div>
       ) : (
-        <p className="no-requests">{t('noPendingCompany')}</p>
+        <p className="text-center text-gray-600 text-lg">{t("noPendingCompany")}</p>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default CompanyTestimonialCards;
+export default CompanyTestimonialCards

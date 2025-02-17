@@ -24,7 +24,6 @@ export default function PendingApplicationList() {
     const handleScroll = () => {
       setShowScrollToTop(window.pageYOffset > 200);
     };
-    console.log(applications);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);

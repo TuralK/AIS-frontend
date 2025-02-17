@@ -5,6 +5,7 @@ export const validateStudent = async () => {
         const response = await axios.get(`http://localhost:3004/`, {
             withCredentials: true
         })
+        localStorage.removeItem("conversationId");
         return response.data.dataValues;
     } catch (error) {
         if (error.response) {

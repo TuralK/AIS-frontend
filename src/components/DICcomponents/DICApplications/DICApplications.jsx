@@ -1,67 +1,89 @@
-import React, { useEffect, useState } from 'react';
-import fetchApplicationRequests from '../../../api/DICApi/applicationsApi.js';
-import Loading from '../../LoadingComponent/Loading';
-import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import React, { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
+import { ArrowRight } from "lucide-react"
+import fetchApplicationRequests from "../../../api/DICApi/applicationsApi.js"
+import Loading from "../../LoadingComponent/Loading"
+import AnnouncementImage from "../../../assets/office.jpg"
 
 const DICApplications = () => {
-  const [applications, setApplications] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const { t } = useTranslation();
-  const navigate = useNavigate(); // Initialize navigate
+  const [applications, setApplications] = useState([])
+  const [loading, setLoading] = useState(true)
+  const { t } = useTranslation()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const loadApplications = async () => {
-      setLoading(true);
-      const data = await fetchApplicationRequests();
-      console.log(data.applications);
+      setLoading(true)
+      const data = await fetchApplicationRequests()
       if (data) {
-        setApplications(data.applications);
+        setApplications(data.applications)
       }
-      setLoading(false);
-    };
+      setLoading(false)
+    }
 
-    loadApplications();
-  }, []);
+    loadApplications()
+  }, [])
 
-  if (loading) return <Loading />;
+  const formatDate = (dateString) => {
+    const date = new Date(dateString)
+    return `${date.getDate().toString().padStart(2, "0")}.${(date.getMonth() + 1).toString().padStart(2, "0")}.${date.getFullYear()}`
+  }
+
+  if (loading) return <Loading />
 
   return (
     <div className="container mx-auto px-4">
       <div className="py-8">
-        <h1 className="text-3xl font-bold text-center mb-6 text-gradient">{t('applicationRequests')}</h1>
+        <h1 className="text-3xl font-bold text-center mb-6 text-gradient">{t("applicationRequests")}</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {applications.length > 0 ? (
-            applications.map(application => (
-              <div key={application.id} className="bg-white rounded-lg shadow-xl border border-gray-300 transition-transform duration-300 hover:scale-105">
-                <button
-                  className="w-full text-left p-6 flex flex-col justify-between h-full"
-                  onClick={() => navigate(`/admin/application/${application.id}`)} // Use navigate
-                >
-                  <div>
-                    <h5 className="text-xl font-bold text-gray-800 mb-2">{application.Student.username}</h5>
-                    <p className="text-sm text-gray-600 mb-1">
-                      <strong>{t('id')}:</strong> {application.Student.id}
+            applications.map((application) => (
+              <div
+                key={application.id}
+                className="bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+              >
+                <div className="relative w-full h-48 overflow-hidden group">
+                  <img
+                    src={application.image || AnnouncementImage}
+                    alt={application.Announcement.name}
+                    className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
+                  <span className="absolute top-3 left-3 bg-black/75 text-white px-3 py-1 text-sm rounded">
+                    {application.Announcement.announcementName}
+                  </span>
+                </div>
+                <div className="p-6">
+                  <div className="mb-4">
+                    <h1 className="text-xl font-bold text-gray-800 mb-2">{application.Student.username}</h1>
+                    <p className="text-gray-600 font-bold  text-md">
+                    {t("id")}: {application.Student.id} 
                     </p>
-                    <p className="text-sm text-gray-600">
-                      <strong>{t('company')}:</strong> {application.Announcement.Company.name}
+                    <p className="text-gray-700 font-bold text-md">
+                    {t("company")}: {application.Announcement.Company.name} 
                     </p>
                   </div>
-                  <div className="mt-4">
-                    <span className="bg-red-500 text-white py-1 px-3 rounded-full text-xs font-semibold">
-                      {t('moreDetails')}
-                    </span>
+                  <div className="flex items-center justify-between">
+                    <span className="text-md font-bold text-gray-700">{t("startDate")} {formatDate(application.Announcement.startDate)}</span>
+                    
+                    <button
+                      onClick={() => navigate(`/admin/application/${application.id}`)}
+                      className="inline-flex items-center text-emerald-600 hover:text-emerald-700 hover:underline transition-colors group"
+                    >
+                      {t("moreDetails")}
+                      <ArrowRight className="ml-1 w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    </button>
                   </div>
-                </button>
+                </div>
               </div>
             ))
           ) : (
-            <h2 className="col-span-full text-xl font-semibold text-center text-gray-500">{t('noApplication')}</h2>
+            <h2 className="col-span-full text-xl font-semibold text-center text-gray-500">{t("noApplication")}</h2>
           )}
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default DICApplications;
+export default DICApplications
