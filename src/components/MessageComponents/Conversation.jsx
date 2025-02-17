@@ -10,12 +10,7 @@ import {
   deleteMessageThunk,
 } from "../../thunks/messageThunks"
 import { scrollToBottom } from "../../utils/conversationUtils"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown"
+import CustomDropdown from "../ui/custom_dropdown";
 import { Checkbox } from "../ui/checkbox"
 import ErrorMessage from "../ui/error_message"
 import { selectConversationMessages } from "../../selectors/conversation_selector"
@@ -223,37 +218,7 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
                           className="mr-2"
                         />
                       ) : (
-                        <DropdownMenu>
-                          <DropdownMenuTrigger 
-                            asChild
-                            className="dropdown-trigger"
-                          >
-                            <button className="p-1 rounded-full hover:bg-gray-200 transition-colors">
-                              <MoreVertical size={16} className="text-gray-600" />
-                            </button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent
-                            align="start"
-                            className="min-w-[120px] bg-white border border-gray-200 rounded-lg shadow-lg mr-50"
-                            sideOffset={5}
-                            collisionPadding={10}
-                            style={{
-                              position: 'fixed',
-                              zIndex: 999
-                            }}
-                          >
-                            <DropdownMenuItem
-                              onClick={(e) => {
-                                e.preventDefault()
-                                handleDeleteMessage(msg.id)
-                              }}
-                              className="text-red-600 hover:bg-red-50 focus:bg-red-50 cursor-pointer px-3 py-2 text-sm"
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              {t("delete")}
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <CustomDropdown onDelete={() => handleDeleteMessage(msg.id)} isSentByUser={true} />
                       )}
                     </div>
                   )}
@@ -316,7 +281,6 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
         </div>
       )}
 
-      {/* Alt input (mobilde de görünür) */}
       <div className="sticky bottom-0 border-t p-2 bg-white">
         {attachedFile && (
           <div className="mb-2 flex items-center justify-between bg-gray-100 p-2 rounded">

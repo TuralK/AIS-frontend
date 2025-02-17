@@ -7,20 +7,14 @@ import {
   sendMessageToAI,
   getMessages,
   createConversationThunk,
-  getConversationThunk, 
+  getConversationThunk,
 } from "../../thunks/aiChatThunk";
 import {
   deleteMessageThunk,
-} from "../../thunks/messageThunks" 
+} from "../../thunks/messageThunks"
 import IYTElogo from "../../assets/iyte_logo_eng.png";
 import ErrorMessage from "../ui/error_message";
-import { MoreVertical, Trash2 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "../ui/dropdown";
+import CustomDropdown from "../ui/custom_dropdown";
 
 const AIComponent = ({ apiUrl }) => {
   const { t } = useTranslation();
@@ -108,14 +102,12 @@ const AIComponent = ({ apiUrl }) => {
 
   return (
     <div
-      className={`flex flex-col w-full bg-background ${
-        isMobile ? "h-screen" : "h-full max-h-[90%]"
-      }`}
+      className={`flex flex-col w-full bg-background ${isMobile ? "h-screen" : "h-full max-h-[90%]"
+        }`}
     >
       <div
-        className={`flex-1 overflow-y-auto flex flex-col ${
-          isMobile ? "pb-36" : "pb-0"
-        } p-2 md:p-4 space-y-4 relative`}
+        className={`flex-1 overflow-y-auto flex flex-col ${isMobile ? "pb-36" : "pb-0"
+          } p-2 md:p-4 space-y-4 relative`}
       >
         {historyLoading ? (
           <div className="flex-1 flex items-center justify-center min-h-[200px]">
@@ -129,42 +121,19 @@ const AIComponent = ({ apiUrl }) => {
           messages.map((msg) => (
             <div
               key={msg.id || Math.random()}
-              className={`flex items-center gap-0 group ${
-                msg.isSentByUser ? "justify-end" : "justify-start"
-              }`}
+              className={`flex items-center gap-0 group ${msg.isSentByUser ? "justify-end" : "justify-start"}`}
             >
               {msg.isSentByUser ? (
-                <div className="flex items-center gap-0 relative">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button className="p-1 rounded-full hover:bg-gray-200 transition-colors opacity-0 group-hover:opacity-100">
-                        <MoreVertical size={16} className="text-gray-600" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      className="min-w-[120px] bg-white border border-gray-200 rounded-lg shadow-lg"
-                      align="end"
-                    >
-                      <DropdownMenuItem
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleDeleteMessage(msg.id);
-                        }}
-                        className="text-red-600 hover:bg-red-50 focus:bg-red-50 cursor-pointer px-3 py-2 text-sm"
-                      >
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        {t("delete")}
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                <div className="flex items-center gap-0 relative hover:dropup-container">
+                  <CustomDropdown onDelete={() => handleDeleteMessage(msg.id)} isSentByUser={true} />
                   <div
-                    className={`p-3 rounded-lg break-words text-sm md:text-base bg-red-800 text-white rounded-br-none max-w-[90%] xs:max-w-[80%]`}
+                    className={`p-3 rounded-lg break-words text-sm md:text-base bg-red-800 text-white rounded-br-none max-w-[90%] xs:max-w-[80%] relative`}
                   >
                     {msg.message}
                   </div>
                 </div>
               ) : (
-                <div className="flex items-center gap-0 relative">
+                <div className="flex items-center gap-0 relative hover:dropup-container">
                   <img
                     src={IYTElogo}
                     alt="IYTE Logo"
@@ -175,28 +144,7 @@ const AIComponent = ({ apiUrl }) => {
                   >
                     {msg.message}
                   </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button className="p-1 rounded-full hover:bg-gray-200 transition-colors opacity-0 group-hover:opacity-100">
-                        <MoreVertical size={16} className="text-gray-600" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      className="min-w-[120px] bg-white border border-gray-200 rounded-lg shadow-lg"
-                      align="start"
-                    >
-                      <DropdownMenuItem
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleDeleteMessage(msg.id);
-                        }}
-                        className="text-red-600 hover:bg-red-50 focus:bg-red-50 cursor-pointer px-3 py-2 text-sm"
-                      >
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        {t("delete")}
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <CustomDropdown onDelete={() => handleDeleteMessage(msg.id)} isSentByUser={false} />
                 </div>
               )}
             </div>
