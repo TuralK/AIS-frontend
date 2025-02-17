@@ -7,10 +7,20 @@ import {
   sendMessageToAI,
   getMessages,
   createConversationThunk,
-  getConversationThunk,
+  getConversationThunk, 
 } from "../../thunks/aiChatThunk";
+import {
+  deleteMessageThunk,
+} from "../../thunks/messageThunks" 
 import IYTElogo from "../../assets/iyte_logo_eng.png";
 import ErrorMessage from "../ui/error_message";
+import { MoreVertical, Trash2 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "../ui/dropdown";
 
 const AIComponent = ({ apiUrl }) => {
   const { t } = useTranslation();
@@ -70,12 +80,10 @@ const AIComponent = ({ apiUrl }) => {
     }
   }, [dispatch, apiUrl, conversationId]);
 
-  
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, historyLoading]);
 
-  
   useEffect(() => {
     if (aiError) {
       const timer = setTimeout(() => dispatch(clearAIError()), 5000);
@@ -83,10 +91,19 @@ const AIComponent = ({ apiUrl }) => {
     }
   }, [aiError, dispatch]);
 
-  
   const handleSend = (message) => {
     if (!message.trim() || !conversationId) return;
     dispatch(sendMessageToAI({ message, apiUrl, conversationId }));
+  };
+
+  const handleDeleteMessage = async (messageId) => {
+    try {
+      await dispatch(deleteMessageThunk({ apiUrl, messageId })).unwrap();
+      dispatch(getMessages({ apiUrl, conversationId }));
+    } catch (error) {
+      console.error("Message deletion failed:", error);
+      alert(t("delete_message_error"));
+    }
   };
 
   return (
@@ -109,31 +126,79 @@ const AIComponent = ({ apiUrl }) => {
             <div className="text-muted-foreground">{t("start_conversation")}</div>
           </div>
         ) : (
-          messages.map((msg, index) => (
+          messages.map((msg) => (
             <div
-              key={index}
-              className={`flex ${
+              key={msg.id || Math.random()}
+              className={`flex items-center gap-0 group ${
                 msg.isSentByUser ? "justify-end" : "justify-start"
-              } items-end gap-1`}
+              }`}
             >
-              {/* Yapay zeka mesajı ise logo gösterelim */}
-              {!msg.isSentByUser && (
-                <img
-                  src={IYTElogo}
-                  alt="IYTE Logo"
-                  className="w-9 h-9 object-contain hidden sm:block"
-                />
+              {msg.isSentByUser ? (
+                <div className="flex items-center gap-0 relative">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="p-1 rounded-full hover:bg-gray-200 transition-colors opacity-0 group-hover:opacity-100">
+                        <MoreVertical size={16} className="text-gray-600" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      className="min-w-[120px] bg-white border border-gray-200 rounded-lg shadow-lg"
+                      align="end"
+                    >
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleDeleteMessage(msg.id);
+                        }}
+                        className="text-red-600 hover:bg-red-50 focus:bg-red-50 cursor-pointer px-3 py-2 text-sm"
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        {t("delete")}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <div
+                    className={`p-3 rounded-lg break-words text-sm md:text-base bg-red-800 text-white rounded-br-none max-w-[90%] xs:max-w-[80%]`}
+                  >
+                    {msg.message}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center gap-0 relative">
+                  <img
+                    src={IYTElogo}
+                    alt="IYTE Logo"
+                    className="w-9 h-9 object-contain hidden sm:block mr-2"
+                  />
+                  <div
+                    className={`p-3 rounded-lg break-words text-sm md:text-base bg-gray-200 text-foreground rounded-bl-none max-w-[90%] xs:max-w-[80%]`}
+                  >
+                    {msg.message}
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="p-1 rounded-full hover:bg-gray-200 transition-colors opacity-0 group-hover:opacity-100">
+                        <MoreVertical size={16} className="text-gray-600" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      className="min-w-[120px] bg-white border border-gray-200 rounded-lg shadow-lg"
+                      align="start"
+                    >
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleDeleteMessage(msg.id);
+                        }}
+                        className="text-red-600 hover:bg-red-50 focus:bg-red-50 cursor-pointer px-3 py-2 text-sm"
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        {t("delete")}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               )}
-              <div
-                className={`max-w-[90%] xs:max-w-[80%] p-3 rounded-lg break-words text-sm md:text-base 
-                  ${
-                    msg.isSentByUser
-                      ? "bg-red-800 text-white ml-auto rounded-br-none"
-                      : "bg-gray-200 text-foreground mr-auto rounded-bl-none"
-                  }`}
-              >
-                {msg.message}
-              </div>
             </div>
           ))
         )}
@@ -146,7 +211,7 @@ const AIComponent = ({ apiUrl }) => {
         </div>
       )}
 
-      <div className="sticky bottom-0 border-t p-2 bg-background">
+      <div className={`sticky bottom-0 border-t p-2 bg-white ${isMobile ? "mt-10" : "mt-5"}`}>
         <div className="max-w-3xl mx-auto w-full">
           <RoundedInput onSend={handleSend} fullWidth disabled={aiLoading} />
         </div>
