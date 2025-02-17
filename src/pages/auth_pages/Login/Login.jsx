@@ -20,43 +20,6 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const handleGoogleSignIn = async (event) => {
-    event.preventDefault();
-    window.location.href = 'http://localhost:8092/api/v1/auth';
-  }
-
-  const handleGoogleSignIn2 = async (event) => {
-    event.preventDefault();
-    
-    try {
-        const response = await axios.get('http://localhost:8092/api/v1/auth/signin', { withCredentials: true });
-        
-        console.log(response);
-        if (response.status === 302) {
-            window.location.href = response.headers.location;
-        }
-    } catch (error) {
-        console.error("Error during sign-in:", error);
-    }
-};
-
-const handleGoogleSignIn3 = () => {
-  const authWindow = window.open(
-      'http://localhost:8092/api/v1/auth',
-      '_blank',
-      'width=500,height=600'
-  );
-
-  const checkPopup = setInterval(() => {
-      if (!authWindow || authWindow.closed) {
-          clearInterval(checkPopup);
-          console.log('Popup closed');
-      }
-  }, 1000);
-};
-
-
-
   const resetLoginForm = () => {
     setLoginError('');
     setEmail('');
@@ -264,12 +227,6 @@ const handleGoogleSignIn3 = () => {
             <Link to='/signup'>Don't have an account? Sign up.</Link>
           </center>
           <br />
-          {/* Google Sign In Button */}
-          <center>
-            {/* <a href={googleLoginURL} className={LoginCSS['google-button']}> */}
-              <button onClick={handleGoogleSignIn2} className={LoginCSS['google-button-style']}>Sign in with Google</button>
-            {/* </a> */}
-          </center>
         </div>
       </div>
     </div>
