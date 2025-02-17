@@ -166,6 +166,5 @@
   "passwordMinLength": "Password must be at least 6 characters long.",
   "passwordsDoNotMatch": "Passwords do not match.",
   "no_messages": "No messages",
-  "selected_message": "Selected message",
-  "publishAnnouncement": "Publish Announcement"
+  "selected_message": "Selected message"
 }

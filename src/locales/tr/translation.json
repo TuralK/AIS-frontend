@@ -158,6 +158,5 @@
   "passwordMinLength": "Şifre en az 6 karakter uzunluğunda olmalıdır.",
   "passwordsDoNotMatch": "Şifreler uyuşmuyor.",
   "no_messages": "Mesaj bulunamadı",
-  "selected_message": "Seçili mesaj",
-  "publishAnnouncement": "İlan Yayınla"
+  "selected_message": "Seçili mesaj"
 }
