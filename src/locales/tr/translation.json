@@ -176,5 +176,11 @@
   "invalid_file_type": "Sadece PDF, DOC ve DOCX dosyalarına izin verilmektedir.",
   "no_conversation": "Sohbet bulunamadı",
   "secretary": "Sekreter",
-  "coordinator": "Koordinatör"
+  "coordinator": "Koordinatör",
+  "personalInfo": "Kişisel Bilgiler",
+  "passwordSection": "Şifre",
+  "atLeastOneFieldRequired": "En az bir alan doldurulmalıdır",
+  "updateSuccess": "Başarıyla güncellendi",
+  "saving": "Kaydediliyor",
+  "success": "Başarılı"
 }

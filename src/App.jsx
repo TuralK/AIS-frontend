@@ -22,13 +22,11 @@ import DICInternships from "./components/DICcomponents/DICInternships/DICInterns
 import DICInnerInternships from "./components/DICcomponents/DICInternships/InnerApplication/DICInnerInternships.jsx";
 import { SecretaryLayout } from "./layouts/SecretaryLayout/SecretaryLayout.jsx";
 import PendingApplicationList from "./components/SecretaryComponents/PendingApplicationList.jsx";
-import SecretarySettings from "./components/SecretaryComponents/SecretarySettings.jsx";
 import { CompanyLayout } from "./layouts/CompanyLayout/CompanyLayout.jsx";
 import CompanyApplications from './components/CompanyComponents/CompanyApplications/CompanyApplications.jsx';
 import PublishAnnouncement from "./components/CompanyComponents/PublishAnnouncement/PublishAnnouncement.jsx";
 import CompanyApplication from "./components/CompanyComponents/CompanyApplication/CompanyApplication.jsx";
-import { Settings } from "lucide-react";
-import DICSettings from "./components/DICcomponents/DICSettings.jsx";
+import Settings from "./components/Settings/Settings.jsx";
 
 const App = () => {
   const { t, i18n } = useTranslation();
@@ -78,7 +76,7 @@ const App = () => {
       children: [
         { index: true, element: <DICHome /> },
         { path: "home", element: <DICHome /> },
-        { path: "settings", element: <DICSettings /> },
+        { path: "settings", element: <Settings apiUrl= {'http://localhost:3003'} /> },
         { path: "companyRequests", element: <CompanyCards /> },
         { path: 'announcementRequests', element: <DICAnnouncementRequest /> },
         { path: 'announcement/:id', element: <DICAnouncementDetails /> },
@@ -94,7 +92,7 @@ const App = () => {
       children: [
         { index: true, element: <Navigate to="home" replace /> },
         { path: "home", element: <PendingApplicationList />},
-        { path: "settings", element: <SecretarySettings/> },
+        { path: "settings", element: <Settings apiUrl= 'http://localhost:3006' /> },
       ]
     }
   ]);

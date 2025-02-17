@@ -184,5 +184,11 @@
   "invalid_file_type": "Only PDF, DOC and DOCx files are allowed",
   "no_conversation": "No conversation",
   "secretary": "Secretary", 
-  "coordinator": "Coordinator"
+  "coordinator": "Coordinator",
+  "personalInfo": "Personal Information",
+  "passwordSection": "Password",
+  "atLeastOneFieldRequired": "At least one field is required",
+  "updateSuccess": "Update successful",
+  "saving": "Saving",
+  "success": "Success"
 }
