@@ -13,12 +13,13 @@ const CompanyApplications = () => {
     fetchApplications()
       .then(applicationsData => {
         const formattedData = applicationsData.map(app => ({
+          application_id: app.id,
           student_name: app.Student.username,
           applied_at: new Date(app.applyDate).toLocaleDateString("en-US", {
             year: "numeric",
             month: "long",
             day: "numeric",
-          }), // Formats date as "May 12, 2023"
+          }), 
           grade: app.Student.year,
           announcement: `${app.Announcement.announcementName}`,
         }));
@@ -31,6 +32,7 @@ const CompanyApplications = () => {
   }, []);
 
   // Example with more than 8 items to demonstrate pagination
+  //delete this
   const content = [
     {
       student_name: "Tural Karimli dddddd dddddddddddddd",
@@ -63,7 +65,7 @@ const CompanyApplications = () => {
   return (
     <div className={CompanyApplicationsCSS.card}>
       <div className="p-4">
-        <ListTable headers={headers} content={applications} columnSizes={columnSizes} defaultItemsPerPage={11} />
+        <ListTable headers={headers} content={applications} columnSizes={columnSizes} defaultItemsPerPage={11} isClickable={true} redirectField={"application_id"}/>
       </div>
     </div>
     

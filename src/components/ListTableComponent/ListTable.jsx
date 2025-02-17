@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import Pagination from "./pagination"
+import ListTableCSS from "./ListTable.module.css";
+import Pagination from "./pagination";
+import { useNavigate } from "react-router-dom";
 
-const ListTable = ({ headers, content, columnSizes = {}, defaultItemsPerPage }) => {
-  const [currentPage, setCurrentPage] = useState(1)
+const ListTable = ({ headers, content, columnSizes = {}, defaultItemsPerPage, isClickable, redirectField }) => {
+  const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(defaultItemsPerPage);
+  const navigate = useNavigate();
 
-  // Function to determine items per page based on screen width
   const updateItemsPerPage = () => {
     const height = window.innerHeight;
     if (height <= 932) {
@@ -21,54 +23,57 @@ const ListTable = ({ headers, content, columnSizes = {}, defaultItemsPerPage }) 
     }
   };
 
-  // Update items per page on mount and when window resizes
   useEffect(() => {
-    updateItemsPerPage(); // Initial setup
+    updateItemsPerPage();
     window.addEventListener("resize", updateItemsPerPage);
-    
     return () => {
       window.removeEventListener("resize", updateItemsPerPage);
     };
   }, []);
 
-  // Calculate total pages
-  const totalPages = Math.ceil(content.length / itemsPerPage)
-
-  // Get current page's content
-  const currentContent = content.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-
-  // Default size if not specified
-  const defaultSize = "1fr"
-
-  // Generate grid-template-columns based on headers and columnSizes
-  const gridTemplateColumns = headers.map((header) => columnSizes[header] || defaultSize).join(" ")
+  const totalPages = Math.ceil(content.length / itemsPerPage);
+  const currentContent = content.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const defaultSize = "1fr";
+  const gridTemplateColumns = headers.map((header) => columnSizes[header] || defaultSize).join(" ");
 
   return (
     <div>
       <div className="rounded-md border overflow-hidden">
+        {/* Table Header */}
         <div className="grid" style={{ gridTemplateColumns }}>
-          {/* Header row */}
           {headers.map((header, index) => (
             <div key={index} className="bg-muted/50 font-medium p-4 text-center border-b font-regular flex items-center justify-center">
               {header}
             </div>
           ))}
-
-          {/* Content rows */}
-          {currentContent.map((row, rowIndex) =>
-            headers.map((header, cellIndex) => (
-              <div key={`${rowIndex}-${cellIndex}`} className="p-4 border-b text-muted-foreground text-center font-light flex items-center justify-center">
-                {row[header.toLowerCase().replace(/\s+/g, "_")]}
-              </div>
-            )),
-          )}
         </div>
+
+        {/* Table Body */}
+        {currentContent.map((row, rowIndex) => (
+          <div
+            key={rowIndex}
+            className={`grid transition-colors duration-200 ${isClickable ? "cursor-pointer hover:bg-gray-100" : ""}`}
+            style={{ gridTemplateColumns }}
+            onClick={() => isClickable && redirectField && navigate(`${row[redirectField]}`)}
+          >
+            {headers.map((header, cellIndex) => {
+              const fieldKey = header.toLowerCase().replace(/\s+/g, "_");
+              const fieldValue = row[fieldKey];
+
+              return (
+                <div key={`${rowIndex}-${cellIndex}`} className="p-4 border-b text-muted-foreground text-center font-light flex items-center justify-center">
+                  {fieldValue}
+                </div>
+              );
+            })}
+          </div>
+        ))}
       </div>
 
+      {/* Pagination */}
       {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />}
     </div>
-  )
-}
+  );
+};
 
-export default ListTable
-
+export default ListTable;
