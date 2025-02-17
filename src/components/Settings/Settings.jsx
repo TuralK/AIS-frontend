@@ -4,7 +4,6 @@ import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { Eye, EyeOff } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { useSelector, useDispatch } from "react-redux"
 import { resetState as resetSuccessState } from "../../slices/settingsSlice"
@@ -59,8 +58,9 @@ function InputField({ label, id, register, type = "text", error, disabled }) {
         id={id}
         type={type}
         disabled={disabled}
-        className={`w-full h-11 px-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-colors ${disabled ? "bg-gray-100 cursor-not-allowed" : ""
-          } ${error ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+        className={`w-full h-11 px-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary transition-colors ${
+          disabled ? "bg-gray-100 cursor-not-allowed" : ""
+        } ${error ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
       />
       {error && <p className="mt-1.5 text-sm text-red-600">{t(error.message)}</p>}
     </div>
@@ -97,25 +97,24 @@ export default function Settings({ apiUrl }) {
 
   useEffect(() => {
     if (userData?.username) {
-      const parts = userData.username.split(" ");
-      let firstName, lastName;
-  
+      const parts = userData.username.split(" ")
+      let firstName, lastName
+
       if (parts.length === 3) {
-        firstName = parts.slice(0, 2).join(" ");
-        lastName = parts[2];
+        firstName = parts.slice(0, 2).join(" ")
+        lastName = parts[2]
       } else {
-        firstName = parts[0] || "";
-        lastName = parts.slice(1).join(" ") || "";
+        firstName = parts[0] || ""
+        lastName = parts.slice(1).join(" ") || ""
       }
-  
+
       reset({
         firstName,
         lastName,
         email: userData.email || "",
-      });
+      })
     }
-  }, [userData, reset]);
-  
+  }, [userData, reset])
 
   useEffect(() => {
     if (error) {
@@ -178,7 +177,7 @@ export default function Settings({ apiUrl }) {
           <div className="grid grid-rows-[auto_auto_auto] bg-white shadow-sm rounded-xl p-6 sm:p-8 gap-6">
             <h2 className="text-lg font-semibold text-gray-900">{t("personalInfo")}</h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <InputField
                 label={t("firstName")}
                 id="firstName"

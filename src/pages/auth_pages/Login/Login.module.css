@@ -122,7 +122,7 @@ html, body {
   font-size: 35px;
 }
 
-.form-bottom input[type="text"], input[type="password"], input[type="email"] {
+.form-bottom input[type="text"], .form-bottom input[type="password"], .form-bottom input[type="email"] {
   width: 82%;
   height: 45px;
   display: block;

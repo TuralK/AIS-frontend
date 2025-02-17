@@ -1,4 +1,4 @@
-import React, { useState, useEffect,  } from 'react'
+import React, { useState, useEffect, } from 'react'
 import StudentFormCSS from './StudentForm.module.css'
 import { registerStudent } from '../../../api/SignUpApis/studentAPI';
 import { validateSignUpForm } from '../../../utils/validation';
@@ -19,13 +19,13 @@ const StudentForm = ({ reset }) => {
     setPassword('');
     setConfirmPassword('');
     setErrors({
-        email: '',
-        password: '',
-        confirmPassword: ''
+      email: '',
+      password: '',
+      confirmPassword: ''
     });
   }, [reset]);
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({
       email: '',
@@ -41,7 +41,7 @@ const StudentForm = ({ reset }) => {
 
     try {
       const response = await registerStudent({ email, password, confirmPassword });
-      if(response.status === 200) {
+      if (response.status === 200) {
         // navigate to Student's homepage
       }
     } catch (error) {
@@ -78,41 +78,44 @@ const StudentForm = ({ reset }) => {
     <form onSubmit={handleSubmit} className={StudentFormCSS.registerStudent} id="registerStudent">
       <div className={StudentFormCSS.bottomRightInner}>
         <div className={StudentFormCSS.container}>
-          <input
-            type="email"
-            value={email}
-            style={{ fontSize: '14px' }}
-            placeholder="Email"
-            id="student-email"
-            name="student-email"
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <div className={`${StudentFormCSS.email} ${StudentFormCSS.error}`}>{errors.email}</div>
+          <div className = {StudentFormCSS.signupInputs}>
+            <input
+              type="email"
+              value={email}
+              style={{ fontSize: '14px' }}
+              placeholder="Email"
+              id="student-email"
+              name="student-email"
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <div className={`${StudentFormCSS.email} ${StudentFormCSS.error}`}>{errors.email}</div>
 
-          <input
-            type="password"
-            value={password}
-            style={{ fontSize: '14px' }}
-            placeholder="Password"
-            id="student-password"
-            name="student-password"
-            onChange={(e) => setPassword(e.target.value)}
-            minLength={6}
-            required
-          />
-          <div className={`${StudentFormCSS.password} ${StudentFormCSS.error}`}>{errors.password}</div>
+            <input
+              type="password"
+              value={password}
+              style={{ fontSize: '14px' }}
+              placeholder="Password"
+              id="student-password"
+              name="student-password"
+              onChange={(e) => setPassword(e.target.value)}
+              minLength={6}
+              required
+            />
+            <div className={`${StudentFormCSS.password} ${StudentFormCSS.error}`}>{errors.password}</div>
 
-          <input
-            type="password"
-            value={confirmPassword}
-            style={{ fontSize: '14px' }}
-            placeholder="Confirm password"
-            id="student-confirmPassword"
-            name="student-confirmPassword"
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
+            <input
+              type="password"
+              value={confirmPassword}
+              style={{ fontSize: '14px' }}
+              placeholder="Confirm password"
+              id="student-confirmPassword"
+              name="student-confirmPassword"
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
+          
           <div className={`${StudentFormCSS.confirm} ${StudentFormCSS.error}`}>{errors.confirmPassword}</div>
 
           <button className={StudentFormCSS.button} type="submit" value="Sign Up">

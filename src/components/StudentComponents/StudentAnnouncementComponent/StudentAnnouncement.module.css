@@ -315,7 +315,7 @@ html, body {
   margin: 13px auto;
 }
 
-.studentAnnouncement input[type="text"], input[type="password"], input[type="email"] {
+.studentAnnouncement input[type="text"], .studentAnnouncement input[type="password"], .studentAnnouncement input[type="email"] {
   width: 82%;
   height: 45px;
   display: block;
