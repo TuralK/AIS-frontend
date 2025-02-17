@@ -1,0 +1,14 @@
+.card {
+  padding: 10px;
+  max-width: 1480px;
+  margin: 50px auto; 
+  overflow: visible;
+  
+  font-family: "Lexend Deca";
+  
+  word-wrap: break-word;
+  hyphens: auto;
+  /* word-break: break-all; */
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}

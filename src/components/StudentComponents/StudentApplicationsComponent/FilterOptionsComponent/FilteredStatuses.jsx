@@ -27,14 +27,14 @@ const FilterOptions = ({applicationsStatuses}) => {
         break;
       case filterOptions[1].key:
         setFilteredApplicationsStatuses(applicationsStatuses.filter(application => 
-          application.status === 0 || application.status === 1 || application.status === 2
+          application.status == 0 || application.status == 1 || application.status == 2
         ));
         break;
       case filterOptions[3].key:
-        setFilteredApplicationsStatuses(applicationsStatuses.filter(application => application.status === 4));
+        setFilteredApplicationsStatuses(applicationsStatuses.filter(application => application.status == 4));
         break;
       case filterOptions[2].key:
-        setFilteredApplicationsStatuses(applicationsStatuses.filter(application => application.status === 3));
+        setFilteredApplicationsStatuses(applicationsStatuses.filter(application => application.status == 3));
         break;
       default:
         setFilteredApplicationsStatuses(applicationsStatuses);

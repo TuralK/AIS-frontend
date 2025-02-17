@@ -27,6 +27,7 @@ const StudentAnnouncements = () => {
         <Loading />
     )
   }
+  
   return (
     <div className={StudentAnnouncementsCSS["content-container"]}>
         {}

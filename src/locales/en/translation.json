@@ -11,6 +11,7 @@
   "description": "Description",
   "company": "Company",
   "internship": "Internship",
+  "internships": "Internships",
   "pendingCompanyRequest": "Pending Company Registration Requests",
   "noPendingCompany": "No pending registration requests found.",
   "approve": "Approve",
@@ -58,6 +59,7 @@
   "application_close_second_other": "Application closes in {{count}} seconds",
   "application_left_second_one": "Left {{count}} second",
   "application_left_second_other": "Left {{count}} seconds",
+  "application_closed": "Application closed",
   "my_application_details": "My application details",
   "end_date": "End Date",
   "my_details": "My Details",
@@ -183,5 +185,4 @@
   "no_conversation": "No conversation",
   "secretary": "Secretary", 
   "coordinator": "Coordinator"
-
 }

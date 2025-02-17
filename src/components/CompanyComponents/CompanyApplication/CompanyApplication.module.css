@@ -1,0 +1,287 @@
+.container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.profileSection {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.profileImage {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #e0e0e0;
+}
+
+.profileInfo h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.applicationId {
+  margin: 5px 0 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.submissionDate {
+  color: #666;
+  font-size: 14px;
+}
+
+.announcementTitle {
+  margin: 0;
+  color: #666;
+  font-size: 16px;
+}
+
+.documentSection {
+  /* max-width: 800px; */
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.documentHeader {
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.documentTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #333;
+  font-size: 14px;
+}
+
+.documentTitle::before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background: #666;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 384 512'%3E%3Cpath d='M320 464c8.8 0 16-7.2 16-16V160H256c-17.7 0-32-14.3-32-32V48H64c-8.8 0-16 7.2-16 16V448c0 8.8 7.2 16 16 16H320zM0 64C0 28.7 28.7 0 64 0H229.5c17 0 33.3 6.7 45.3 18.7l90.5 90.5c12 12 18.7 28.3 18.7 45.3V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V64z'/%3E%3C/svg%3E")
+    no-repeat center;
+}
+
+.documentActions {
+  display: flex;
+  gap: 8px;
+}
+
+.actionButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #666;
+  font-size: 18px;
+}
+
+.actionButton:hover {
+  color: #333;
+}
+
+.documentPreview {
+  height: 400px;
+  background: #2f3542;
+  position: relative;
+  overflow: hidden;
+}
+
+.pdfViewer {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: white;
+}
+
+.actionButtons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.rejectButton,
+.acceptButton {
+  padding: 8px 24px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+}
+
+.rejectButton {
+  background: darkred;
+  border: 1px solid #ddd;
+  color: white;
+}
+
+.acceptButton {
+  background: darkgreen;
+  color: white;
+}
+
+.rejectButton:hover {
+  background: #f5f5f5;
+}
+
+.acceptButton:hover {
+  background: #333;
+}
+
+.extraInfoContainer {
+  display: flex;
+  gap: 10px;
+}
+.endDateContainer {
+  margin: 30px auto;
+  display: inline-flex;
+  flex-direction: column;
+  width: 50%;
+  height: 90px;
+  border-radius: 8px;
+  background-color: #F7F7F7;
+}
+
+.endDateName {
+  margin: 16px auto 6px 20px;
+  font-family: "Lexend Deca";
+  font-weight: 400;
+  font-size: 20px;
+  color: #535353;
+}
+
+.endDate {
+  margin-left: 20px;
+  font-family: "Lexend Deca";
+  font-weight: 400;
+  font-size: 16px;
+}
+
+
+/* New styles for the extra fields section */
+.extraFields {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fafafa;
+  /* Simple slide-down animation */
+  animation: slideDown 0.5s ease-out;
+}
+
+.extraFields h3 {
+  margin-bottom: 16px;
+  font-size: 20px;
+  color: #333;
+}
+
+.extraFields label {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 16px;
+  color: #333;
+}
+
+.extraFields input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Styles for each radio button group */
+.radioGroup {
+  margin-bottom: 16px;
+}
+
+.radioGroup p {
+  margin-bottom: 8px;
+  font-size: 16px;
+  color: #333;
+}
+
+.radioGroup label {
+  margin-right: 16px;
+  font-size: 16px;
+  color: #333;
+}
+
+/* Style for the new Accept and Download button */
+.acceptDownloadButton {
+  padding: 8px 24px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  background: darkgreen;
+  color: white;
+}
+
+/* Keyframes for slide down effect */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dateRow {
+  display: flex;
+  flex-wrap: wrap; /* Allow items to wrap if there's not enough space */
+  gap: 1rem;
+  align-items: center;
+}
+
+.dateRow label {
+  flex: 1 1 250px; /* Allow labels to grow and shrink, with a minimum width */
+}
+
+.input {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  margin-bottom: 1rem;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #9a1220;
+  box-shadow: 0 0 5px rgba(154, 18, 32, 0.3);
+}
+

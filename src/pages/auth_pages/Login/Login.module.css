@@ -122,7 +122,7 @@ html, body {
   font-size: 35px;
 }
 
-input[type="text"], input[type="password"], input[type="email"] {
+.form-bottom input[type="text"], input[type="password"], input[type="email"] {
   width: 82%;
   height: 45px;
   display: block;
@@ -165,6 +165,10 @@ input[type="checkbox"] {
   border-color: initial;
   border-image: initial;
   margin: 8px auto;
+}
+
+.button:hover {
+  opacity: 0.85;
 }
 
 .no-user-error {
