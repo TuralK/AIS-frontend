@@ -29,7 +29,6 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
   )
 
   const otherPersonName = conversation.user2_name
-  const senderName = conversation.user1_email
 
   const [errorSendingMessage, setErrorSendingMessage] = useState(false)
   const [isSelectionMode, setIsSelectionMode] = useState(false)
@@ -38,9 +37,8 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const [attachedFile, setAttachedFile] = useState(null)
   const messagesEndRef = useRef(null)
-  
-  // Ekran boyutuna göre isMobile ayarı
   const [isMobile, setIsMobile] = useState(false)
+
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768)
@@ -150,9 +148,8 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
   return (
     // Mobilde tam ekran, genişte eski stil
     <div
-      className={`flex flex-col w-full border bg-white ${
-        isMobile ? "h-screen" : "h-full max-h-[90%]"
-      }`}
+      className={`flex flex-col w-full border bg-white ${isMobile ? "h-screen" : "h-full max-h-[90%]"
+        }`}
     >
       {/* Header */}
       <div className="flex justify-between items-center p-4 border-b">
@@ -200,14 +197,13 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
         ) : messages.length > 0 ? (
           <div className={`p-4  space-y-2`}>
             {messages.map((msg) => {
-              const isSender = msg.from === senderName
+              const isSender = msg.isSentByUser
 
               return (
                 <div
                   key={msg.id}
-                  className={`w-full flex ${
-                    isSender ? "justify-end" : "justify-start"
-                  } group items-center gap-2`}
+                  className={`w-full flex ${isSender ? "justify-end" : "justify-start"
+                    } group items-center gap-2`}
                 >
                   {isSender && (
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity">
@@ -218,36 +214,31 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
                           className="mr-2"
                         />
                       ) : (
-                        <CustomDropdown onDelete={() => handleDeleteMessage(msg.id)} isSentByUser={true} />
+                        <CustomDropdown
+                          onDelete={() => handleDeleteMessage(msg.id)}
+                          isSentByUser={true}
+                        />
                       )}
                     </div>
                   )}
                   <div
-                    className={`max-w-[75%] rounded-lg p-3 ${
-                      isSender
-                        ? "bg-[rgb(154,18,32)] text-white"
-                        : "bg-gray-300 text-black"
-                    } ${msg.isTemp ? "opacity-50" : ""}`}
+                    className={`max-w-[75%] rounded-lg p-3 ${isSender ? "bg-[rgb(154,18,32)] text-white" : "bg-gray-300 text-black"
+                      } ${msg.isTemp ? "opacity-50" : ""}`}
                   >
                     {msg.fileName && (
                       <div
-                        className={`p-2 mb-2 rounded-md flex items-center gap-2 ${
-                          isSender 
-                            ? "bg-red-100" 
-                            : "bg-gray-400"
-                        }`}
-                      >
-                        <Download 
-                          size={16} 
-                          className={`flex-shrink-0 ${
-                            isSender ? "text-red-700" : "text-gray-600"
+                        className={`p-2 mb-2 rounded-md flex items-center gap-2 ${isSender ? "bg-red-100" : "bg-gray-400"
                           }`}
+                      >
+                        <Download
+                          size={16}
+                          className={`flex-shrink-0 ${isSender ? "text-red-700" : "text-gray-600"
+                            }`}
                         />
                         <button
                           onClick={() => downloadFile(msg.fileName, msg.data)}
-                          className={`text-sm truncate max-w-[180px] ${
-                            isSender ? "text-red-900" : "text-gray-700"
-                          } hover:underline`}
+                          className={`text-sm truncate max-w-[180px] ${isSender ? "text-red-900" : "text-gray-700"
+                            } hover:underline`}
                           title={msg.fileName}
                         >
                           {msg.fileName}
@@ -261,6 +252,17 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
                         {msg.isTemp && <span className="text-xs ml-2">⌛</span>}
                       </p>
                     )}
+
+                    {/* Timestamp alanı */}
+                    <div className={`mt-1 text-xs text-right ${isSender ? "text-white" : "text-black"}`}>
+                      {new Date(msg.timestamp).toLocaleString("tr-TR", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </div>
                   </div>
                 </div>
               )
