@@ -42,7 +42,6 @@ const DICInnerApplication = () => {
       try {
         setIsLoading(true);
         const res = await fetchApplicationDetails(id);
-        console.log(res);
         setApplication(res.application);
       } catch (error) {
         toast({
@@ -80,9 +79,7 @@ const DICInnerApplication = () => {
 
     setIsSubmitting(true);
     const formData = new FormData();
-    formData.append('applicationId', application.id);
-    formData.append('isApproved', isApproved);
-    formData.append('feedback', feedback);
+
     if (file) {
       // This is the file that signed and uploaded by coordinator
       formData.append('studentFile', file);
@@ -104,21 +101,27 @@ const DICInnerApplication = () => {
 
   const downloadButton = async (fileType) => {
     try {
-      const response = await downloadFile(application.id, fileType)
-      const blob = new Blob([response.data])
-      const url = window.URL.createObjectURL(blob)
-      const link = document.createElement("a")
-      link.href = url
-      link.setAttribute("download", `${fileType}`)
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
+      const response = await downloadFile(application.id, fileType);
+      const blob = new Blob([response.data], { type: response.headers["content-type"] || "application/pdf" });
+      
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      
+      const disposition = response.headers["content-disposition"];
+      const fileName = disposition ? disposition.split("filename=")[1].replace(/"/g, "") : fileType;
+      link.setAttribute("download", fileName);
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } catch (error) {
-      console.error("File download error:", error)
-      setErrorMessage(t('error_message'))
-      setDownloadError(true)
+      console.error("File download error:", error);
+      setErrorMessage(t('error_message'));
+      setDownloadError(true);
     }
-  }
+  };
+  
 
   if (isLoading) {
     return (
@@ -237,7 +240,7 @@ const DICInnerApplication = () => {
               <Button
                 onClick={() => updateApplication(true)}
                 disabled={isSubmitting}
-                className="w-full bg-[#990000] hover:bg-[#700000] hover:text-white"
+                className="w-full text-white bg-[#990000] hover:bg-[#700000] hover:text-white"
               >
                 <Send className="mr-2 h-4 w-4" />
                 {t('sendSecretary')}
@@ -258,8 +261,8 @@ const DICInnerApplication = () => {
                 title={t("error")}
                 description={alertMessage}
                 onConfirm={() => {
-                  setIsAlertOpen(false); // Alert'ı kapat
-                  navigate('/admin/applicationRequests'); // Sayfa yönlendirme
+                  setIsAlertOpen(false); 
+                  navigate('/admin/applicationRequests'); 
                 }}
                 confirmLabel={t("ok")}
               />

@@ -28,7 +28,8 @@ const downloadFile = async (id) => {
     try {
         const response = await axios.get(`http://localhost:3003/applications/download/${id}/Application Form`, {
             
-            withCredentials: true
+            withCredentials: true,
+            responseType: 'blob'
         });
         return response;
     } catch (error) {
