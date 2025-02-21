@@ -2,10 +2,10 @@ import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next';
 import { Menu, X, ChevronDown, Bell } from 'lucide-react'
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import Cookies from 'js-cookie';
 import IYTElogo from "../../assets/iyte_logo_eng.png"
 import Loading from '../../components/LoadingComponent/Loading.jsx';
 import { validateCompany } from '../../api/CompanyApi/validateCompanyAPI.js';
+import { logoutApi } from '../../api/LoginApi/logoutApi.js';
 
 const styles = {
     nav: {
@@ -112,6 +112,7 @@ export const CompanyLayout = () => {
   const [userName, setUserName] = useState('')
   const [loading, setLoading] = useState(true);
   // const [isValidating, setIsValidating] = useState(false); // show loading while validating
+  const [apiUrlLogout, setApiUrlLogout] = useState('http://localhost:3001');
   const { t, i18n } = useTranslation();
 
   const location = useLocation();
@@ -180,15 +181,10 @@ export const CompanyLayout = () => {
   const handleDropdownItemClick = (action) => {
     console.log(`Performing action: ${action}`)
     setIsUserMenuOpen(false)
-  }
-
-  const deleteCookie = (name) => {
-    document.cookie = `${name}=; Max-Age=0; path=/;`;
   };
 
   const logout = () => {
-    deleteCookie('jwt');
-    navigate('/');
+    logoutApi(apiUrlLogout);
   };
 
 

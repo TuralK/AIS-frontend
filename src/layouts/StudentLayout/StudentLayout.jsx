@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next';
 import { Menu, X, ChevronDown, Bell } from 'lucide-react'
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import Cookies from 'js-cookie';
 import IYTElogo from "../../assets/iyte_logo_eng.png"
 import { validateStudent } from '../../api/StudentApi/validateStudentAPI';
 import Loading from '../../components/LoadingComponent/Loading.jsx';
@@ -10,6 +9,7 @@ import Messaging from '../../components/MessageComponents/MessagingComponent.jsx
 import { resetAIChat } from '../../slices/aiChatSlice.jsx';
 import { useDispatch } from "react-redux";
 import { resetMessaging } from '../../slices/messageSlice.jsx';
+import { logoutApi } from '../../api/LoginApi/logoutApi.js';
 
 const styles = {
   nav: {
@@ -119,6 +119,7 @@ export const StudentLayout = () => {
   const { t, i18n } = useTranslation();
   const [isMessagingOpen, setIsMessagingOpen] = useState(false);
   const [apiUrl, setApiUrl] = useState('http://localhost:3004');
+  const [apiUrlLogout, setApiUrlLogout] = useState('http://localhost:3001');
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
@@ -186,18 +187,13 @@ export const StudentLayout = () => {
   const handleDropdownItemClick = (action) => {
     console.log(`Performing action: ${action}`)
     setIsUserMenuOpen(false)
-  }
-
-  const deleteCookie = (name) => {
-    document.cookie = `${name}=; Max-Age=0; path=/;`;
   };
 
   const logout = () => {
     dispatch(resetAIChat());
     dispatch(resetMessaging());
     localStorage.removeItem("conversationId");
-    deleteCookie('jwt');
-    navigate('/');
+    logoutApi(apiUrlLogout);
   };
 
 
