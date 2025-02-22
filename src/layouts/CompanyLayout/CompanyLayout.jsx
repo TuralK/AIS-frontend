@@ -6,104 +6,107 @@ import IYTElogo from "../../assets/iyte_logo_eng.png"
 import Loading from '../../components/LoadingComponent/Loading.jsx';
 import { validateCompany } from '../../api/CompanyApi/validateCompanyAPI.js';
 import { logoutApi } from '../../api/LoginApi/logoutApi.js';
+import { useDispatch } from "react-redux";
+import Messaging from '../../components/MessageComponents/MessagingComponent.jsx';
+import { resetMessaging } from '../../slices/messageSlice.jsx';
 
 const styles = {
-    nav: {
-      backgroundColor: '#9a1220',
-      color: 'white',
-    },
-    container: {
-      maxWidth: '1280px',
-      margin: '0 auto',
-      padding: '0 1rem',
-    },
-    flexBetween: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      height: '100px',
-    },
-    flexCenter: {
-      display: 'flex',
-      alignItems: 'center',
-    },
-    logo: {
-      height: '70px',
-      width: 'auto',
-    },
-    titleContainer: {
-      marginLeft: '1rem',
-    },
-    title: {
-      fontSize: '1.75rem',
-      fontWeight: 'bold',
-    },
-    subtitle: {
-      fontSize: '1.25rem',
-    },
-    desktopMenu: {
-      display: 'flex',
-      alignItems: 'center',
-    },
-    mobileMenuButton: {
-      display: 'none',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '0.5rem',
-      color: 'white',
-      backgroundColor: 'transparent',
-      border: 'none',
-      borderRadius: '0.375rem',
-      cursor: 'pointer',
-    },
-    mobileMenu: {
-      padding: '0.5rem 1rem 1rem',
-    },
-    dropdownMenu: {
-      position: 'absolute',
-      right: 0,
-      marginTop: '0.5rem',
-      width: '12rem',
-      backgroundColor: 'white',
-      borderRadius: '0.375rem',
-      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
-      zIndex: 10,
-    },
-    dropdownItem: {
-      display: 'block',
-      padding: '0.75rem 1rem',
-      fontSize: '1.125rem',
-      color: '#333',
-      transition: 'background-color 0.3s ease',
-    },
-    profilePhoto: {
-      width: '40px',
-      height: '40px',
-      borderRadius: '50%',
-      marginRight: '0.5rem',
-    },
-    menuItem: {
-      padding: '0.75rem 1rem',
-      fontSize: '1.125rem', // Normal durumdaki yazı boyutu
-      fontWeight: '400',    // Normal durumdaki yazı kalınlığı
-      cursor: 'pointer',
-      transition: 'all 0.3s ease',
-      position: 'relative',
-      textDecoration: 'none',
-      color: '#ffffffcc',
-    },
-    activeIndicator: {  
-      position: 'absolute',
-      bottom: '-2px', // Çizgiyi tam altında konumlandır
-      left: 0,
-      width: '100%',
-      height: '3px', // Çizgi kalınlığı
-      backgroundColor: '#00ffff', // Çizgi rengi - istediğiniz renge değiştirebilirsiniz
-      transform: 'scaleX(0)',
-      transition: 'transform 0.3s ease',
-      transformOrigin: 'left'
-    },
-  }
+  nav: {
+    backgroundColor: '#9a1220',
+    color: 'white',
+  },
+  container: {
+    maxWidth: '1280px',
+    margin: '0 auto',
+    padding: '0 1rem',
+  },
+  flexBetween: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: '100px',
+  },
+  flexCenter: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  logo: {
+    height: '70px',
+    width: 'auto',
+  },
+  titleContainer: {
+    marginLeft: '1rem',
+  },
+  title: {
+    fontSize: '1.75rem',
+    fontWeight: 'bold',
+  },
+  subtitle: {
+    fontSize: '1.25rem',
+  },
+  desktopMenu: {
+    display: 'flex',
+    alignItems: 'center',
+  },
+  mobileMenuButton: {
+    display: 'none',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '0.5rem',
+    color: 'white',
+    backgroundColor: 'transparent',
+    border: 'none',
+    borderRadius: '0.375rem',
+    cursor: 'pointer',
+  },
+  mobileMenu: {
+    padding: '0.5rem 1rem 1rem',
+  },
+  dropdownMenu: {
+    position: 'absolute',
+    right: 0,
+    marginTop: '0.5rem',
+    width: '12rem',
+    backgroundColor: 'white',
+    borderRadius: '0.375rem',
+    boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+    zIndex: 10,
+  },
+  dropdownItem: {
+    display: 'block',
+    padding: '0.75rem 1rem',
+    fontSize: '1.125rem',
+    color: '#333',
+    transition: 'background-color 0.3s ease',
+  },
+  profilePhoto: {
+    width: '40px',
+    height: '40px',
+    borderRadius: '50%',
+    marginRight: '0.5rem',
+  },
+  menuItem: {
+    padding: '0.75rem 1rem',
+    fontSize: '1.125rem', // Normal durumdaki yazı boyutu
+    fontWeight: '400',    // Normal durumdaki yazı kalınlığı
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    position: 'relative',
+    textDecoration: 'none',
+    color: '#ffffffcc',
+  },
+  activeIndicator: {
+    position: 'absolute',
+    bottom: '-2px', // Çizgiyi tam altında konumlandır
+    left: 0,
+    width: '100%',
+    height: '3px', // Çizgi kalınlığı
+    backgroundColor: '#00ffff', // Çizgi rengi - istediğiniz renge değiştirebilirsiniz
+    transform: 'scaleX(0)',
+    transition: 'transform 0.3s ease',
+    transformOrigin: 'left'
+  },
+}
 
 export const CompanyLayout = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -112,9 +115,11 @@ export const CompanyLayout = () => {
   const [userName, setUserName] = useState('')
   const [loading, setLoading] = useState(true);
   // const [isValidating, setIsValidating] = useState(false); // show loading while validating
+  const [isMessagingOpen, setIsMessagingOpen] = useState(false);
+  const [apiUrl, setApiUrl] = useState('http://localhost:3005');
   const [apiUrlLogout, setApiUrlLogout] = useState('http://localhost:3001');
   const { t, i18n } = useTranslation();
-
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -127,12 +132,12 @@ export const CompanyLayout = () => {
 
   //is mobile <a> hey!
   const userMenuRef = useRef(null)
-  
+
   //check if cookie exists in frontend
   useEffect(() => {
     validateCompany()
       .then(userData => {
-        setUserName(userData.username);      
+        setUserName(userData.username);
       })
       .catch(err => {
         alert(err || "An error occured");
@@ -173,9 +178,9 @@ export const CompanyLayout = () => {
   ];
 
   const userMenuItems = [
-    {item: t('profile'), route: 'profile'},
-    {item: t('settings'), route: 'settings'},
-    {item: t('logout'), route: 'logout'}
+    { item: t('profile'), route: 'profile' },
+    { item: t('settings'), route: 'settings' },
+    { item: t('logout'), route: 'logout' }
   ];
 
   const handleDropdownItemClick = (action) => {
@@ -190,7 +195,7 @@ export const CompanyLayout = () => {
 
   if (loading) {
     return (
-        <Loading />
+      <Loading />
     )
   }
 
@@ -209,7 +214,7 @@ export const CompanyLayout = () => {
 
             {!isMobile && (
               <div style={styles.desktopMenu}>
-                {menuItems.map(({item, route}) => (
+                {menuItems.map(({ item, route }) => (
                   <NavLink
                     key={route}
                     to={`/company/${route}`}
@@ -218,7 +223,7 @@ export const CompanyLayout = () => {
                       fontSize: isActive || location.pathname === '/company' && route === 'home' ? '1.25rem' : '1.125rem',
                       fontWeight: isActive || location.pathname === '/company' && route === 'home' ? '600' : '400',
                       color: isActive || location.pathname === '/company' && route === 'home' ? '#ffffff' : '#ffffffcc',
-                      borderBottom: isActive || location.pathname === '/company' && route === 'home' ? '4px solid #ffffff' : 'none',  
+                      borderBottom: isActive || location.pathname === '/company' && route === 'home' ? '4px solid #ffffff' : 'none',
                       position: 'relative'
                     })}
                     onMouseEnter={(e) => (e.target.style.backgroundColor = '#7d0e1a')}
@@ -228,7 +233,7 @@ export const CompanyLayout = () => {
                   </NavLink>
                 ))}
 
-                <NavLink to={"/company/notifications" }
+                <NavLink to={"/company/notifications"}
                   href="#"
                   style={{
                     ...styles.menuItem,
@@ -237,7 +242,7 @@ export const CompanyLayout = () => {
                   onMouseEnter={(e) => (e.target.style.backgroundColor = '#7d0e1a')}
                   onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
                 >
-                  <Bell size={24} /> 
+                  <Bell size={24} />
                 </NavLink>
 
                 <div>
@@ -261,7 +266,10 @@ export const CompanyLayout = () => {
 
                 <div style={{ position: 'relative' }} ref={userMenuRef}>
                   <button
-                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    onClick={() => {
+                      setIsUserMenuOpen(!isUserMenuOpen)
+                      setIsMessagingOpen(false)
+                    }}
                     style={{
                       ...styles.menuItem,
                       display: 'flex',
@@ -280,11 +288,11 @@ export const CompanyLayout = () => {
 
                   {isUserMenuOpen && (
                     <div style={styles.dropdownMenu}>
-                      {userMenuItems.map(({item, route}) => (
+                      {userMenuItems.map(({ item, route }) => (
                         <NavLink
                           key={route}
                           to={route !== 'logout' ? `/company/${route}` : '#'}
-                          >
+                        >
                           <a
                             key={item}
                             href="#"
@@ -303,7 +311,7 @@ export const CompanyLayout = () => {
                             onMouseEnter={(e) => (e.target.style.backgroundColor = '#f3f4f6')}
                             onMouseLeave={(e) => (e.target.style.backgroundColor = 'transparent')}
                           >
-                          {item}
+                            {item}
                           </a>
                         </NavLink>
                       ))}
@@ -314,7 +322,10 @@ export const CompanyLayout = () => {
             )}
             {isMobile && (
               <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              onClick={() => {
+                setIsUserMenuOpen(!isUserMenuOpen)
+                setIsMessagingOpen(false)
+              }}
                 style={{
                   ...styles.mobileMenuButton,
                   display: 'flex',
@@ -334,7 +345,7 @@ export const CompanyLayout = () => {
 
         {isMobile && isMenuOpen && (
           <div style={styles.mobileMenu}>
-            {menuItems.map(({item, route}) => (
+            {menuItems.map(({ item, route }) => (
               <NavLink
                 key={route}
                 to={`/company/${route}`}>
@@ -371,7 +382,10 @@ export const CompanyLayout = () => {
             </a>
             <div style={{ position: 'relative' }}>
               <button
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                onClick={() => {
+                  setIsUserMenuOpen(!isUserMenuOpen)
+                  setIsMessagingOpen(false)
+                }}
                 style={{
                   ...styles.menuItem,
                   display: 'flex',
@@ -421,10 +435,16 @@ export const CompanyLayout = () => {
           </div>
         )}
       </nav>
-      <main>    
+      <main>
         {/* { navigation.state === "loading" &&  <Loading /> } */}
         <Outlet />
       </main>
+      <Messaging
+        hasAITab={false}
+        apiUrl={apiUrl}
+        isOpen={isMessagingOpen}
+        onToggle={setIsMessagingOpen}
+      />
     </div>
   )
 }

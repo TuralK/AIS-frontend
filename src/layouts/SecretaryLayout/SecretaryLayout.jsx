@@ -87,8 +87,8 @@ const styles = {
   },
   menuItem: {
     padding: '0.75rem 1rem',
-    fontSize: '1.125rem', // Normal durumdaki yazı boyutu
-    fontWeight: '400',    // Normal durumdaki yazı kalınlığı
+    fontSize: '1.125rem', 
+    fontWeight: '400',    
     cursor: 'pointer',
     transition: 'all 0.3s ease',
     position: 'relative',
@@ -97,10 +97,10 @@ const styles = {
   },
   activeIndicator: {
     position: 'absolute',
-    bottom: '-2px', // Çizgiyi tam altında konumlandır
+    bottom: '-2px', 
     left: 0,
     width: '100%',
-    height: '3px', // Çizgi kalınlığı
+    height: '3px', 
     backgroundColor: '#00ffff', // Çizgi rengi - istediğiniz renge değiştirebilirsiniz
     transform: 'scaleX(0)',
     transition: 'transform 0.3s ease',
