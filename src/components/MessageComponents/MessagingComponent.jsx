@@ -200,25 +200,43 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle }) => {
                       {conversations.length > 0 ? (
                         conversations
                           .filter(conv => conv.user2_name.toLowerCase().includes(searchTerm.toLowerCase()))
-                          .map(conv => (
-                            <div
-                              key={conv.id}
-                              onClick={() => setSelectedConversation(conv)}
-                              className="p-4 rounded-lg border border-gray-200 hover:border-blue-200 hover:bg-blue-50 cursor-pointer transition-all shadow-sm">
-                              <div className="flex items-center gap-3">
-                                <UserAvatar email={conv.user2_email} />
-                                <div>
-                                  <div className="font-medium text-gray-900">{conv.user2_name}</div>
-                                  {conv.topic && (
-                                    <div className="text-sm text-gray-500 mt-2 bg-gray-50 px-2 py-1 rounded-md">
-                                      {conv.topic}
+                          .map(conv => {
+                            const hasNewMessages = conv.user1_new_messages > 0
+                        
+                            return (
+                              <div
+                                key={conv.id}
+                                onClick={() => setSelectedConversation(conv)}
+                                className="p-4 rounded-lg border border-gray-200 hover:border-blue-200 hover:bg-blue-50 cursor-pointer transition-all shadow-sm"
+                              >
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-3">
+                                    <UserAvatar email={conv.user2_email} />
+                                    <div>
+                                      <div className={cn(
+                                        "text-gray-900",
+                                        hasNewMessages ? "font-bold" : "font-medium"
+                                      )}>
+                                        {conv.user2_name}
+                                      </div>
+                                      {conv.topic && (
+                                        <div className="text-sm text-gray-500 mt-2 bg-gray-50 px-2 py-1 rounded-md">
+                                          {conv.topic}
+                                        </div>
+                                      )}
                                     </div>
+                                  </div>
+                        
+                                  {hasNewMessages && (
+                                    <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
+                                      {conv.user1_new_messages}
+                                    </span>
                                   )}
                                 </div>
                               </div>
-                            </div>
-                          ))
-                      ) : (
+                            )
+                          })
+                        ): (
                         <div className="h-full flex items-center justify-center min-h-[200px]">
                           <p className="text-sm text-gray-500 text-center">{t("no_conversation")}</p>
                         </div>

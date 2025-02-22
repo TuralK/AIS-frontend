@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { getConversations, getConversationMessages, createConversation, deleteConversation, sendMessageApi, getUsers, deleteMessage } from '../api/messageApi';
+import { getConversations, getConversationMessages, createConversation, deleteConversation, sendMessageApi, getUsers, deleteMessage, markMessageAsRead } from '../api/messageApi';
 
 // To fetch all conversations of user
 export const fetchConversationsThunk = createAsyncThunk(
@@ -33,7 +33,6 @@ export const createConversationThunk = createAsyncThunk(
     async ({ apiUrl, receiverEmail, receiverName }, thunkAPI) => {
         try {
             const newConversation = await createConversation(apiUrl, receiverEmail, receiverName);
-            // Yeni konuşma oluşturulduktan sonra güncel konuşmaları çekebilirsiniz:
             thunkAPI.dispatch(fetchConversationsThunk(apiUrl));
             return newConversation;
         } catch (error) {
@@ -48,7 +47,6 @@ export const deleteConversationThunk = createAsyncThunk(
     async ({ apiUrl, conversationId }, thunkAPI) => {
         try {
             const result = await deleteConversation(apiUrl, conversationId);
-            // Silme işleminden sonra güncel konuşmaları çekmek isteyebilirsiniz:
             thunkAPI.dispatch(fetchConversationsThunk(apiUrl));
             return result;
         } catch (error) {
@@ -80,7 +78,7 @@ export const fetchUsersThunk = createAsyncThunk(
         } catch (error) {
             return rejectWithValue(error.response?.data || error.message);
         }
-});
+    });
 
 // To delete a message
 export const deleteMessageThunk = createAsyncThunk(
@@ -92,6 +90,24 @@ export const deleteMessageThunk = createAsyncThunk(
             return result;
         } catch (error) {
             return thunkAPI.rejectWithValue(error.message);
+        }
+    }
+);
+
+// To mark messages as read
+export const markMessagesAsReadThunk = createAsyncThunk(
+    "messages/markAsRead",
+    async ({ apiUrl, unreadMessages }, thunkAPI) => {
+        try {
+            await Promise.all(
+                unreadMessages.map((msg) => markMessageAsRead(apiUrl, msg.id))
+            );
+
+            thunkAPI.dispatch(fetchConversationsThunk(apiUrl));
+
+            return unreadMessages;
+        } catch (error) {
+            return thunkAPI.rejectWithValue(error.response?.data || error.message);
         }
     }
 );

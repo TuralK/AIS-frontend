@@ -18,7 +18,6 @@ export const getConversations = async (apiUrl) => {
     const response = await axios.get(`${apiUrl}/conversations`, {
       withCredentials: true,
     });
-
     return response.data.conversations;
   } catch (error) {
     console.error("Conversations could not fetch:", error);
@@ -97,4 +96,8 @@ export const deleteMessage = async (apiUrl, messageId) => {
     console.error("Message could not delete:", error);
     throw error;
   }
+};
+
+export const markMessageAsRead = async (apiUrl, messageId) => {
+  return await axios.put(`${apiUrl}/updateMessage/${messageId}`, {},{withCredentials: true});
 };

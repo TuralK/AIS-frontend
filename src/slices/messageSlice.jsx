@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchConversationsThunk, fetchConversationMessagesThunk, sendMessageThunk, fetchUsersThunk } from '../thunks/messageThunks';
+import { fetchConversationsThunk, fetchConversationMessagesThunk, sendMessageThunk, fetchUsersThunk, markMessagesAsReadThunk } from '../thunks/messageThunks';
 
 const initialState = {
   conversations: [],
@@ -22,7 +22,6 @@ const messagingSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Konuşmaları çekme durumları
       .addCase(fetchConversationsThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -36,7 +35,6 @@ const messagingSlice = createSlice({
         state.loading = false;
         state.error = action.payload || action.error.message;
       })
-      // Konuşma mesajlarını çekme durumları
       .addCase(fetchConversationMessagesThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -50,15 +48,12 @@ const messagingSlice = createSlice({
         state.error = action.payload || action.error.message;
       })
       .addCase(sendMessageThunk.pending, (state) => {
-        state.loading = true;
         state.error = null;
       })
       .addCase(sendMessageThunk.fulfilled, (state, action) => {
-        state.loading = false;
         
       })
       .addCase(sendMessageThunk.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload || action.error.message;
       })
       .addCase(fetchUsersThunk.pending, (state) => {
@@ -71,6 +66,21 @@ const messagingSlice = createSlice({
       })
       .addCase(fetchUsersThunk.rejected, (state, action) => {
         state.usersLoading = false;
+        state.error = action.payload || action.error.message;
+      })
+      .addCase(markMessagesAsReadThunk.pending, (state) => {
+        state.error = null;
+      })
+      .addCase(markMessagesAsReadThunk.fulfilled, (state, action) => {
+        action.payload.forEach((msg) => {
+          if (state.conversationMessages[msg.conversationId]) {
+            state.conversationMessages[msg.conversationId] = state.conversationMessages[msg.conversationId].map(m =>
+              m.id === msg.id ? { ...m, read: true } : m
+            );
+          }
+        });
+      })
+      .addCase(markMessagesAsReadThunk.rejected, (state, action) => {
         state.error = action.payload || action.error.message;
       });
   },

@@ -8,6 +8,7 @@ import {
   fetchConversationMessagesThunk,
   deleteConversationThunk,
   deleteMessageThunk,
+  markMessagesAsReadThunk
 } from "../../thunks/messageThunks"
 import { scrollToBottom } from "../../utils/conversationUtils"
 import CustomDropdown from "../ui/custom_dropdown";
@@ -55,6 +56,13 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
   useEffect(() => {
     scrollToBottom(messagesEndRef)
   }, [messages])
+
+  useEffect(() => {
+    const unread = messages.filter(m => !m.isSentByUser && !m.is_read);
+    if (unread.length > 0) {
+      dispatch(markMessagesAsReadThunk({ apiUrl, unreadMessages: unread }));
+    }
+  }, [messages, apiUrl, dispatch]);
 
   const handleSend = async (newMessage) => {
     if (!newMessage.trim() && !attachedFile) return
@@ -146,7 +154,6 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
   }
 
   return (
-    // Mobilde tam ekran, genişte eski stil
     <div
       className={`flex flex-col w-full border bg-white ${isMobile ? "h-screen" : "h-full max-h-[90%]"
         }`}
@@ -279,11 +286,11 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
       {/* Error message */}
       {errorSendingMessage && (
         <div className="p-2">
-          <ErrorMessage message="Mesaj gönderilemedi" />
+          <ErrorMessage message={t("message_not_send")} />
         </div>
       )}
 
-      <div className="sticky bottom-0 border-t p-2 bg-white">
+      <div className="sticky bottom-0 border-t p-2 bg-white mt-5">
         {attachedFile && (
           <div className="mb-2 flex items-center justify-between bg-gray-100 p-2 rounded">
             <span className="text-sm text-gray-800 truncate">{attachedFile.name}</span>

@@ -190,5 +190,6 @@
   "atLeastOneFieldRequired": "At least one field is required",
   "updateSuccess": "Update successful",
   "saving": "Saving",
-  "success": "Success"
+  "success": "Success",
+  "message_not_send": "Message could not be sent"
 }

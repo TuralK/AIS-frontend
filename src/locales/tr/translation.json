@@ -182,5 +182,6 @@
   "atLeastOneFieldRequired": "En az bir alan doldurulmalıdır",
   "updateSuccess": "Başarıyla güncellendi",
   "saving": "Kaydediliyor",
-  "success": "Başarılı"
+  "success": "Başarılı",
+  "message_not_send": "Mesaj gönderilemedi"
 }
