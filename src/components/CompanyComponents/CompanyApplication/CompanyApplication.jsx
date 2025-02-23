@@ -4,18 +4,24 @@ import styles from "./CompanyApplication.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import { faUpRightAndDownLeftFromCenter } from "@fortawesome/free-solid-svg-icons";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Loading from "../../LoadingComponent/Loading";
 import axios from "axios";
+import { rejectApplication } from "../../../api/CompanyApi/rejectApplicationAPI";
+import { fillApplicationForm } from "../../../api/CompanyApi/fillApplicationFormAPI";
+import { downloadApplicationForm } from "../../../api/CompanyApi/downloadApplicationFormAPI";
+import { FaDownload, FaUpload, FaFile, FaTrash } from "react-icons/fa";
+import { acceptApplication } from "../../../api/CompanyApi/acceptApplicationAPI";
 
 const CompanyApplication = () => {
   const [application, setApplication] = useState(null);
   const [documentUrl, setDocumentUrl] = useState("");
   const [documentId, setDocumentId] = useState(-1);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { id } = useParams();
+  const navigate = useNavigate();
 
-  // New state to show extra fields and store their values
   const [showExtraFields, setShowExtraFields] = useState(false);
   const [internshipDuration, setInternshipDuration] = useState("");
   const [dutyNtitle, setDuty] = useState("");
@@ -23,7 +29,6 @@ const CompanyApplication = () => {
   const [question2, setQuestion2] = useState(null);
   const [question3, setQuestion3] = useState(null);
 
-  // New states for the additional internship dates
   const [internshipStartDate, setInternshipStartDate] = useState("");
   const [internshipEndDate, setInternshipEndDate] = useState("");
 
@@ -32,6 +37,27 @@ const CompanyApplication = () => {
 
   // Create a ref for the extra fields container
   const extraFieldsRef = useRef(null);
+  const [selectedFileName, setSelectedFileName] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleFileClick = () => {
+    document.getElementById("fileInput").click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFileName(file.name);
+      setSelectedFile(file)
+    }
+  };
+
+  const handleDeleteFile = (e) => {
+    e.stopPropagation();
+    setSelectedFileName(null);
+    setSelectedFile(null);
+    document.getElementById("fileInput").value = "";
+  };
 
   useEffect(() => {
     const getApplication = async () => {
@@ -44,6 +70,7 @@ const CompanyApplication = () => {
         setApplication(data.application);
         setDocumentId(data.documentId);
         setDocumentUrl(`http://localhost:3005/serveFile/${data.documentId}`);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching application:", error);
       }
@@ -52,8 +79,114 @@ const CompanyApplication = () => {
     getApplication();
   }, [id]);
 
-  const handleDownload = () => {
-    window.location.href = `http://localhost:3005/downloadFile/${documentId}`;
+  const handleDownload = async () => {
+    await downloadFile("CV", "CV");
+  };
+
+  const handleRejectApplication = async () => {
+    setLoading(true);
+    const response = await rejectApplication(id, false);
+    setLoading(false)
+    alert(response.message);
+    navigate("/company/applications")
+  };
+
+  const handleAcceptApplication = async () => {
+    if (!selectedFile) {
+      alert("Please upload 'Application Form' before accepting the application.");
+      return;
+    }
+    setLoading(true);
+    const response = await acceptApplication(id, true, selectedFile);
+    setLoading(false)
+    alert(response.message);
+    navigate("/company/applications")
+  }
+
+  const validateApplicationFields = () => {
+    /*
+    const officialHolidays = [
+        '2024-01-01', // New Year's Day
+        '2024-04-23', // National Sovereignty and Children's Day
+        '2024-05-01', // Labor and Solidarity Day
+        '2024-04-09', // Eve of Ramadan Feast (half-day)
+        '2024-04-10', // First Day of Ramadan Feast
+        '2024-04-11', // Second Day of Ramadan Feast
+        '2024-04-12', // Third Day of Ramadan Feast
+        '2024-05-19', // Commemoration of Atatürk, Youth and Sports Day
+        '2024-07-15', // Democracy and National Unity Day
+        '2024-06-16', // Eve of Sacrifice Feast (half-day)
+        '2024-06-17', // First Day of Sacrifice Feast
+        '2024-06-18', // Second Day of Sacrifice Feast
+        '2024-06-19', // Third Day of Sacrifice Feast
+        '2024-06-20', // Fourth Day of Sacrifice Feast
+        '2024-08-30', // Victory Day
+        '2024-10-28', // Republic Day Eve (half-day)
+        '2024-10-29', // Republic Day
+    ];
+    */
+    // Check that required fields are not null or empty.
+    if (
+      !id ||
+      !internshipStartDate ||
+      !internshipEndDate ||
+      !internshipDuration ||
+      !dutyNtitle ||
+      workOnSaturday === null ||
+      question2 === null ||
+      question3 === null ||
+      workDays === ""
+    ) {
+      alert("Please fill out all required fields.");
+      return false;
+    }
+    // Validate internship duration (make sure it's a number and at least 20)
+    const duration = parseInt(internshipDuration, 10);
+    if (isNaN(duration) || duration < 20) {
+      alert("Internship duration must be at least 20 days.");
+      return false;
+    }
+    // Convert start and end dates to Date objects and ensure proper order.
+    const startDate = new Date(internshipStartDate);
+    const endDate = new Date(internshipEndDate);
+    if (startDate > endDate) {
+      alert("Internship start date must be before the end date.");
+      return false;
+    }
+    // Calculate working days between the two dates.
+    // Weekends: Sundays are off, Saturdays are off unless workOnSaturday is true.
+    let totalWorkingDays = 0;
+    for (let dt = new Date(startDate); dt <= endDate; dt.setDate(dt.getDate() + 1)) {
+      const dayOfWeek = dt.getDay(); // 0 = Sunday, 6 = Saturday
+      if (dayOfWeek === 0) continue; // Skip Sundays
+      if (dayOfWeek === 6 && !workOnSaturday) continue; // Skip Saturdays if not working
+      totalWorkingDays++;
+    }
+    if ((totalWorkingDays - parseInt(workDays, 10)) < 20) {
+      alert(
+        `The total working days between the start and end date is ${totalWorkingDays- parseInt(workDays, 10)}, which is less than the required 20 days.`
+      );
+      return false;
+    }
+
+    // All validations passed
+    return true;
+  };
+  
+  const handleApplicationDownload = async () => {
+
+    if (!validateApplicationFields()) {
+      return;
+    }
+
+    const response = await fillApplicationForm(id ,internshipStartDate,internshipEndDate, internshipDuration, dutyNtitle, 
+                                          workOnSaturday, question2, question3, workDays);
+    alert(response.message)
+    try {
+      await downloadFile("Application Form", "ApplicationForm");
+    } catch (error) {
+      console.error('Download failed:', error);
+    }
   };
 
   const toggleFullscreen = () => {
@@ -91,35 +224,6 @@ const CompanyApplication = () => {
   // Handler for the new Accept and Download button.
  
 
-const handleAcceptAndDownload = async () => {
-  try {
-    const payload = {
-      internStartDate: internshipStartDate,
-      internEndDate: internshipEndDate,
-      internDuration: internshipDuration,
-      dutyAndTitle: dutyNtitle,
-      workOnSaturday: workOnSaturday,
-      workOnHoliday: question2,
-      day: question2 === "yes" ? workDays : "0",
-      sgk: question3,
-    };
-
-    await axios.post(
-      `http://localhost:3005/applications/${id}/fillApplicationForm`,
-      payload,
-      {
-        withCredentials: true,
-      }
-    );
-
-    // Trigger file download after successful form submission.
-    window.location.href = `http://localhost:3005/applications/download/${id}/Application Form`;
-  } catch (error) {
-    console.error("Error in handleAcceptAndDownload:", error);
-  }
-};
-
-
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
@@ -129,7 +233,11 @@ const handleAcceptAndDownload = async () => {
     });
   };
 
-  if (!application) return <Loading />;
+  if (loading) {
+    return (
+        <Loading />
+    )
+  }
 
   return (
     <div className={styles.container}>
@@ -177,14 +285,14 @@ const handleAcceptAndDownload = async () => {
       </div>
 
       <div className={styles.actionButtons}>
-        <button className={styles.rejectButton}>Reject</button>
+        <button className={styles.rejectButton} onClick={handleRejectApplication}>Reject</button>
         {/* Only show the original Accept button if extra fields are not yet visible */}
         {!showExtraFields && (
           <button
             className={styles.acceptButton}
             onClick={() => setShowExtraFields(true)}
           >
-            Accept
+            Fill Application Form
           </button>
         )}
       </div>
@@ -323,9 +431,36 @@ const handleAcceptAndDownload = async () => {
             </label>
           </div>
 
-          <button onClick={handleAcceptAndDownload} className={styles.acceptDownloadButton}>
-            Accept and Download
-          </button>
+          <div className={styles.files}>
+            <button onClick={handleApplicationDownload} className={styles.downloadFile}>
+              Fill and Download Application Form <FaDownload />
+            </button>
+            
+            <div className={styles.uploadFile} onClick={handleFileClick}>
+              {selectedFileName ? (
+                <>
+                  <FaFile /> {selectedFileName}
+                  <FaTrash className={styles.deleteIcon} onClick={handleDeleteFile} />
+                </>
+              ) : (
+                <>
+                  Upload Application Form <FaUpload />
+                </>
+              )}
+            </div>
+            <input
+              id="fileInput"
+              type="file"
+              accept=".pdf,.docx"
+              onChange={handleFileChange}
+              style={{ display: "none" }}
+              required
+            />
+          </div>
+
+          <div className={styles.acceptContainer}>
+            <button className={styles.acceptButton} onClick={handleAcceptApplication}>Accept</button>
+          </div>
         </div>
       )}
     </div>

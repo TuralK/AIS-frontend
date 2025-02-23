@@ -1,6 +1,7 @@
 import { useState, useRef } from "react"
 import styles from "./PublishAnnouncement.module.css"
 import { publishAnnouncement } from "../../../api/CompanyApi/publishAnnouncementAPI"
+import { AiOutlineInfoCircle } from "react-icons/ai"
 
 export default function PublishAnnouncement() {
   // New state variables for inputs
@@ -21,13 +22,6 @@ export default function PublishAnnouncement() {
     const start = new Date(startDate);
     const end = new Date(endDate);
 
-    // Check date difference
-    const diffInDays = (end - start) / (1000 * 60 * 60 * 24);
-    if (diffInDays < 20) {
-      alert("The end date must be at least 20 days after the start date.");
-      return;
-    }
-
     // new Date("YYYY-MM-DD") creates a valid date
     const isoStartDate = new Date(startDate).toISOString();
     const isoEndDate = new Date(endDate).toISOString();
@@ -43,9 +37,10 @@ export default function PublishAnnouncement() {
   
     try {
       const response = await publishAnnouncement(formData);
-      console.log(response);
+      alert(response.data.message);
+      window.location.reload();
     } catch (error) {
-      console.error(error);
+      alert(error);
     }
   };
   
@@ -138,7 +133,7 @@ export default function PublishAnnouncement() {
           />
         </div>
 
-        <div className={styles.dateContainer}>
+        {/*<div className={styles.dateContainer}>
           <div className={styles.formGroup}>
           <label htmlFor="startDate">Start Date</label>
           <input
@@ -152,6 +147,42 @@ export default function PublishAnnouncement() {
 
           <div className={styles.formGroup}>
             <label htmlFor="endDate">End Date</label>
+            <input
+              type="date"
+              id="endDate"
+              className={styles.input}
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+          </div>
+        </div>
+        */}
+         <div className={styles.dateContainer}>
+          <div className={styles.formGroup}>
+            <label htmlFor="startDate" className={styles.dateDiv}>
+              Start Date&nbsp;
+              <AiOutlineInfoCircle
+                className={styles.infoIcon}
+                title="The announcement will start showing on the site on this date."
+              />
+            </label>
+            <input
+              type="date"
+              id="startDate"
+              className={styles.input}
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="endDate" className={styles.dateDiv}>
+              End Date&nbsp;
+              <AiOutlineInfoCircle
+                className={styles.infoIcon}
+                title="The announcement will stop showing on the site on this date."
+              />
+            </label>
             <input
               type="date"
               id="endDate"

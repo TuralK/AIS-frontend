@@ -240,7 +240,7 @@ const StudentAnnouncementComponent = () => {
                 
                 <div className={StudentAnnouncementCSS.content}>
                     <div className={StudentAnnouncementCSS.announcementImage}>
-                        <img src={AnnouncementImage} alt="Announcement Image" />
+                      <img src={announcement.image ? announcement.image : AnnouncementImage} alt="Announcement Image" />
                     </div>
                     <RenderPropSticky 
                       stickyClassName={StudentAnnouncementCSS.stuck} 

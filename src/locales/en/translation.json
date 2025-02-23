@@ -191,5 +191,6 @@
   "updateSuccess": "Update successful",
   "saving": "Saving",
   "success": "Success",
-  "message_not_send": "Message could not be sent"
+  "message_not_send": "Message could not be sent",
+  "publishAnnouncement": "Publish Announcement"
 }

@@ -183,5 +183,6 @@
   "updateSuccess": "Başarıyla güncellendi",
   "saving": "Kaydediliyor",
   "success": "Başarılı",
-  "message_not_send": "Mesaj gönderilemedi"
+  "message_not_send": "Mesaj gönderilemedi",
+  "publishAnnouncement": "İlan Yayınla"
 }

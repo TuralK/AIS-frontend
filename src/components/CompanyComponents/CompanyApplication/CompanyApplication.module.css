@@ -126,13 +126,20 @@
   gap: 12px;
 }
 
+.acceptContainer {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .rejectButton,
-.acceptButton {
+.acceptButton,
+.fillApplicationFormButton {
   padding: 8px 24px;
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;
   border: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .rejectButton {
@@ -146,12 +153,14 @@
   color: white;
 }
 
-.rejectButton:hover {
-  background: #f5f5f5;
+.fillApplicationFormButton {
+  background: darkgreen;
+  color: white;
 }
 
-.acceptButton:hover {
-  background: #333;
+.rejectButton:hover, .acceptButton:hover, .fillApplicationFormButton:hover {
+  opacity: 0.85;
+  transform: scale(1.02);
 }
 
 .extraInfoContainer {
@@ -233,17 +242,6 @@
   color: #333;
 }
 
-/* Style for the new Accept and Download button */
-.acceptDownloadButton {
-  padding: 8px 24px;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  border: none;
-  background: darkgreen;
-  color: white;
-}
-
 /* Keyframes for slide down effect */
 @keyframes slideDown {
   from {
@@ -285,3 +283,44 @@
   box-shadow: 0 0 5px rgba(154, 18, 32, 0.3);
 }
 
+.downloadFile:hover {
+  background-color: #2A3132;
+  color: #ffffff;
+  transform: scale(1.02);
+}
+
+.uploadFile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.5rem 1rem;
+  border: 2px solid #2A3132;
+  border-radius: 4px;
+  color: #2A3132;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+}
+
+.uploadFile:hover {
+  background-color: #2A3132;
+  color: #ffffff;
+  transform: scale(1.02);
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 600px) {
+  .files {
+    gap: 10px;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .downloadFile,
+  .uploadFile {
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}
