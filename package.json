@@ -39,7 +39,7 @@
     "react-helmet": "^6.1.0",
     "react-hook-form": "^7.53.2",
     "react-i18next": "^15.0.3",
-    "react-icons": "^5.4.0",
+    "react-icons": "^5.5.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^6.26.1",
     "react-sticky-el": "^2.1.1",

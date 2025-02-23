@@ -175,7 +175,9 @@ export const StudentLayout = () => {
   const menuItems = [
     { item: t('home'), route: 'home' },
     { item: t('announcements'), route: 'announcements' },
-    { item: t('applications'), route: 'applications' }
+    { item: t('applications'), route: 'applications' },
+    { item: t('internship'), route: 'internship' }
+
   ];
 
   const userMenuItems = [

@@ -192,5 +192,15 @@
   "saving": "Saving",
   "success": "Success",
   "message_not_send": "Message could not be sent",
-  "publishAnnouncement": "Publish Announcement"
+  "publishAnnouncement": "Publish Announcement",
+  "uploadSPR": "Upload Summer Practice Report file",
+  "uploaded": "File Uploaded",
+  "clickToUpload": "Click to upload PDF",
+  "dragDrop":"or drag and drop your file here",
+  "companySupervisorStatus": "Company Status",
+  "coordinatorStatus": "Coordinator Status",
+  "feedback": "Feedback",
+  "score": "Score",
+  "submitAll": "Submit All",
+  "internshipName": "Internship Title"
 }

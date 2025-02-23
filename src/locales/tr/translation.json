@@ -184,5 +184,15 @@
   "saving": "Kaydediliyor",
   "success": "Başarılı",
   "message_not_send": "Mesaj gönderilemedi",
-  "publishAnnouncement": "İlan Yayınla"
+  "publishAnnouncement": "İlan Yayınla",
+  "uploadSPR": "Staj Raporunu Yükle",
+  "uploaded": "Dosya Yüklendi",
+  "clickToUpload": "PDF yüklemek için tıklayın",
+  "dragDrop":"ya da dosyayı sürükleyip bırakın",
+  "companySupervisorStatus": "Şirket Onay Durumu",
+  "coordinatorStatus": "Koordinatör Onay Durumu",
+  "feedback": "Geri Bildirim",
+  "score": "Puan",
+  "submitAll": "Tümünü Gönder",
+  "internshipName": "Staj Adı"
 }
