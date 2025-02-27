@@ -73,7 +73,7 @@ const Questionnaire = ({ questions, answers, setAnswers }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="rounded-lg border bg-white">
+    <div className="bg-[#a51c30]/5 p-4 border-b border-gray-200 rounded-lg">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="flex w-full items-center justify-between p-4 text-left"

@@ -197,6 +197,7 @@
   "internshipName": "Staj Adı",
   "questionnaire": "Yaz Stajı Öğrenci Anketi",
   "pleaseUploadSPR": "Lütfen staj raporunu yükleyin",
-  "pleaseAnswerAllQuestions": "Lütfen tüm anket sorularını yanıtlayın"
+  "pleaseAnswerAllQuestions": "Lütfen tüm anket sorularını yanıtlayın",
+  "pdfDocument": "PDF belgesi"
   
 }

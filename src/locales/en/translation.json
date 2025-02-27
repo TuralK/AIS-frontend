@@ -205,5 +205,6 @@
   "internshipName": "Internship Title",
   "questionnaire": "Summer Practice Student Questionnaire",
   "pleaseUploadSPR": "Please upload your Summer Practice Report",
-  "pleaseAnswerAllQuestions": "Please answer all questionnaire questions"
+  "pleaseAnswerAllQuestions": "Please answer all questionnaire questions",
+  "pdfDocument": "PDF Document"
 }
