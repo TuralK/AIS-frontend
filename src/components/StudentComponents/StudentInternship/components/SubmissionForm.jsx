@@ -1,7 +1,7 @@
-import { useState } from "react"
-import { Building2, FileText, Upload, X } from "lucide-react"
-import Questionnaire from "./Questionnaire"
+import { Building2, FileText, Upload, X } from "lucide-react";
+import Questionnaire from "./Questionnaire";
 import { useTranslation } from 'react-i18next';
+import { useState } from "react";
 
 const questions = [
   {
@@ -10,28 +10,23 @@ const questions = [
     type: "radio",
     options: ["Excellent", "Good", "Fair"],
   },
-  // ... diğer sorular buraya eklenebilir
-]
+  // ... diğer sorular
+];
 
-const SubmissionForm = () => {
-  const [uploadedFile, setUploadedFile] = useState(null)
-  const [submissionStatus] = useState("Ongoing")
-  const { t, i18n } = useTranslation();
+const SubmissionForm = ({ uploadedFile, setUploadedFile, answers, setAnswers }) => {
+  const [submissionStatus] = useState("Ongoing"); // TODO : change to compatible with localization property
+  const { t } = useTranslation();
 
   const handleFileUpload = (e) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      setUploadedFile(file)
-    }
-  }
+    const file = e.target.files?.[0];
+    if (file) setUploadedFile(file);
+  };
 
-  const handleRemoveFile = () => {
-    setUploadedFile(null)
-  }
+  const handleRemoveFile = () => setUploadedFile(null);
 
   return (
     <div className="h-full space-y-6 overflow-y-auto p-6">
-      {/* Status Indicator */}
+      {/* Status */}
       <div className="flex justify-end">
         <div className="flex items-center gap-2 rounded-full bg-green-50 px-4 py-1 text-sm text-green-600">
           <div className="h-2 w-2 rounded-full bg-green-500" />
@@ -39,6 +34,7 @@ const SubmissionForm = () => {
         </div>
       </div>
 
+      
       {/* Company and Internship Info */}
       <div className="grid gap-6 md:grid-cols-2">
         <div className="space-y-2 rounded-lg border p-4">
@@ -58,7 +54,7 @@ const SubmissionForm = () => {
         </div>
       </div>
 
-      {/* File Upload Section */}
+      {/* File Upload */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-medium">{t('uploadSPR')}</h3>
@@ -69,17 +65,13 @@ const SubmissionForm = () => {
             </div>
           )}
         </div>
-
         {uploadedFile ? (
           <div className="flex items-center justify-between rounded-lg border border-dashed p-4">
             <div className="flex items-center gap-2">
               <FileText className="h-5 w-5 text-gray-400" />
               <span className="text-sm">{uploadedFile.name}</span>
             </div>
-            <button
-              onClick={handleRemoveFile}
-              className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-            >
+            <button onClick={handleRemoveFile} className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600">
               <X className="h-5 w-5" />
             </button>
           </div>
@@ -95,10 +87,10 @@ const SubmissionForm = () => {
         )}
       </div>
 
-      {/* Questionnaire Section */}
-      <Questionnaire questions={questions} />
+      {/* Questionnaire */}
+      <Questionnaire questions={questions} answers={answers} setAnswers={setAnswers} />
     </div>
-  )
-}
+  );
+};
 
 export default SubmissionForm;

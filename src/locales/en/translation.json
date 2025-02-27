@@ -202,5 +202,8 @@
   "feedback": "Feedback",
   "score": "Score",
   "submitAll": "Submit All",
-  "internshipName": "Internship Title"
+  "internshipName": "Internship Title",
+  "questionnaire": "Summer Practice Student Questionnaire",
+  "pleaseUploadSPR": "Please upload your Summer Practice Report",
+  "pleaseAnswerAllQuestions": "Please answer all questionnaire questions"
 }

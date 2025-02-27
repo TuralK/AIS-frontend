@@ -1,11 +1,10 @@
 import { useTranslation } from 'react-i18next';
-import { CheckCircle2 } from "lucide-react"
 
 const FeedbackSection = ({ feedback, companyStatus, coordinatorStatus, score }) => {
   const { t, i18n } = useTranslation();
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col mt-10">
       {/* Status Indicators */}
       <div className="space-y-3">
         <div className="flex items-center justify-between rounded-lg border bg-background p-4">
@@ -51,14 +50,6 @@ const FeedbackSection = ({ feedback, companyStatus, coordinatorStatus, score }) 
       <div className="flex mt-5 items-center justify-between rounded-lg border bg-background p-4">
         <span className="text-sm font-medium">{t('score')}</span>
         <span className="text-lg font-semibold text-primary">{score}/100</span>
-      </div>
-
-      {/* Submit Button */}
-      <div className="mt-6 mb-10 flex justify-end">
-        <button className="flex items-center gap-2 rounded-lg bg-red-600 px-6 py-3 text-sm font-medium text-white hover:bg-red-700">
-          <span>{t('submitAll')}</span>
-          <CheckCircle2 className="h-4 w-4" />
-        </button>
       </div>
     </div>
   )

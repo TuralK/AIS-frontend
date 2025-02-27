@@ -194,5 +194,9 @@
   "feedback": "Geri Bildirim",
   "score": "Puan",
   "submitAll": "Tümünü Gönder",
-  "internshipName": "Staj Adı"
+  "internshipName": "Staj Adı",
+  "questionnaire": "Yaz Stajı Öğrenci Anketi",
+  "pleaseUploadSPR": "Lütfen staj raporunu yükleyin",
+  "pleaseAnswerAllQuestions": "Lütfen tüm anket sorularını yanıtlayın"
+  
 }

@@ -1,7 +1,22 @@
-import { useState } from "react"
-import { ChevronDown } from "lucide-react"
+import { useState } from "react";
+import { ChevronDown } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-const Question = ({ id, question, type, options = [], scale = 5 }) => {
+const Question = ({ id, question, type, options = [], scale = 5, answers, setAnswers }) => {
+  const handleChange = (e) => {
+    const { value, checked } = e.target;
+    if (type === "checkbox") {
+      const current = answers[id] || [];
+      if (checked) {
+        setAnswers(prev => ({ ...prev, [id]: [...current, value] }));
+      } else {
+        setAnswers(prev => ({ ...prev, [id]: current.filter(v => v !== value) }));
+      }
+    } else {
+      setAnswers(prev => ({ ...prev, [id]: type === "rating" ? Number(value) : value }));
+    }
+  };
+
   if (type === "radio" || type === "checkbox") {
     return (
       <div className="space-y-3">
@@ -13,16 +28,16 @@ const Question = ({ id, question, type, options = [], scale = 5 }) => {
                 type={type}
                 name={id}
                 value={option}
-                className={`${
-                  type === "radio" ? "rounded-full" : "rounded"
-                } border-gray-300 text-primary focus:ring-primary`}
+                onChange={handleChange}
+                checked={type === "radio" ? answers?.[id] === option : (answers?.[id] || []).includes(option)}
+                className={`${type === "radio" ? "rounded-full" : "rounded"} border-gray-300 text-primary focus:ring-primary`}
               />
               <span className="text-sm text-gray-600">{option}</span>
             </label>
           ))}
         </div>
       </div>
-    )
+    );
   }
 
   if (type === "rating") {
@@ -38,6 +53,8 @@ const Question = ({ id, question, type, options = [], scale = 5 }) => {
                 type="radio"
                 name={id}
                 value={num}
+                onChange={handleChange}
+                checked={answers?.[id] === num}
                 className="h-4 w-4 border-gray-300 text-primary focus:ring-primary"
               />
               <span className="text-sm text-gray-600">{num}</span>
@@ -45,14 +62,15 @@ const Question = ({ id, question, type, options = [], scale = 5 }) => {
           ))}
         </div>
       </div>
-    )
+    );
   }
 
-  return null
-}
+  return null;
+};
 
-const Questionnaire = ({ questions, title = "Questionnaire" }) => {
-  const [isExpanded, setIsExpanded] = useState(false)
+const Questionnaire = ({ questions, answers, setAnswers }) => {
+  const { t } = useTranslation();
+  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <div className="rounded-lg border bg-white">
@@ -60,20 +78,20 @@ const Questionnaire = ({ questions, title = "Questionnaire" }) => {
         onClick={() => setIsExpanded(!isExpanded)}
         className="flex w-full items-center justify-between p-4 text-left"
       >
-        <span className="text-lg font-medium">{title}</span>
+        <span className="text-lg font-medium">{t("questionnaire")}</span>
         <ChevronDown className={`h-5 w-5 transform transition-transform ${isExpanded ? "rotate-180" : ""}`} />
       </button>
       {isExpanded && (
         <div className="border-t p-4">
           <div className="space-y-6">
             {questions.map((question) => (
-              <Question key={question.id} {...question} />
+              <Question key={question.id} {...question} answers={answers} setAnswers={setAnswers} />
             ))}
           </div>
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 export default Questionnaire;
