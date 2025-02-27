@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Building2, FileText, Upload, X, CheckCircle } from "lucide-react";
 import Questionnaire from "./Questionnaire";
 import SubmitSection from "./SubmitSection";
 import { useTranslation } from "react-i18next";
+import CustomAlertDialog from "../../../ui/custom_alert";
 
 const questions = [
   {
@@ -10,7 +11,7 @@ const questions = [
     question: "How would you rate your internship experience?",
     type: "radio",
     options: ["Excellent", "Good", "Fair"],
-  },
+  }
   // Diğer sorular...
 ];
 
@@ -19,19 +20,81 @@ const SubmissionForm = () => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [answers, setAnswers] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
   const { t } = useTranslation();
+  const inputRef = useRef(null);
+
+  const showAlert = (message) => {
+    setAlertMessage(message);
+    setAlertOpen(true);
+  };
 
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
-    if (file) setUploadedFile(file);
+    if (file && validateFile(file)) {
+      setUploadedFile(file);
+    } else if (file) {
+      showAlert(t("only_pdf_allowed"));
+    }
   };
 
   const handleRemoveFile = () => {
     if (!isSubmitted) setUploadedFile(null);
   };
 
+  // Validate that file is PDF
+  const validateFile = (file) => {
+    return file.type === "application/pdf";
+  };
+
+  // Handle drag events
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (e.type === "dragenter" || e.type === "dragover") {
+      setDragActive(true);
+    } else if (e.type === "dragleave") {
+      setDragActive(false);
+    }
+  };
+
+  // Handle drop event
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragActive(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0] && !isSubmitted) {
+      const file = e.dataTransfer.files[0];
+      if (validateFile(file)) {
+        setUploadedFile(file);
+      } else {
+        showAlert(t("only_pdf_allowed"));
+      }
+    }
+  };
+
+  // Handle button click to trigger file input
+  const handleButtonClick = () => {
+    if (!isSubmitted && inputRef.current) {
+      inputRef.current.click();
+    }
+  };
+
   return (
     <div className="w-full max-w-3xl mx-auto bg-white rounded-lg shadow-sm p-6 relative">
+      {/* Custom Alert Dialog */}
+      <CustomAlertDialog
+        isOpen={alertOpen}
+        onClose={() => setAlertOpen(false)}
+        title={t("error")}
+        description={alertMessage}
+        confirmLabel={t("ok")}
+      />
+
       {/* Status Bar */}
       <div className="flex justify-end p-4 border-b">
         <div className="flex items-center gap-2 rounded-full bg-green-50 px-4 py-1.5 text-sm font-medium text-green-600">
@@ -103,17 +166,35 @@ const SubmissionForm = () => {
                 </button>
               </div>
             ) : (
-              <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-8 hover:bg-gray-100 transition-colors">
-                <div className="flex items-center justify-center w-16 h-16 rounded-full bg-[#a51c30]/10 mb-4">
-                  <Upload className="h-8 w-8 text-[#a51c30]" />
+              <div 
+                className={`relative ${isSubmitted ? "pointer-events-none opacity-70" : ""}`}
+                onDragEnter={handleDrag}
+              >
+                <div 
+                  className={`flex flex-col items-center justify-center rounded-lg border-2 ${dragActive ? "border-[#a51c30] bg-[#a51c30]/5" : "border-dashed border-gray-300 bg-gray-50"} p-8 hover:bg-gray-100 transition-colors cursor-pointer`}
+                  onClick={handleButtonClick}
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={handleDrop}
+                >
+                  <div className="flex items-center justify-center w-16 h-16 rounded-full bg-[#a51c30]/10 mb-4">
+                    <Upload className="h-8 w-8 text-[#a51c30]" />
+                  </div>
+                  <div className="text-center">
+                    <span className="text-base font-medium text-[#a51c30]">{t("clickToUpload")}</span>
+                    <p className="mt-2 text-sm text-gray-500">{t("dragDrop") || "veya dosyayı buraya sürükleyip bırakın"}</p>
+                  </div>
+                  <input 
+                    ref={inputRef}
+                    type="file" 
+                    className="hidden" 
+                    accept=".pdf,application/pdf" 
+                    onChange={handleFileUpload} 
+                    disabled={isSubmitted} 
+                  />
                 </div>
-                <div className="text-center">
-                  <span className="text-base font-medium text-[#a51c30]">{t("clickToUpload")}</span>
-                  <p className="mt-2 text-sm text-gray-500">{t("dragDrop")}</p>
-                  <p className="mt-1 text-xs text-gray-400">PDF (Max 10MB)</p>
-                </div>
-                <input type="file" className="hidden" accept=".pdf" onChange={handleFileUpload} disabled={isSubmitted} />
-              </label>
+              </div>
             )}
           </div>
         </div>

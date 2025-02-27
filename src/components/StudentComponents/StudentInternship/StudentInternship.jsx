@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react";
 import SubmissionForm from "./components/SubmissionForm";
 import FeedbackSection from "./components/FeedbackSection";
@@ -30,7 +28,7 @@ const StudentInternship = () => {
         )}
       </div>
 
-      {/* Geri Bildirimi Aç/Kapat Butonu */}
+      {/* Geri Bildirimi Aç/Kapat Butonu denemelik olarak duruyor silinecek*/}
       <div className="mt-4 flex justify-center">
         <button
           className="bg-blue-600 text-white px-4 py-2 rounded"
