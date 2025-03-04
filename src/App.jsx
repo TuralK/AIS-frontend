@@ -6,13 +6,14 @@ import './utils/translatePage.js';
 import Login from "./pages/auth_pages/Login/Login";
 import ChangePassword from "./pages/auth_pages/ChangePassword/ChangePassword";
 import SignUp from "./pages/auth_pages/SignUp/SignUp";
-import { StudentLayout } from "./layouts/StudentLayout/StudentLayout.jsx";
+import StudentLayout from "./layouts/StudentLayout/StudentLayout.jsx";
 import StudentHome from "./components/StudentComponents/StudentHomePageComponent/StudentHomePage.jsx";
 import DICHome from "./components/DICcomponents/DICHome/DICHome.jsx";
 import StudentAnnouncements from "./components/StudentComponents/StudentAnnouncementsComponent/StudentAnnouncements.jsx";
 import StudentAnnouncement from "./components/StudentComponents/StudentAnnouncementComponent/StudentAnnouncement.jsx";
 import StudentApplications from "./components/StudentComponents/StudentApplicationsComponent/StudentApplications.jsx";
-import { DICLayout } from "./layouts/DICLayout/DICLayout.jsx";
+import StudentFiles from "./components/StudentComponents/StudentFilesComponent.jsx/StudentFiles.jsx";
+import DICLayout from "./layouts/DICLayout/DICLayout.jsx";
 import CompanyCards from "./components/DICcomponents/DICCompanyRequests/companyRequestComponent.jsx";
 import DICAnnouncementRequest from "./components/DICcomponents/DICAnnouncementRequests/DICAnnouncementRequest.jsx";
 import DICAnouncementDetails from "./components/DICcomponents/DICAnnouncemenDetails/DICAnouncementDetails.jsx";
@@ -20,9 +21,9 @@ import DICApplications from "./components/DICcomponents/DICApplications/DICAppli
 import DICInnerApplication from "./components/DICcomponents/DICApplications/InnerApplication/DICInnerApplication.jsx";
 import DICInternships from "./components/DICcomponents/DICInternships/DICInternships.jsx";
 import DICInnerInternships from "./components/DICcomponents/DICInternships/InnerApplication/DICInnerInternships.jsx";
-import { SecretaryLayout } from "./layouts/SecretaryLayout/SecretaryLayout.jsx";
+import SecretaryLayout from "./layouts/SecretaryLayout/SecretaryLayout.jsx";
 import PendingApplicationList from "./components/SecretaryComponents/PendingApplicationList.jsx";
-import { CompanyLayout } from "./layouts/CompanyLayout/CompanyLayout.jsx";
+import CompanyLayout from "./layouts/CompanyLayout/CompanyLayout.jsx";
 import CompanyApplications from './components/CompanyComponents/CompanyApplications/CompanyApplications.jsx';
 import PublishAnnouncement from "./components/CompanyComponents/PublishAnnouncement/PublishAnnouncement.jsx";
 import CompanyApplication from "./components/CompanyComponents/CompanyApplication/CompanyApplication.jsx";
@@ -52,7 +53,8 @@ const App = () => {
         { path: "home", element: <StudentHome /> },
         { path: "announcements", element: <StudentAnnouncements /> },
         { path: 'announcements/:announcementId', element: <StudentAnnouncement /> },
-        { path: "applications", element: <StudentApplications />}
+        { path: "applications", element: <StudentApplications /> },
+        { path: "files", element: <StudentFiles /> }
       ]
       // children: [
       //   {path: "applications", element: }
