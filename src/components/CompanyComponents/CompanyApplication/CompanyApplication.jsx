@@ -459,7 +459,7 @@ const CompanyApplication = () => {
             <div className={styles.uploadFile} onClick={handleFileClick}>
               {selectedFileName ? (
                 <>
-                  <FaFile /> {selectedFileName}
+                  <FontAwesomeIcon icon={faFilePdf} /> {selectedFileName}
                   <FaTrash className={styles.deleteIcon} onClick={handleDeleteFile} />
                 </>
               ) : (

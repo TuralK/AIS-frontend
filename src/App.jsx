@@ -24,6 +24,7 @@ import DICInnerInternships from "./components/DICcomponents/DICInternships/Inner
 import SecretaryLayout from "./layouts/SecretaryLayout/SecretaryLayout.jsx";
 import PendingApplicationList from "./components/SecretaryComponents/PendingApplicationList.jsx";
 import CompanyLayout from "./layouts/CompanyLayout/CompanyLayout.jsx";
+import CompanyHome from "./components/CompanyComponents/CompanyHome/CompanyHome.jsx";
 import CompanyApplications from './components/CompanyComponents/CompanyApplications/CompanyApplications.jsx';
 import PublishAnnouncement from "./components/CompanyComponents/PublishAnnouncement/PublishAnnouncement.jsx";
 import CompanyApplication from "./components/CompanyComponents/CompanyApplication/CompanyApplication.jsx";
@@ -67,9 +68,11 @@ const App = () => {
       path: '/company',
       element: <CompanyLayout />,
       children: [
-        {path: "applications", element: <CompanyApplications />},
-        {path: "publishAnnouncement", element: <PublishAnnouncement />},
-        {path: "applications/:id", element: <CompanyApplication />}
+        { index: true, element: <CompanyHome /> },
+        { path: "home", element: <CompanyHome /> },
+        { path: "applications", element: <CompanyApplications /> },
+        { path: "publishAnnouncement", element: <PublishAnnouncement /> },
+        { path: "applications/:id", element: <CompanyApplication /> }
       ]
     },
     {

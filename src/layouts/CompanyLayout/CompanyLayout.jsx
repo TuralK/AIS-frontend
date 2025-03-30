@@ -9,6 +9,7 @@ const CompanyLayout = () => {
       <UserLayout
           validateFunction={validateCompany}
           menuItems = {[
+            { item: t('home'), route: 'home' },
             { item: t('publishAnnouncement'), route: 'publishAnnouncement' },
             { item: t('applications'), route: 'applications' },
             { item: t('internships'), route: 'internships' }

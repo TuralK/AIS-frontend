@@ -1,0 +1,105 @@
+.container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.section {
+  margin-bottom: 30px;
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.part {
+  margin-bottom: 15px;
+}
+
+.button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+.disabled {
+  cursor: not-allowed;
+  background-color: #aaa;
+}
+
+.fileInput {
+  margin-left: 10px;
+}
+
+
+.uploadFile {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 250px;
+  gap: 10px;
+  color: #9A1220;
+  cursor: pointer;
+  padding: 10px 20px;
+  border: 2px solid #9A1220;
+  border-radius: 4px;
+  transition: background-color 0.7s ease, color 0.7s ease;
+  word-break: break-word;
+}
+
+.uploadFile:hover {
+  color: #ffffff;
+  background-color: #9A1220;
+}
+
+
+.downloadFile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.5rem 1rem;
+    border: 2px solid #2A3132;
+    border-radius: 4px;
+    color: #2A3132;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .downloadFile:hover {
+    background-color: #2A3132;
+    color: #ffffff;
+    transform: scale(1.02);
+  }
+
+  .downloadFile.disabled {
+    cursor: not-allowed;
+    background-color: #ccc;
+    color: #888;
+    border-color: #aaa;
+  }
+  
+  .uploadFile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.5rem 1rem;
+    border: 2px solid #2A3132;
+    border-radius: 4px;
+    color: #2A3132;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .uploadFile:hover {
+    background-color: #2A3132;
+    color: #ffffff;
+    transform: scale(1.02);
+  }
