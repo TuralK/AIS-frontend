@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from "./StudentProfile.module.css";
 import StudentBackgound from "../../../assets/student_background.webp";
 import ProfilePic from "../../../assets/profile_pic.png";
@@ -36,14 +36,21 @@ const StarRating = ({ rating }) => {
 };
 
 // Navigation Tabs
-const NavigationTabs = () => {
+const NavigationTabs = ({ activeTab, setActiveTab }) => {
+  const tabs = ["About", "Experiences", "Certificates", "Skills"];
   return (
     <div className={styles.navTabsContainer}>
       <ul className={styles.navTabsList}>
-        <li className={styles.navTabItem}>About</li>
-        <li className={styles.navTabItem}>Experiences</li>
-        <li className={styles.navTabItem}>Certificates</li>
-        <li className={styles.navTabItem}>Skills</li>
+        {tabs.map((tab, index) => (
+          <li
+            key={index}
+            className={`${styles.navTabItem} ${activeTab === tab ? styles.activeTab : ''}`}
+            onClick={() => setActiveTab(tab)}
+          >
+            {/* Wrap the text in a span with a data-text attribute */}
+            <span data-text={tab} className={styles.navTabLabel}>{tab}</span>
+          </li>
+        ))}
       </ul>
     </div>
   );
@@ -91,6 +98,8 @@ const BioField = ({ label, value, isClickable }) => {
 };
 
 const StudentProfile = () => {
+  const [activeTab, setActiveTab] = useState("About");
+
   const bioFields = [
     { label: "Location", value: "Izmir, Turkiye", isClickable: true },
     { label: "Email", value: "turalk2004@gmail.com", isClickable: true },
@@ -103,6 +112,76 @@ const StudentProfile = () => {
     { name: "English", rating: 4 },
     { name: "Spanish", rating: 3 }
   ];
+
+  // Random data for each tab
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "About":
+        return (
+          <div className={styles.tabContent}>
+            <h2>About Me</h2>
+            <p>
+              I am a Computer Engineering student with a passion for coding, robotics, and AI. I enjoy tackling challenging projects and continuously learning new technologies.
+            </p>
+            <p>
+              In my spare time, I like to explore nature, read tech blogs, and participate in hackathons.
+            </p>
+          </div>
+        );
+      case "Experiences":
+        return (
+          <div className={styles.tabContent}>
+            <h2>Experiences</h2>
+            <ul>
+              <li>
+                <strong>Software Developer Intern</strong> at Tech Innovations Inc. (Summer 2023)
+                <p>Developed features for the company’s main application using React and Node.js.</p>
+              </li>
+              <li>
+                <strong>Freelance Web Developer</strong> (2022 - Present)
+                <p>Created responsive websites for various local businesses.</p>
+              </li>
+              <li>
+                <strong>University Project</strong> (2021)
+                <p>Led a team to develop an AI-driven chatbot for the campus portal.</p>
+              </li>
+            </ul>
+          </div>
+        );
+      case "Certificates":
+        return (
+          <div className={styles.tabContent}>
+            <h2>Certificates</h2>
+            <ul>
+              <li>
+                <strong>Full Stack Web Development</strong> - Coursera (2023)
+              </li>
+              <li>
+                <strong>Machine Learning Specialization</strong> - edX (2022)
+              </li>
+              <li>
+                <strong>React & Redux Bootcamp</strong> - Udemy (2021)
+              </li>
+            </ul>
+          </div>
+        );
+      case "Skills":
+        return (
+          <div className={styles.tabContent}>
+            <h2>Skills</h2>
+            <ul>
+              <li>JavaScript / React</li>
+              <li>Node.js / Express</li>
+              <li>Python / Django</li>
+              <li>Machine Learning</li>
+              <li>UI/UX Design</li>
+            </ul>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className={styles.studentProfileContainer}>
@@ -142,7 +221,8 @@ const StudentProfile = () => {
           </div>
         </div>
         <div className={styles.studentProfileNavTabsContainer}>
-            <NavigationTabs />
+          <NavigationTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+          {renderTabContent()}
         </div>
       </div>
     </div>
