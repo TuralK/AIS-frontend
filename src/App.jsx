@@ -29,6 +29,7 @@ import CompanyApplications from './components/CompanyComponents/CompanyApplicati
 import PublishAnnouncement from "./components/CompanyComponents/PublishAnnouncement/PublishAnnouncement.jsx";
 import CompanyApplication from "./components/CompanyComponents/CompanyApplication/CompanyApplication.jsx";
 import Settings from "./components/Settings/Settings.jsx";
+import StudentProfile from "./components/StudentComponents/StudentProfileComponent/StudentProfile.jsx";
 
 const App = () => {
   const { t, i18n } = useTranslation();
@@ -55,7 +56,9 @@ const App = () => {
         { path: "announcements", element: <StudentAnnouncements /> },
         { path: 'announcements/:announcementId', element: <StudentAnnouncement /> },
         { path: "applications", element: <StudentApplications /> },
-        { path: "files", element: <StudentFiles /> }
+        { path: "files", element: <StudentFiles /> },
+        { path: "settings", element: <Settings apiUrl={'http://localhost:3004'} /> },
+        { path: "profile", element: <StudentProfile />}
       ]
       // children: [
       //   {path: "applications", element: }

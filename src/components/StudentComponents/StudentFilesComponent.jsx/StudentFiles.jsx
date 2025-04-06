@@ -5,16 +5,17 @@ import { useTranslation } from 'react-i18next';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { FaDownload, FaUpload, FaFile, FaTrash, FaFilePdf, FaRegFilePdf } from "react-icons/fa";
+import { fetchStudentFiles } from '../../../api/StudentApi/fetchStudentFilesAPI';
+import Loading from '../../LoadingComponent/Loading';
+import { downloadEmploymentCertificate } from '../../../api/StudentApi/downloadEmploymentCertificateAPI';
+import { uploadSpes } from '../../../api/StudentApi/uploadSpesAPI';
 
 const StudentFiles = () => {
-  // Simulated state for demonstration
-  const [ssiAvailable, setSsiAvailable] = useState(false); // change to true if certificate exists
-  const [score, setScore] = useState(null); // set a number if score is available
+  const [loading, setLoading] = useState(true);
 
-  const [applicationFile, setApplicationFile] = useState(null);
-  const [sprFile, setSprFile] = useState(null);
-  const [cfFile, setCfFile] = useState(null);
-  const [spesFile, setSpesFile] = useState(null);
+  const [employmentCertificateAvailable, setEmploymentCertificateAvailable] = useState(false); // change to true if certificate exists
+  const [employmentCertificate, setEmploymentCertificate] = useState(null);
+  const [score, setScore] = useState(null); // set a number if score is available
 
   const [selectedFileName, setSelectedFileName] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -36,33 +37,64 @@ const StudentFiles = () => {
     }
   };
 
-
-  const handleApplicationUpload = (e) => {
-    setApplicationFile(e.target.files[0]);
-    // Implement your file upload logic here
-  };
-
-  const handleSPRUpload = (e) => {
-    setSprFile(e.target.files[0]);
-    // Implement your file upload logic here
-  };
-
-  const handleCFUpload = (e) => {
-    setCfFile(e.target.files[0]);
-    // Implement your file upload logic here
-  };
-
-  const handleSPESUpload = (e) => {
-    setSpesFile(e.target.files[0]);
-    // Implement your file upload logic here
-  };
-
   const handleDownloadSSI = () => {
-    if (ssiAvailable) {
-      // Replace this with actual download logic
-      alert('Downloading SSI Certificate...');
+    if (employmentCertificateAvailable) {
+      downloadFile("Employment Certificate", "pdf");
     }
   };
+
+  useEffect(() => {
+    const fetchCertificate = async () => {
+      // backend fetches files that match student id, but some "Employment Certificate"s' student id field is null
+      const files = await fetchStudentFiles();
+      const certificate = files.find(file => file.fileType == 'Employment Certificate');
+      setEmploymentCertificate(certificate);
+      if(certificate) {
+        setEmploymentCertificateAvailable(true);
+      }
+      setLoading(false);
+    };
+  
+    fetchCertificate();
+  }, []);
+  
+  const downloadFile = async (fileDisplayName, fileType) => {
+    try {
+      const { blobData, contentType } = await downloadEmploymentCertificate();
+      const fileBlob = new Blob([blobData], { type: contentType });
+      const downloadUrl = window.URL.createObjectURL(fileBlob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.setAttribute("download", fileDisplayName);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+      console.error("Error downloading file:", error);
+      alert("Failed to download file.");
+    }
+  };
+
+  const uploadFile = async () => {
+    if (!selectedFile) {
+      alert("Please select a file to upload.");
+      return;
+    }
+    
+    try {
+      const response = await uploadSpes(selectedFile);
+      console.log("Upload successful:", response.data);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  }
+
+  if (loading) {
+    return (
+        <Loading />
+    )
+  }
 
   return (
     <div className={styles.container}>
@@ -71,37 +103,7 @@ const StudentFiles = () => {
       <section className={styles.section}>
         <h2>Application Form</h2>
         <div className={styles.part}>
-          <label htmlFor="spesUpload">Upload SPES:</label>
-            <input 
-              type="file" 
-              id="spesUpload" 
-              onChange={handleSPESUpload}
-              className={styles.fileInput}
-            />
-          
-          {/* <div className={styles.uploadFile} onClick={handleFileClick}>
-            {selectedFileName ? (
-              <>
-                <FontAwesomeIcon icon={faFilePdf} /> {selectedFileName}
-                <FaTrash className={styles.deleteIcon} onClick={handleDeleteFile} />
-              </>
-            ) : (
-              <>
-                <FontAwesomeIcon icon={faFilePdf} /> Upload Application Form <FaUpload /> 
-              </>
-            )}
-          </div>
-          <input
-            id="fileInput"
-            type="file"
-            accept=".pdf,.docx"
-            onChange={handleFileChange}
-            style={{ display: "none" }}
-            required
-          /> */}
-        </div>
-        <div className={styles.part}>
-          {ssiAvailable ? 
+          {employmentCertificateAvailable ? 
           <button onClick={handleDownloadSSI} className={styles.downloadFile}>
             <FontAwesomeIcon icon={faFilePdf} /> Download SSI Certificate <FaDownload />
           </button>
@@ -117,14 +119,30 @@ const StudentFiles = () => {
       {/* Part 2: Internship Files Upload */}
       <section className={styles.section}>
         <h2>Internship Files</h2>
-        <div className={styles.part}>
-          <label htmlFor="spesUpload">Upload SPES:</label>
-          <input 
-            type="file" 
-            id="spesUpload" 
-            onChange={handleSPESUpload}
-            className={styles.fileInput}
-          />
+        <div className={styles.spesSubmit}>
+          <div className={styles.part}>
+            <div className={styles.uploadFile} onClick={handleFileClick}>
+              {selectedFileName ? (
+                <>
+                  <FontAwesomeIcon icon={faFilePdf} /> {selectedFileName}
+                  <FaTrash className={styles.deleteIcon} onClick={handleDeleteFile} />
+                </>
+              ) : (
+                <>
+                  <FontAwesomeIcon icon={faFilePdf} /> Upload SPES File <FaUpload /> 
+                </>
+              )}
+            </div>
+            <input
+              id="fileInput"
+              type="file"
+              accept=".pdf,.docx"
+              onChange={handleFileChange}
+              style={{ display: "none" }}
+              required
+            />
+          </div>
+          <button className={`${styles.spesSubmitButton} ${styles.part}`} onClick={uploadFile}>Submit</button>
         </div>
       </section>
 

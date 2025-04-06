@@ -1,6 +1,8 @@
 .container {
-  padding: 20px;
-  font-family: Arial, sans-serif;
+  padding: 10px;
+  max-width: 1480px;
+  margin: 50px auto; 
+  overflow: visible;
 }
 
 .section {
@@ -11,6 +13,7 @@
 }
 
 .part {
+  margin-top: 15px;
   margin-bottom: 15px;
 }
 
@@ -44,7 +47,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  width: 250px;
+  width: fit-content;
   gap: 10px;
   color: #9A1220;
   cursor: pointer;
@@ -103,3 +106,26 @@
     color: #ffffff;
     transform: scale(1.02);
   }
+  
+  .spesSubmit {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  
+  .spesSubmitButton {
+    background-color: #4CAF50; /* Green background */
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .spesSubmitButton:hover {
+    background-color: #45a049; /* Slightly darker green on hover */
+  }
+  
