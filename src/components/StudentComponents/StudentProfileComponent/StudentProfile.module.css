@@ -73,8 +73,10 @@
 .studentBioField {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
   margin: 10px;
+  height: 26px;
 }
 
 .studentBioFieldLabel {
@@ -110,6 +112,7 @@
   margin-top: 8px;
   flex-wrap: wrap;
   justify-content: space-between;
+  height: 26px;
 }
 
 .languageName {
