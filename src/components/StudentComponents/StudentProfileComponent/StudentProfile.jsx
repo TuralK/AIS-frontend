@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Pencil } from 'lucide-react';
 import styles from "./StudentProfile.module.css";
-import StudentBackgound from "../../../assets/student_background.webp";
+import StudentBackgound from "../../../assets/student_default_bg1.jpg";
 import ProfilePic from "../../../assets/profile_pic.png";
+import { fetchStudentProfile } from '../../../api/StudentApi/fetchStudentProfileAPI';
+import Loading from '../../LoadingComponent/Loading';
 
-// Mapping for star descriptions (if needed for tooltips or additional info)
 const starDescriptions = {
   1: "Beginner",
   2: "Novice",
@@ -13,7 +14,11 @@ const starDescriptions = {
   5: "Advanced"
 };
 
-// StarRating component renders 5 stars based on the rating
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString();
+};
+
 const StarRating = ({ rating, isEditing, onRatingChange }) => {
   const totalStars = 5;
 
@@ -26,7 +31,6 @@ const StarRating = ({ rating, isEditing, onRatingChange }) => {
   return (
     <div
       className={styles.starRating}
-      // Only attach the tooltip to the container if not in editing mode
       {...(!isEditing && { 'data-tooltip': starDescriptions[rating] })}
     >
       {Array.from({ length: totalStars }, (_, i) => {
@@ -36,7 +40,6 @@ const StarRating = ({ rating, isEditing, onRatingChange }) => {
             key={starValue}
             className={`${starValue <= rating ? styles.checkedStar : styles.uncheckedStar} ${isEditing ? "cursor-pointer" : ""}`}
             onClick={() => handleStarClick(starValue)}
-            // When in editing mode, attach a tooltip for each star
             {...(isEditing && { title: starDescriptions[starValue] })}
           >
             &#9733;
@@ -48,7 +51,6 @@ const StarRating = ({ rating, isEditing, onRatingChange }) => {
 };
 
 
-// Navigation Tabs
 const NavigationTabs = ({ activeTab, setActiveTab }) => {
   const tabs = ["About", "Experiences", "Certificates", "Skills"];
   return (
@@ -60,7 +62,6 @@ const NavigationTabs = ({ activeTab, setActiveTab }) => {
             className={`${styles.navTabItem} ${activeTab === tab ? styles.activeTab : ''}`}
             onClick={() => setActiveTab(tab)}
           >
-            {/* Wrap the text in a span with a data-text attribute */}
             <span data-text={tab} className={styles.navTabLabel}>{tab}</span>
           </li>
         ))}
@@ -70,7 +71,6 @@ const NavigationTabs = ({ activeTab, setActiveTab }) => {
 };
   
 
-// BioField component to handle the clickable/non-clickable fields
 const BioField = ({ label, value, isClickable, isEditing, onChange }) => {
   const renderValue = () => {
     if (isEditing) {
@@ -121,7 +121,6 @@ const BioField = ({ label, value, isClickable, isEditing, onChange }) => {
   );
 };
 
-// Image Upload Component
 const ImageUpload = ({ isProfilePic, currentImage, onImageChange, isEditing }) => {
   const fileInputRef = React.useRef(null);
   
@@ -175,143 +174,337 @@ const StudentProfile = () => {
 
   const [profilePic, setProfilePic] = useState(ProfilePic);
   const [backgroundPic, setBackgroundPic] = useState(StudentBackgound);
-
   const [bioFields, setBioFields] = useState([
     { label: "Location", value: "Izmir, Turkiye", isClickable: true },
     { label: "Email", value: "turalk2004@gmail.com", isClickable: true },
     { label: "Phone", value: "+905342361551", isClickable: true },
     { label: "Website", value: "https://github.com/TuralK", isClickable: true }
   ]);
-
   const [languages, setLanguages] = useState([
     { name: "Turkish", rating: 5 },
     { name: "English", rating: 4 },
     { name: "Spanish", rating: 3 }
   ]);
 
-  const [originalState, setOriginalState] = useState({
-    profilePic,
-    backgroundPic,
-    bioFields: [...bioFields],
-    languages: [...languages]
-  });
+  // new state slices for editable tabs
+  const [aboutText, setAboutText] = useState("");
+  const [experiences, setExperiences] = useState([]);
+  const [certificates, setCertificates] = useState([]);
+  const [skillsList, setSkillsList] = useState([]);
+
+  // for restoring on Cancel
+  const [originalState, setOriginalState] = useState({});
+
+  const [studentData, setStudentData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Add a blank skill to an experience
+  const addSkillToExp = idx => {
+    const ex = [...experiences];
+    ex[idx].skills = ex[idx].skills || [];
+    ex[idx].skills.push({ name: "" });
+    setExperiences(ex);
+  };
+
+  // Update one skill’s name
+  const updateExpSkill = (expIdx, skillIdx, value) => {
+    const ex = [...experiences];
+    ex[expIdx].skills[skillIdx].name = value;
+    setExperiences(ex);
+  };
+
+  // Remove one skill from an experience
+  const removeExpSkill = (expIdx, skillIdx) => {
+    const ex = [...experiences];
+    ex[expIdx].skills.splice(skillIdx, 1);
+    setExperiences(ex);
+  };
+
+  useEffect(() => {
+    fetchStudentProfile()
+      .then(fetched => {
+        setStudentData(fetched);
+        // initialize all editing state from fetched data:
+        setAboutText(fetched.bio || "");
+        setExperiences(fetched.experiences || []);
+        setCertificates(fetched.certificates || []);
+        setSkillsList(fetched.skills.map(s => s.name) || []);
+      })
+      .finally(() => setLoading(false))
+      .catch(err => console.error(err));
+  }, []);
 
   const handleEditToggle = () => {
     if (!isEditing) {
-      // Starting to edit - save the current state
+      // save originals for cancel
       setOriginalState({
         profilePic,
         backgroundPic,
         bioFields: JSON.parse(JSON.stringify(bioFields)),
-        languages: JSON.parse(JSON.stringify(languages))
+        languages: JSON.parse(JSON.stringify(languages)),
+        aboutText,
+        experiences: JSON.parse(JSON.stringify(experiences)),
+        certificates: JSON.parse(JSON.stringify(certificates)),
+        skillsList: JSON.parse(JSON.stringify(skillsList))
       });
       setIsEditing(true);
     } else {
-      // Already editing - save changes
+      // here you could call an API to save `aboutText`, `experiences`, etc.
       setIsEditing(false);
     }
   };
 
   const handleCancelEdit = () => {
-    // Restore original state
-    setProfilePic(originalState.profilePic);
-    setBackgroundPic(originalState.backgroundPic);
-    setBioFields(originalState.bioFields);
-    setLanguages(originalState.languages);
+    const orig = originalState;
+    setProfilePic(orig.profilePic);
+    setBackgroundPic(orig.backgroundPic);
+    setBioFields(orig.bioFields);
+    setLanguages(orig.languages);
+    setAboutText(orig.aboutText);
+    setExperiences(orig.experiences);
+    setCertificates(orig.certificates);
+    setSkillsList(orig.skillsList);
     setIsEditing(false);
   };
 
-  const handleBioFieldChange = (label, newValue) => {
-    setBioFields(bioFields.map(field => 
-      field.label === label ? { ...field, value: newValue } : field
-    ));
+  // handlers for dynamic lists
+  const addExperience = () => setExperiences([
+    ...experiences,
+    { id: Date.now(), pos: "", company: "", startDate: "", endDate: "", description: "", skills: [] }
+  ]);
+  const updateExperience = (idx, field, value) => {
+    const ex = [...experiences];
+    ex[idx][field] = value;
+    setExperiences(ex);
   };
+  const removeExperience = idx => setExperiences(experiences.filter((_, i) => i !== idx));
 
-  const handleAddLanguage = () => {
-    setLanguages([...languages, { name: "New Language", rating: 1 }]);
+  const addCertificate = () => setCertificates([
+    ...certificates,
+    { id: Date.now(), title: "", issuingOrganization: "", issueDate: "", expirationDate: "" }
+  ]);
+  const updateCertificate = (idx, field, value) => {
+    const certs = [...certificates];
+    certs[idx][field] = value;
+    setCertificates(certs);
   };
+  const removeCertificate = idx => setCertificates(certificates.filter((_, i) => i !== idx));
 
-  const handleLanguageRatingChange = (index, newRating) => {
-    const updatedLanguages = [...languages];
-    updatedLanguages[index].rating = newRating;
-    setLanguages(updatedLanguages);
+  const addSkill = () => setSkillsList([...skillsList, ""]);
+  const updateSkill = (idx, value) => {
+    const list = [...skillsList];
+    list[idx] = value;
+    setSkillsList(list);
   };
+  const removeSkill = idx => setSkillsList(skillsList.filter((_, i) => i !== idx));
 
-  const handleRemoveLanguage = (index) => {
-    setLanguages(languages.filter((_, i) => i !== index));
-  };
+  if (loading) return <Loading />;
 
-  const handleLanguageNameChange = (index, newName) => {
-    const updatedLanguages = [...languages];
-    updatedLanguages[index].name = newName;
-    setLanguages(updatedLanguages);
-  };
-
-  // Random data for each tab
   const renderTabContent = () => {
+    if (!studentData) return null;
     switch (activeTab) {
       case "About":
         return (
           <div className={styles.tabContent}>
             <h2>About Me</h2>
-            <p>
-              I am a Computer Engineering student with a passion for coding, robotics, and AI. I enjoy tackling challenging projects and continuously learning new technologies.
-            </p>
-            <p>
-              In my spare time, I like to explore nature, read tech blogs, and participate in hackathons.
-            </p>
+            {isEditing
+              ? (
+                <textarea
+                  value={aboutText}
+                  onChange={e => setAboutText(e.target.value)}
+                  className="w-full border p-2"
+                  rows={6}
+                />
+              )
+              : <p>{aboutText}</p>
+            }
           </div>
         );
-      case "Experiences":
+
+        case "Experiences":
         return (
           <div className={styles.tabContent}>
             <h2>Experiences</h2>
-            <ul>
-              <li>
-                <strong>Software Developer Intern</strong> at Tech Innovations Inc. (Summer 2023)
-                <p>Developed features for the company’s main application using React and Node.js.</p>
-              </li>
-              <li>
-                <strong>Freelance Web Developer</strong> (2022 - Present)
-                <p>Created responsive websites for various local businesses.</p>
-              </li>
-              <li>
-                <strong>University Project</strong> (2021)
-                <p>Led a team to develop an AI-driven chatbot for the campus portal.</p>
-              </li>
-            </ul>
+            {experiences.map((exp, idx) => (
+              <div key={exp.id} className="mb-6 border-b pb-4">
+                {isEditing ? (
+                  <>
+                    {/* Position / Company / Dates */}
+                    <input
+                      type="text"
+                      placeholder="Position"
+                      value={exp.pos}
+                      onChange={e => updateExperience(idx, "pos", e.target.value)}
+                      className="w-full mb-1 border-b"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Company"
+                      value={exp.company}
+                      onChange={e => updateExperience(idx, "company", e.target.value)}
+                      className="w-full mb-1 border-b"
+                    />
+                    <div className="flex space-x-2 mb-1">
+                      <input
+                        type="date"
+                        value={exp.startDate}
+                        onChange={e => updateExperience(idx, "startDate", e.target.value)}
+                        className="flex-1 border-b"
+                      />
+                      <input
+                        type="date"
+                        value={exp.endDate}
+                        onChange={e => updateExperience(idx, "endDate", e.target.value)}
+                        className="flex-1 border-b"
+                      />
+                    </div>
+      
+                    {/* Description */}
+                    <textarea
+                      placeholder="Description"
+                      value={exp.description}
+                      onChange={e => updateExperience(idx, "description", e.target.value)}
+                      className="w-full mb-3 border p-1"
+                      rows={3}
+                    />
+      
+                    {/* Skills */}
+                    <div className="mb-2">
+                      <p className="font-medium mb-1">Skills:</p>
+                      {exp.skills?.map((s, sIdx) => (
+                        <div key={sIdx} className="flex items-center mb-1">
+                          <input
+                            type="text"
+                            placeholder="Skill name"
+                            value={s.name}
+                            onChange={e => updateExpSkill(idx, sIdx, e.target.value)}
+                            className="border-b flex-1"
+                          />
+                          <button
+                            onClick={() => removeExpSkill(idx, sIdx)}
+                            className="text-red-500 ml-2"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                      <button
+                        onClick={() => addSkillToExp(idx)}
+                        className="text-sm text-blue-600 hover:underline"
+                      >
+                        + Add Skill
+                      </button>
+                    </div>
+      
+                    <button
+                      onClick={() => removeExperience(idx)}
+                      className="text-red-500 text-sm mt-1"
+                    >
+                      Remove Experience
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <strong>{exp.pos}</strong> at {exp.company} (
+                    {formatDate(exp.startDate)} – {exp.endDate ? formatDate(exp.endDate) : "Present"})
+                    <p className="mt-1">{exp.description}</p>
+                    {exp.skills?.length > 0 && (
+                      <p className="mt-1">
+                        <em>Skills:</em> {exp.skills.map(s => s.name).join(", ")}
+                      </p>
+                    )}
+                  </>
+                )}
+              </div>
+            ))}
+            {isEditing && (
+              <button
+                onClick={addExperience}
+                className="text-blue-600 hover:underline"
+              >
+                + Add Experience
+              </button>
+            )}
           </div>
-        );
+        );        
+
       case "Certificates":
         return (
           <div className={styles.tabContent}>
             <h2>Certificates</h2>
-            <ul>
-              <li>
-                <strong>Full Stack Web Development</strong> - Coursera (2023)
-              </li>
-              <li>
-                <strong>Machine Learning Specialization</strong> - edX (2022)
-              </li>
-              <li>
-                <strong>React & Redux Bootcamp</strong> - Udemy (2021)
-              </li>
-            </ul>
+            {certificates.map((cert, idx) => (
+              <div key={cert.id} className="mb-2 border-b pb-1">
+                {isEditing
+                  ? (
+                    <>
+                      <input
+                        type="text"
+                        placeholder="Title"
+                        value={cert.title}
+                        onChange={e => updateCertificate(idx, "title", e.target.value)}
+                        className="w-full mb-1 border-b"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Organization"
+                        value={cert.issuingOrganization}
+                        onChange={e => updateCertificate(idx, "issuingOrganization", e.target.value)}
+                        className="w-full mb-1 border-b"
+                      />
+                      <div className="flex space-x-2 mb-1">
+                        <input
+                          type="date"
+                          value={cert.issueDate}
+                          onChange={e => updateCertificate(idx, "issueDate", e.target.value)}
+                          className="flex-1 border-b"
+                        />
+                        <input
+                          type="date"
+                          value={cert.expirationDate}
+                          onChange={e => updateCertificate(idx, "expirationDate", e.target.value)}
+                          className="flex-1 border-b"
+                        />
+                      </div>
+                      <button onClick={() => removeCertificate(idx)} className="text-red-500 text-sm">Remove</button>
+                    </>
+                  )
+                  : (
+                    <li>
+                      <strong>{cert.title}</strong> – {cert.issuingOrganization} ({formatDate(cert.issueDate)}{cert.expirationDate ? ` – ${formatDate(cert.expirationDate)}` : ""})
+                    </li>
+                  )}
+              </div>
+            ))}
+            {isEditing && <button onClick={addCertificate} className="text-blue-600 hover:underline">+ Add Certificate</button>}
           </div>
         );
+
       case "Skills":
         return (
           <div className={styles.tabContent}>
             <h2>Skills</h2>
-            <ul>
-              <li>JavaScript / React</li>
-              <li>Node.js / Express</li>
-              <li>Python / Django</li>
-              <li>Machine Learning</li>
-              <li>UI/UX Design</li>
-            </ul>
+            {skillsList.map((skill, idx) => (
+              <div key={idx} className="flex items-center mb-2">
+                {isEditing
+                  ? (
+                    <>
+                      <input
+                        type="text"
+                        value={skill}
+                        onChange={e => updateSkill(idx, e.target.value)}
+                        className="border-b flex-1"
+                      />
+                      <button onClick={() => removeSkill(idx)} className="text-red-500 ml-2">✕</button>
+                    </>
+                  )
+                  : <li>{skill}</li>
+                }
+              </div>
+            ))}
+            {isEditing && <button onClick={addSkill} className="text-blue-600 hover:underline">+ Add Skill</button>}
           </div>
         );
+
       default:
         return null;
     }
@@ -320,107 +513,50 @@ const StudentProfile = () => {
   return (
     <div className={styles.studentProfileContainer}>
       <div className={styles.studentProfileBackgroundContainer}>
-        {/* <img
-          className={styles.studentProfileBackgroundPic}
-          src={StudentBackgound}
-          alt="Student Background"
-        /> */}
-         <ImageUpload 
-          isProfilePic={false} 
-          currentImage={backgroundPic} 
-          onImageChange={setBackgroundPic}
-          isEditing={isEditing}
-        />
+        <ImageUpload isProfilePic={false} currentImage={backgroundPic} onImageChange={setBackgroundPic} isEditing={isEditing} />
       </div>
       <div className={styles.studentProfileContent}>
         <div className={styles.studentProfileInfoBox}>
-          {/* <div className={styles.studentProfileImageContainer}> */}
-            {/* <img
-              className={styles.studentProfilePic}
-              src={ProfilePic}
-              alt="Profile"
-            /> */}
-            <ImageUpload 
-            isProfilePic={true} 
-            currentImage={profilePic} 
-            onImageChange={setProfilePic}
-            isEditing={isEditing}
-          />
-          {/* </div> */}
-          <h1 className={styles.studentProfileTitle}>Tural Karimli</h1>
-          <p className={styles.studentProfileSubtitle}>Computer Engineering Student</p>
-          {/* <h1 className="text-xl font-semibold text-center mb-1">Tural Karimli</h1>
-          <p className="text-sm text-gray-600 text-center mb-5">Computer Engineering Student</p> */}
-
+          <ImageUpload isProfilePic={true} currentImage={profilePic} onImageChange={setProfilePic} isEditing={isEditing} />
+          <h1 className={styles.studentProfileTitle}>{studentData.studentName || 'Student'}</h1>
+          <p className={styles.studentProfileSubtitle}>{studentData.title || 'Student Profile'}</p>
 
           {isEditing ? (
             <div className="flex space-x-2 mb-5">
-              <button 
-                className="flex-1 py-2.5 bg-black text-white font-medium cursor-pointer mb-2.5"
-                onClick={handleEditToggle}
-              >
-                Save
-              </button>
-              <button 
-                className="flex-1 py-2.5 bg-gray-200 text-gray-800 font-medium cursor-pointer mb-2.5"
-                onClick={handleCancelEdit}
-              >
-                Cancel
-              </button>
+              <button className="flex-1 py-2.5 bg-black text-white font-medium" onClick={handleEditToggle}>Save</button>
+              <button className="flex-1 py-2.5 bg-gray-200 text-gray-800 font-medium" onClick={handleCancelEdit}>Cancel</button>
             </div>
           ) : (
-            <button 
-              className="w-full py-2.5 bg-black text-white font-medium cursor-pointer mb-5"
-              onClick={handleEditToggle}
-            >
-              Edit Details
-            </button>
+            <button className="w-full py-2.5 bg-black text-white font-medium mb-5" onClick={handleEditToggle}>Edit Details</button>
           )}
-          {/* <button className={styles.studentInfoEditButton} onClick={handleEditToggle}>Edit Details</button> */}
-
 
           <div className={styles.studentBioContainer}>
-            {bioFields.map((field, index) => (
-              <BioField key={index} {...field} isEditing={isEditing} onChange={handleBioFieldChange}/>
-            ))}
+            {bioFields.map((field, idx) => <BioField key={idx} {...field} isEditing={isEditing} onChange={(l,v)=>setBioFields(bs=>bs.map(f=>f.label===l?{...f,value:v}:f))} />)}
           </div>
-          {/* Languages Section */}
+
           <div className={styles.languagesContainer}>
             <h2 className={styles.studentBioFieldLabel}>Languages</h2>
-            {languages.map((lang, index) => (
-              <div key={index} className={styles.languageField}>
+            {languages.map((lang, idx) => (
+              <div key={idx} className={styles.languageField}>
                 {isEditing ? (
                   <div className="flex items-center">
-                    <input
-                      type="text"
-                      value={lang.name}
-                      onChange={(e) => handleLanguageNameChange(index, e.target.value)}
-                      className="border-b border-gray-300 focus:outline-none focus:border-black mr-2 font-medium mt-[1px]"
-                    />
-                    <button 
-                      onClick={() => handleRemoveLanguage(index)}
-                      className="text-red-500 text-sm"
-                    >
-                      ✕
-                    </button>
+                    <input type="text" value={lang.name} onChange={e => {
+                      const l = [...languages]; l[idx].name = e.target.value; setLanguages(l);
+                    }} className="border-b" />
+                    <button onClick={() => {
+                      setLanguages(languages.filter((_,i)=>i!==idx));
+                    }} className="text-red-500 ml-2">✕</button>
                   </div>
-                ) : (
-                  <p className="font-medium">{lang.name}</p>
-                )}
-                {/* <p className={styles.languageName}>{lang.name}</p> */}
-                <StarRating rating={lang.rating} isEditing={isEditing} onRatingChange={(newRating) => handleLanguageRatingChange(index, newRating)}/>
+                ) : <p className="font-medium">{lang.name}</p>}
+                <StarRating rating={lang.rating} isEditing={isEditing} onRatingChange={r => {
+                  const l = [...languages]; l[idx].rating = r; setLanguages(l);
+                }} />
               </div>
             ))}
-            {isEditing && (
-              <button 
-                onClick={handleAddLanguage}
-                className="mt-3 text-sm text-blue-600 hover:underline"
-              >
-                + Add Language
-              </button>
-            )}
+            {isEditing && <button onClick={() => setLanguages([...languages, { name: "New Language", rating: 1 }])} className="mt-3 text-sm text-blue-600 hover:underline">+ Add Language</button>}
           </div>
         </div>
+
         <div className={styles.studentProfileNavTabsContainer}>
           <NavigationTabs activeTab={activeTab} setActiveTab={setActiveTab} />
           {renderTabContent()}
