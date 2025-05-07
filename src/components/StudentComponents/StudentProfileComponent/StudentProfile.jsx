@@ -1,10 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { Pencil } from 'lucide-react';
 import styles from "./StudentProfile.module.css";
-import StudentBackgound from "../../../assets/student_default_bg1.jpg";
-import ProfilePic from "../../../assets/profile_pic.png";
-import { fetchStudentProfile } from '../../../api/StudentApi/fetchStudentProfileAPI';
+import StudentBackgound from "../../../assets/default_background.jpg";
+import ProfilePic from "../../../assets/default_profile_icon.png";
+import { fetchStudentProfile } from '../../../api/StudentApi/StudentProfileAPI/fetchStudentProfileAPI';
 import Loading from '../../LoadingComponent/Loading';
+import { updateStudentBio } from '../../../api/StudentApi/StudentProfileAPI/updateStudentBioAPI';
+import { updateStudentPhoneNumber } from '../../../api/StudentApi/StudentProfileAPI/updateStudentPhoneNumberAPI';
+import { updateStudentEmail } from '../../../api/StudentApi/StudentProfileAPI/updateStudentEmailAPI';
+import { updateStudentAddress } from '../../../api/StudentApi/StudentProfileAPI/updateStudentAddressAPI';
+import { updateStudentProfilePhoto } from '../../../api/StudentApi/StudentProfileAPI/updateStudentProfilePhotoAPI';
+import { updateStudentExperience } from '../../../api/StudentApi/StudentProfileAPI/updateStudentExperienceAPI';
+import { deleteStudentExperience } from '../../../api/StudentApi/StudentProfileAPI/deleteStudentExperienceAPI';
+import { createStudentExperience } from '../../../api/StudentApi/StudentProfileAPI/createStudentExperienceAPI';
+import { updateStudentWebsite } from '../../../api/StudentApi/StudentProfileAPI/updateStudentWebsiteAPI';
+import { deleteStudentCertificate } from '../../../api/StudentApi/StudentProfileAPI/deleteStudentCertificateAPI';
+import { createStudentCertificate } from '../../../api/StudentApi/StudentProfileAPI/createStudentCertificateAPI';
+import { updateStudentCertificate } from '../../../api/StudentApi/StudentProfileAPI/updateStudentCertificateAPI';
+import { createStudentSkill } from  '../../../api/StudentApi/StudentProfileAPI/createStudentSkillAPI';
+import { deleteStudentSkill } from  '../../../api/StudentApi/StudentProfileAPI/deleteStudentSkillAPI';
 
 const starDescriptions = {
   1: "Beginner",
@@ -79,7 +93,8 @@ const BioField = ({ label, value, isClickable, isEditing, onChange }) => {
           type="text"
           value={value}
           onChange={(e) => onChange(label, e.target.value)}
-          className="w-full border-b border-gray-300 focus:outline-none focus:border-black mt-[1px] text-right"
+          className="w-full border-b border-gray-300 focus:outline-none focus:border-black text-right"
+          style={{ minWidth: "100%" }} /* Ensure full width */
         />
       );
     }
@@ -89,12 +104,19 @@ const BioField = ({ label, value, isClickable, isEditing, onChange }) => {
       case "Email":
         return <a href={`mailto:${value}`}>{value}</a>;
       case "Website":
+        const normalizedUrl = /^(https?:\/\/)/i.test(value)
+              ? value
+              : `https://${value}`;
         return (
-          <a href={value} target="_blank" rel="noopener noreferrer">
+          <a
+            href={normalizedUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {value}
           </a>
         );
-      case "Phone Number":
+      case "Phone":
         return <a href={`tel:${value}`}>{value}</a>;
       case "Location":
         return (
@@ -114,9 +136,11 @@ const BioField = ({ label, value, isClickable, isEditing, onChange }) => {
   return (
     <div className={styles.studentBioField}>
       <p className={styles.studentBioFieldLabel}>{label}</p>
-      <p className={isClickable ? styles.studentBioFieldClickable : ''}>
-        {renderValue()}
-      </p>
+      <div className={styles.studentBioFieldValue}>
+        <p className={isClickable ? styles.studentBioFieldClickable : ''}>
+          {renderValue()}
+        </p>
+      </div>
     </div>
   );
 };
@@ -131,14 +155,23 @@ const ImageUpload = ({ isProfilePic, currentImage, onImageChange, isEditing }) =
   };
   
   const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        onImageChange(event.target.result);
-      };
-      reader.readAsDataURL(e.target.files[0]);
+    const file = e.target.files?.[0];
+    if (!file) return;
+  
+    const allowed = ["image/png", "image/jpeg"];
+    if (!allowed.includes(file.type)) {
+      alert("Invalid file type. Please upload a PNG or JPG/JPEG image.");
+      e.target.value = "";
+      return;
     }
+  
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      onImageChange(event.target.result);
+    };
+    reader.readAsDataURL(file);
   };
+  
   
   return (
     <div 
@@ -161,9 +194,10 @@ const ImageUpload = ({ isProfilePic, currentImage, onImageChange, isEditing }) =
         type="file"
         ref={fileInputRef}
         onChange={handleFileChange}
-        accept="image/*"
+        accept=".png, .jpg, .jpeg"
         className="hidden"
       />
+
     </div>
   );
 };
@@ -174,17 +208,6 @@ const StudentProfile = () => {
 
   const [profilePic, setProfilePic] = useState(ProfilePic);
   const [backgroundPic, setBackgroundPic] = useState(StudentBackgound);
-  const [bioFields, setBioFields] = useState([
-    { label: "Location", value: "Izmir, Turkiye", isClickable: true },
-    { label: "Email", value: "turalk2004@gmail.com", isClickable: true },
-    { label: "Phone", value: "+905342361551", isClickable: true },
-    { label: "Website", value: "https://github.com/TuralK", isClickable: true }
-  ]);
-  const [languages, setLanguages] = useState([
-    { name: "Turkish", rating: 5 },
-    { name: "English", rating: 4 },
-    { name: "Spanish", rating: 3 }
-  ]);
 
   // new state slices for editable tabs
   const [aboutText, setAboutText] = useState("");
@@ -196,7 +219,20 @@ const StudentProfile = () => {
   const [originalState, setOriginalState] = useState({});
 
   const [studentData, setStudentData] = useState(null);
+  const [location, setLocation] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [phoneNumber, setPhoneNumber] = useState(null);
+  const [website, setWebsite] = useState(null);
+
   const [loading, setLoading] = useState(true);
+
+  const [bioFields, setBioFields] = useState([
+    { label: "Location", value: "", isClickable: true },
+    { label: "Email", value: "", isClickable: true },
+    { label: "Phone", value: "", isClickable: true },
+    { label: "Website", value: "", isClickable: true }
+  ]);
+  const [languages, setLanguages] = useState([]);
 
   // Add a blank skill to an experience
   const addSkillToExp = idx => {
@@ -228,13 +264,42 @@ const StudentProfile = () => {
         setAboutText(fetched.bio || "");
         setExperiences(fetched.experiences || []);
         setCertificates(fetched.certificates || []);
-        setSkillsList(fetched.skills.map(s => s.name) || []);
+        setSkillsList(fetched.skills || []);
+        setLocation(fetched.address || "");
+        setEmail(fetched.email || "");
+        setPhoneNumber(fetched.phoneNumber || "");
+        setWebsite(fetched.webSite || "")
+        setLanguages(fetched.languages?.map(lang => ({
+          id: lang.id,
+          name: lang.name,
+          rating: lang.level  // Transform level to rating here
+        })) || []);
+        setProfilePic(fetched.profilePicture || ProfilePic);
       })
       .finally(() => setLoading(false))
       .catch(err => console.error(err));
   }, []);
 
-  const handleEditToggle = () => {
+  useEffect(() => {
+    setBioFields(prevBioFields => 
+      prevBioFields.map(field => {
+        switch (field.label) {
+          case "Location":
+            return { ...field, value: location };
+          case "Email":
+            return { ...field, value: email };
+          case "Phone":
+            return { ...field, value: phoneNumber };
+          case "Website":
+            return { ...field, value: website };
+          default:
+            return field;
+        }
+      })
+    );
+  }, [location, email, phoneNumber, website]); // Runs when any of these dependencies change
+
+  const handleEditToggle = async () => {
     if (!isEditing) {
       // save originals for cancel
       setOriginalState({
@@ -249,8 +314,128 @@ const StudentProfile = () => {
       });
       setIsEditing(true);
     } else {
-      // here you could call an API to save `aboutText`, `experiences`, etc.
-      setIsEditing(false);
+        try {
+          await updateStudentBio(aboutText);
+          await updateStudentPhoneNumber(phoneNumber);
+          await updateStudentEmail(email);
+          await updateStudentAddress(location);
+          await updateStudentWebsite(website);
+          if (profilePic !== originalState.profilePic) {
+            await updateStudentProfilePhoto(profilePic);
+          }
+
+          // Process experiences
+          const originalExperiences = originalState.experiences || [];
+          const currentExperiences = experiences;
+
+          // Delete removed experiences
+          const idsToDelete = originalExperiences
+            .filter(oe => !currentExperiences.some(ce => ce.id === oe.id))
+            .map(e => e.id);
+          
+          await Promise.all(idsToDelete.map(id => 
+            deleteStudentExperience(id)
+          ));
+
+          console.log(currentExperiences)
+          // Update modified experiences
+          await Promise.all(currentExperiences.map(async (exp) => {
+            if (!exp.id) {
+              await createStudentExperience({
+                ...exp,
+                skills: exp.skills.map(s => s.id || 21)
+              });
+            } else {
+              const originalExp = originalExperiences.find(oe => oe.id === exp.id);
+              if (originalExp && JSON.stringify(exp) !== JSON.stringify(originalExp)) {
+                await updateStudentExperience(exp.id, {
+                  pos: exp.pos,
+                  company: exp.company,
+                  startDate: exp.startDate,
+                  endDate: exp.endDate,
+                  description: exp.description,
+                  skills: exp.skills.map(s => s.id || 21) // Send skill IDs to backend
+                });
+              }
+            }
+          }));
+
+          // Process Certificates
+          const originalCertificates = originalState.certificates || [];
+          const currentCertificates = certificates;
+
+          // Delete removed certificates
+          const certsToDelete = originalCertificates.filter(oc => 
+            !currentCertificates.some(cc => cc.id === oc.id)
+          );
+          await Promise.all(certsToDelete.map(cert => 
+            deleteStudentCertificate(cert.id)
+          ));
+
+          // Create new certificates and update modified ones
+          await Promise.all(currentCertificates.map(async (cert) => {
+            if (!cert.id) {
+              // Create new certificate
+              await createStudentCertificate({
+                title: cert.title,
+                issuingOrganization: cert.issuingOrganization,
+                issueDate: cert.issueDate,
+                expirationDate: cert.expirationDate,
+                studentId: studentData.id // From fetched student data
+              });
+            } else {
+              // Update existing certificate if modified
+              const originalCert = originalCertificates.find(oc => oc.id === cert.id);
+              if (originalCert && JSON.stringify(cert) !== JSON.stringify(originalCert)) {
+                await updateStudentCertificate(cert.id, {
+                  title: cert.title,
+                  issuingOrganization: cert.issuingOrganization,
+                  issueDate: cert.issueDate,
+                  expirationDate: cert.expirationDate
+                });
+              }
+            }
+          }));
+
+          // Process Skills
+          const originalSkills = originalState.skillsList || [];
+          const currentSkills = skillsList;
+
+          // Determine skills to add (new or modified)
+          const skillsToAdd = currentSkills.filter(cs => 
+            !originalSkills.some(os => os.id === cs.id)
+          );
+
+          // Determine skills to remove
+          const skillsToRemove = originalSkills.filter(os => 
+            !currentSkills.some(cs => cs.id === os.id)
+          );
+
+          // Add new skills with hardcoded ID
+          await Promise.all(skillsToAdd.map(async (skill) => {
+            if (!skill.id) {
+              // Use hardcoded ID (replace 21 with your actual ID)
+              await createStudentSkill(21);
+            }
+          }));
+
+          // Remove deleted skills
+          await Promise.all(skillsToRemove.map(async (skill) => {
+            await deleteStudentSkill(skill.id);
+          }));
+
+          // Refresh data
+          const freshData = await fetchStudentProfile();
+          setStudentData(freshData);
+          setExperiences(freshData.experiences || []);
+          setCertificates(freshData.certificates || []);
+          setSkillsList(freshData.skills || []);
+
+          setIsEditing(false);
+        } catch (error) {
+          console.error('Save failed:', error);
+          alert('Error saving changes. Please try again.');
+        }
     }
   };
 
@@ -270,7 +455,7 @@ const StudentProfile = () => {
   // handlers for dynamic lists
   const addExperience = () => setExperiences([
     ...experiences,
-    { id: Date.now(), pos: "", company: "", startDate: "", endDate: "", description: "", skills: [] }
+    { pos: "", company: "", startDate: "", endDate: null, description: null, skills: [] }
   ]);
   const updateExperience = (idx, field, value) => {
     const ex = [...experiences];
@@ -281,8 +466,14 @@ const StudentProfile = () => {
 
   const addCertificate = () => setCertificates([
     ...certificates,
-    { id: Date.now(), title: "", issuingOrganization: "", issueDate: "", expirationDate: "" }
+    {
+      title: "", 
+      issuingOrganization: "", 
+      issueDate: null,
+      expirationDate: null 
+    }
   ]);
+
   const updateCertificate = (idx, field, value) => {
     const certs = [...certificates];
     certs[idx][field] = value;
@@ -290,12 +481,17 @@ const StudentProfile = () => {
   };
   const removeCertificate = idx => setCertificates(certificates.filter((_, i) => i !== idx));
 
-  const addSkill = () => setSkillsList([...skillsList, ""]);
+  const addSkill = () => setSkillsList([...skillsList, { 
+    name: "", 
+    id: null
+  }]);
+  
   const updateSkill = (idx, value) => {
     const list = [...skillsList];
-    list[idx] = value;
+    list[idx].name = value;
     setSkillsList(list);
   };
+  
   const removeSkill = idx => setSkillsList(skillsList.filter((_, i) => i !== idx));
 
   if (loading) return <Loading />;
@@ -304,22 +500,25 @@ const StudentProfile = () => {
     if (!studentData) return null;
     switch (activeTab) {
       case "About":
-        return (
-          <div className={styles.tabContent}>
-            <h2>About Me</h2>
-            {isEditing
-              ? (
-                <textarea
-                  value={aboutText}
-                  onChange={e => setAboutText(e.target.value)}
-                  className="w-full border p-2"
-                  rows={6}
-                />
-              )
-              : <p>{aboutText}</p>
-            }
-          </div>
-        );
+      return (
+        <div className={styles.tabContent}>
+          <h2>About Me</h2>
+          {isEditing ? (
+            <textarea
+              value={aboutText}
+              onChange={e => setAboutText(e.target.value)}
+              className="w-full border p-2"
+              rows={6}
+            />
+          ) : (
+            <div className={styles.aboutText}>
+              {aboutText.split('\n').map((paragraph, index) => (
+                <p key={index}>{paragraph}</p>
+              ))}
+            </div>
+          )}
+        </div>
+      );
 
         case "Experiences":
         return (
@@ -479,31 +678,42 @@ const StudentProfile = () => {
           </div>
         );
 
-      case "Skills":
-        return (
-          <div className={styles.tabContent}>
-            <h2>Skills</h2>
-            {skillsList.map((skill, idx) => (
-              <div key={idx} className="flex items-center mb-2">
-                {isEditing
-                  ? (
+        case "Skills":
+          return (
+            <div className={styles.tabContent}>
+              <h2>Skills</h2>
+              {skillsList.map((skill, idx) => (
+                <div key={skill.id || idx} className="flex items-center mb-2">
+                  {isEditing ? (
                     <>
                       <input
                         type="text"
-                        value={skill}
+                        value={skill.name}
                         onChange={e => updateSkill(idx, e.target.value)}
                         className="border-b flex-1"
                       />
-                      <button onClick={() => removeSkill(idx)} className="text-red-500 ml-2">✕</button>
+                      <button 
+                        onClick={() => removeSkill(idx)} 
+                        className="text-red-500 ml-2"
+                      >
+                        ✕
+                      </button>
                     </>
-                  )
-                  : <li>{skill}</li>
-                }
-              </div>
-            ))}
-            {isEditing && <button onClick={addSkill} className="text-blue-600 hover:underline">+ Add Skill</button>}
-          </div>
-        );
+                  ) : (
+                    <li>{skill.name}</li>
+                  )}
+                </div>
+              ))}
+              {isEditing && (
+                <button 
+                  onClick={addSkill} 
+                  className="text-blue-600 hover:underline"
+                >
+                  + Add Skill
+                </button>
+              )}
+            </div>
+          );
 
       default:
         return null;
@@ -519,7 +729,7 @@ const StudentProfile = () => {
         <div className={styles.studentProfileInfoBox}>
           <ImageUpload isProfilePic={true} currentImage={profilePic} onImageChange={setProfilePic} isEditing={isEditing} />
           <h1 className={styles.studentProfileTitle}>{studentData.studentName || 'Student'}</h1>
-          <p className={styles.studentProfileSubtitle}>{studentData.title || 'Student Profile'}</p>
+          <p className={styles.studentProfileSubtitle}>{studentData.title || 'Computer Enginner'}</p>
 
           {isEditing ? (
             <div className="flex space-x-2 mb-5">
@@ -531,7 +741,34 @@ const StudentProfile = () => {
           )}
 
           <div className={styles.studentBioContainer}>
-            {bioFields.map((field, idx) => <BioField key={idx} {...field} isEditing={isEditing} onChange={(l,v)=>setBioFields(bs=>bs.map(f=>f.label===l?{...f,value:v}:f))} />)}
+            {bioFields.map((field, idx) => (
+              <BioField
+                key={idx}
+                {...field}
+                isEditing={isEditing}
+                onChange={(label, value) => {
+                  // Update bioFields
+                  setBioFields(bs => bs.map(f => f.label === label ? { ...f, value } : f));
+                  // Update individual state variables based on the label
+                  switch (label) {
+                    case 'Phone':
+                      setPhoneNumber(value);
+                      break;
+                    case 'Email':
+                      setEmail(value);
+                      break;
+                    case 'Location':
+                      setLocation(value);
+                      break;
+                    case 'Website':
+                      setWebsite(value);
+                      break;
+                    default:
+                      break;
+                  }
+                }}
+              />
+            ))}
           </div>
 
           <div className={styles.languagesContainer}>

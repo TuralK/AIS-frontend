@@ -98,6 +98,12 @@ export const UserLayout = ({
     setIsUserMenuOpen(false);
   };
 
+  const isUserRouteActive = userMenuItems.some(item => {
+    if (item.route === 'logout') return false;
+    const userRoute = `/${basePath}/${item.route}`;
+    return location.pathname === userRoute;
+  });
+
   const logout = () => {
     dispatch(resetAIChat());
     dispatch(resetMessaging());
@@ -153,13 +159,13 @@ export const UserLayout = ({
                   {i18n.language === 'tr' ? <img className={styles.flagImage} src={UKFlag}/> : <img className={styles.flagImage} src={TurkeyFlag}/>}
                 </button>
 
-                <div className={styles.menuItemDropdown} ref={userMenuRef} style={{ position: 'relative' }}>
+                <div className={styles.menuItemDropdown} ref={userMenuRef}>
                   <button
                     onClick={() => {
                       setIsUserMenuOpen(!isUserMenuOpen);
                       setIsMessagingOpen(false);
                     }}
-                    className={styles.menuItem}
+                    className={`${styles.menuItem} ${isUserRouteActive ? styles.activeMenuItem : ''}`}
                     style={{ background: 'transparent', border: 'none', display: 'flex', alignItems: 'center' }}
                   >
                     <img src={IYTElogo} alt="User profile" className={styles.profilePhoto} />
@@ -244,7 +250,7 @@ export const UserLayout = ({
                   setIsUserMenuOpen(!isUserMenuOpen);
                   setIsMessagingOpen(false);
                 }}
-                className={styles.menuItem}
+                className={`${styles.menuItem} ${isUserRouteActive ? styles.activeMenuItem : ''}`}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -288,17 +294,19 @@ export const UserLayout = ({
       </nav>
 
       <main  className={`${styles.layoutContent} ${isMenuOpen ? styles.hiddenOverflow : ""}`}>
-        {sendValue ? (
-          <Outlet context={{ userId, email, firstName: userName, applications, setApplications }} />
-        ) : (
-          <Outlet />
-        )}
+        <div className={styles.layoutContainerContent}>
+          {sendValue ? (
+            <Outlet context={{ userId, email, firstName: userName, applications, setApplications }} />
+          ) : (
+            <Outlet />
+          )}
+        </div>
         
-        {/* <footer className={styles.footer}>
+        <footer className={styles.footer}>
           <div className={styles.footerContent}>
             © {new Date().getFullYear()} IZTECH Internship Management System. All rights reserved.
           </div>
-        </footer> */}
+        </footer>
       </main>
 
       

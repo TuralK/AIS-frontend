@@ -36,7 +36,7 @@ html {
 
 /* Info Box */
 .studentProfileInfoBox {
-  flex: 0 0 22rem;
+  flex: 0 0 23rem;
   background-color: #fff;
   padding: 1.25rem;
   margin-top: -5rem;
@@ -44,6 +44,7 @@ html {
   z-index: 2;
   box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.1);
   min-width: 280px;
+  height: max-content;
 }
 
 /* Profile Image */
@@ -97,6 +98,7 @@ html {
   flex-wrap: wrap;
   gap: 0.5rem;
 }
+
 .studentBioFieldLabel {
   color: #666;
   flex: 1 1 auto;
@@ -296,4 +298,58 @@ html {
   .languageField input {
     max-width: 100%;
   }
+}
+
+
+/* Bio Fields */
+.studentBioField {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1px;
+  width: 100%;
+}
+
+.studentBioFieldLabel {
+  color: #666;
+  flex: 1;
+  min-width: 0;
+}
+
+.studentBioFieldValue {
+  flex: 3;
+  min-width: 0;
+  text-align: right;
+  word-break: break-word;
+}
+
+.studentBioFieldClickable {
+  cursor: pointer;
+  color: #000;
+}
+.studentBioFieldClickable:hover {
+  text-decoration: underline;
+}
+
+/* Languages */
+.languageField {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+.languageField input {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+.aboutText {
+  white-space: pre-line;
+  line-height: 1.6;
+}
+
+.aboutText p {
+  margin-bottom: 1em;
 }

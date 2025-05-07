@@ -30,6 +30,10 @@ import PublishAnnouncement from "./components/CompanyComponents/PublishAnnouncem
 import CompanyApplication from "./components/CompanyComponents/CompanyApplication/CompanyApplication.jsx";
 import Settings from "./components/Settings/Settings.jsx";
 import StudentProfile from "./components/StudentComponents/StudentProfileComponent/StudentProfile.jsx";
+import NotFound from "./components/UtilComponents/NotFound.jsx";
+
+const initialVh = window.innerHeight;
+document.documentElement.style.setProperty('--initial-vh', `${initialVh}px`);
 
 const App = () => {
   const { t, i18n } = useTranslation();
@@ -58,7 +62,7 @@ const App = () => {
         { path: "applications", element: <StudentApplications /> },
         { path: "files", element: <StudentFiles /> },
         { path: "settings", element: <Settings apiUrl={'http://localhost:3004'} /> },
-        { path: "profile", element: <StudentProfile />}
+        { path: "profile", element: <StudentProfile />},
       ]
       // children: [
       //   {path: "applications", element: }
@@ -102,6 +106,10 @@ const App = () => {
         { path: "home", element: <PendingApplicationList />},
         { path: "settings", element: <Settings apiUrl= 'http://localhost:3006' /> },
       ]
+    },
+    {
+      path: '*',
+      element: <NotFound />
     }
   ]);
 
