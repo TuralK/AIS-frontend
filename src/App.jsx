@@ -12,7 +12,7 @@ import DICHome from "./components/DICcomponents/DICHome/DICHome.jsx";
 import StudentAnnouncements from "./components/StudentComponents/StudentAnnouncementsComponent/StudentAnnouncements.jsx";
 import StudentAnnouncement from "./components/StudentComponents/StudentAnnouncementComponent/StudentAnnouncement.jsx";
 import StudentApplications from "./components/StudentComponents/StudentApplicationsComponent/StudentApplications.jsx";
-import StudentFiles from "./components/StudentComponents/StudentFilesComponent.jsx/StudentFiles.jsx";
+import StudentFiles from "./components/StudentComponents/StudentFilesComponent/StudentFiles.jsx";
 import DICLayout from "./layouts/DICLayout/DICLayout.jsx";
 import CompanyCards from "./components/DICcomponents/DICCompanyRequests/companyRequestComponent.jsx";
 import DICAnnouncementRequest from "./components/DICcomponents/DICAnnouncementRequests/DICAnnouncementRequest.jsx";
@@ -64,12 +64,6 @@ const App = () => {
         { path: "settings", element: <Settings apiUrl={'http://localhost:3004'} /> },
         { path: "profile", element: <StudentProfile />},
       ]
-      // children: [
-      //   {path: "applications", element: }
-      //   {path: "notifications", element: },
-      //   {path: "profile", element: }
-      //   {path: "settings", element: }
-      // ]
     },
     {
       path: '/company',

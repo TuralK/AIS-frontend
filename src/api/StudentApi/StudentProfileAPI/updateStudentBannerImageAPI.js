@@ -16,15 +16,14 @@ import axios from 'axios';
 //     }
 // }
 
-export const updateStudentProfilePhoto = async (formData) => {
-    try {
-        const response = await axios.put('http://localhost:3004/profile/photo', formData, { 
-            withCredentials: true, 
-            headers: { 'Content-Type': 'multipart/form-data' } 
-        });
-        return response.data;
-    } catch (error) {
-        throw new Error(error);
-    }
-  };
-  
+export const updateStudentBannerImage = async (formData) => {
+  try {
+      const response = await axios.put('http://localhost:3004/profile/bannerImage', formData,{ 
+          withCredentials: true, 
+          headers: { 'Content-Type': 'multipart/form-data' } 
+      });
+      return response.data;
+  } catch (error) {
+      throw new Error(error);
+  }
+};
