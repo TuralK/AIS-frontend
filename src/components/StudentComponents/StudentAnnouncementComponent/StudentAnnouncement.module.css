@@ -269,6 +269,7 @@ html, body {
   border: 2px solid #9A1220;
   border-radius: 4px;
   transition: background-color 0.7s ease, color 0.7s ease;
+  word-break: break-word;
 }
 
 .uploadFile:hover {
