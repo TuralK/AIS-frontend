@@ -198,6 +198,25 @@
   "questionnaire": "Yaz Stajı Öğrenci Anketi",
   "pleaseUploadSPR": "Lütfen staj raporunu yükleyin",
   "pleaseAnswerAllQuestions": "Lütfen tüm anket sorularını yanıtlayın",
-  "pdfDocument": "PDF belgesi"
+  "pdfDocument": "PDF belgesi",
+  "uploadDocument": "Belge Yükle",
+  "uploadPdfDescription": "Lütfen yaz düzenlemeleriyle ilgili bir PDF belgesi yükleyin.",
+  "choosePdfFile": "PDF dosyasını seçin",
+  "upload": "Yükle",
+  "clear": "Temizle",
+  "invalidFileType": "Geçersiz dosya türü",
+  "onlyPdfAllowed": "Sadece PDF dosyalarına izin verilir",
+  "uploadSuccess": "Yükleme Başarılı",
+  "fileUploaded": "Dosyanız başarıyla yüklendi",
+  "uploadError": "Yükleme sırasında bir hata oluştu",
+  "tryAgain": "İşlem başarısız, lütfen tekrar deneyin",
+  "noResponse": "Sunucudan yanıt alınamadı, lütfen tekrar deneyin",
+  "requestError": "İstek oluşturulurken bir hata oluştu",
+  "noFileSelected": "Dosya Seçilmedi",
+  "pleaseSelectFile": "Lütfen yüklemek için bir PDF dosyası seçin",
+  "clickToSelectFile": "Staj başvuru formu yüklemek için tıklayın",
+  "clickToSendFile": "Staj başvuru formu",
+  "clearFile": "Dosyayı temizle",
+  "sendFile": "Dosyayı gönder"
   
 }
