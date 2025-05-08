@@ -62,7 +62,7 @@ const App = () => {
         { path: "announcements", element: <StudentAnnouncements /> },
         { path: 'announcements/:announcementId', element: <StudentAnnouncement /> },
         { path: "applications", element: <StudentApplications />},
-        { path: "internship", element: <StudentInternshipWrapper />}
+        { path: "internship", element: <StudentInternshipWrapper />},
         { path: "applications", element: <StudentApplications /> },
         { path: "files", element: <StudentFiles /> },
         { path: "settings", element: <Settings apiUrl={'http://localhost:3004'} /> },

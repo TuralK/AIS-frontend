@@ -12,7 +12,8 @@ const StudentLayout = () => {
             { item: t('home'), route: 'home' },
             { item: t('announcements'), route: 'announcements' },
             { item: t('applications'), route: 'applications' },
-            { item: t('files'), route: 'files'}
+            { item: t('files'), route: 'files'},
+            { item: t('internship'), route: 'internship'}
             ]}
             userMenuItems = {[
             { item: t('profile'), route: 'profile' },
