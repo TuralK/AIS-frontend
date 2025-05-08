@@ -28,10 +28,14 @@ html {
   align-items: center;
 }
 
+.signupInputs {
+  width: 82%;
+}
+
 .signupInputs input[type="email"],
 .signupInputs input[type="password"] {
-  width: 82%;
   height: 45px;
+  width: 100%;
   padding: 1px 10px;
   margin: 13px 0;
   display: block;

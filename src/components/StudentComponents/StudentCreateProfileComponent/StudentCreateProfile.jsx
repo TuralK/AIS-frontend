@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import styles from './StudentCreateProfile.module.css';
 import { fetchAllLanguages } from '../../../api/StudentApi/StudentProfileAPI/fetchAllLanguagesAPI';
 import { fetchAllSkills } from '../../../api/StudentApi/StudentProfileAPI/fetchAllSkillsAPI';
-
-// import { createStudentProfile } from '../../../api/StudentApi/StudentProfileAPI/createStudentProfileAPI';
-// import StarRating from '../StudentProfileComponent/StudentProfile';
+import { createStudentProfile } from '../../../api/StudentApi/StudentProfileAPI/createStudentProfileAPI';
+import ProfilePic from '../../../assets/default_profile_icon.png'
+import StudentBackgound from "../../../assets/default_background.jpg";
 
 const steps = [
   'Personal Info',
@@ -120,8 +120,10 @@ const initialState = {
 const StudentCreateProfile = ({StarRating}) => {
   const [state, dispatch] = useReducer(formReducer, initialState);
   const [currentStep, setCurrentStep] = useState(0);
-  const [profileImage, setProfileImage] = useState(null);
-  const [bannerImage, setBannerImage] = useState(null);
+  const [profileFile, setProfileFile] = useState(null);
+  const [bannerFile, setBannerFile] = useState(null);
+  const [profilePreview, setProfilePreview] = useState(null);
+  const [bannerPreview, setBannerPreview] = useState(null);
   const [allSkills, setAllSkills] = useState([]);
   const [allLanguages, setAllLanguages] = useState([]);
   const [errors, setErrors] = useState({});
@@ -187,38 +189,43 @@ const StudentCreateProfile = ({StarRating}) => {
   };
 
   const handleImageUpload = (file, isProfile) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      isProfile ? setProfileImage(e.target.result) : setBannerImage(e.target.result);
-    };
-    if (file) reader.readAsDataURL(file);
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    if (isProfile) {
+      setProfileFile(file);
+      setProfilePreview(url);
+    } else {
+      setBannerFile(file);
+      setBannerPreview(url);
+    }
   };
 
   const handleSubmit = async () => {
     try {
       const formData = new FormData();
       
-      // Append images
-      if (profileImage) {
-        const blob = await fetch(profileImage).then(res => res.blob());
-        formData.append('profilePicture', blob, 'profile.jpg');
-      }
-      if (bannerImage) {
-        const blob = await fetch(bannerImage).then(res => res.blob());
-        formData.append('bannerImage', blob, 'banner.jpg');
-      }
-
+      // Append images as File objects
+      if (profileFile) formData.append('profilePicture', profileFile);
+      if (bannerFile) formData.append('bannerImage', bannerFile);
+  
       // Append other fields
       Object.keys(state).forEach(key => {
-        if (['experiences', 'certificates', 'skills', 'languages'].includes(key)) {
+        if (key === 'languages') {
+          // Transform 'rating' to 'level' for each language
+          const languagesWithLevel = state[key].map(({ rating, ...rest }) => ({
+            ...rest,
+            level: rating
+          }));
+          formData.append(key, JSON.stringify(languagesWithLevel));
+        } else if (['experiences', 'certificates', 'skills'].includes(key)) {
           formData.append(key, JSON.stringify(state[key]));
         } else {
-          formData.append(key, state[key]);
+          state[key] && formData.append(key, state[key]);
         }
       });
-
-      // await createStudentProfile(formData);
-      navigate('/profile');
+  
+      await createStudentProfile(formData);
+      window.location.reload();
     } catch (error) {
       console.error('Profile creation failed:', error);
       alert('Error creating profile. Please try again.');
@@ -237,9 +244,24 @@ const StudentCreateProfile = ({StarRating}) => {
                 accept="image/*"
                 onChange={(e) => handleImageUpload(e.target.files[0], true)}
               />
-              {profileImage && (
-                <img src={profileImage} alt="Profile Preview" className={styles.imagePreview} />
-              )}
+              <div className={styles.imagePreviewContainer}>
+                <img 
+                  src={profilePreview || ProfilePic} 
+                  alt="Profile Preview" 
+                  className={styles.imagePreview} 
+                />
+                {profilePreview && (
+                  <button
+                    className={styles.deleteImageButton}
+                    onClick={() => {
+                      setProfileFile(null);
+                      setProfilePreview(null);
+                    }}
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className={styles.formGroup}>
@@ -249,9 +271,27 @@ const StudentCreateProfile = ({StarRating}) => {
                 accept="image/*"
                 onChange={(e) => handleImageUpload(e.target.files[0], false)}
               />
-              {bannerImage && (
-                <img src={bannerImage} alt="Banner Preview" className={styles.bannerPreview} />
-              )}
+              <div  className={styles.bannerPreviewContainer}>
+                <img 
+                  src={bannerPreview || StudentBackgound} 
+                  alt="Profile Preview" 
+                  className={styles.bannerPreview} 
+                />
+                {bannerPreview && (
+                  <button
+                    className={styles.deleteImageButton}
+                    onClick={() => {
+                      setBannerFile(null);
+                      setBannerPreview(null);
+                    }}
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+              {/* {bannerPreview && (
+                <img src={bannerPreview} alt="Banner Preview" className={styles.bannerPreview} />
+              )} */}
             </div>
 
             {/* <div className={styles.formGroup}>
@@ -319,7 +359,7 @@ const StudentCreateProfile = ({StarRating}) => {
       case 2: // Bio
         return (
           <div className={styles.stepContent}>
-            <div className={styles.formGroup}>
+            <div className={`${styles.formGroup} ${styles.aboutMeTextArea}`}>
               <label>About You</label>
               <textarea
                 value={state.bio}
@@ -400,13 +440,26 @@ const StudentCreateProfile = ({StarRating}) => {
                     <input
                       type="date"
                       value={exp.endDate}
-                      onChange={(e) => dispatch({
-                        type: 'UPDATE_EXPERIENCE',
-                        index,
-                        field: 'endDate',
-                        value: e.target.value
-                      })}
+                      min={exp.startDate}
+                      onChange={(e) => {
+                        const endDateValue = e.target.value || null;
+                        if (e.target.value && e.target.value < exp.startDate) {
+                          setErrors(prev => ({
+                            ...prev,
+                            [`experience-${index}-endDate`]: 'End date cannot be before start date'
+                          }));
+                          return;
+                        }
+                        dispatch({
+                          type: 'UPDATE_EXPERIENCE',
+                          index,
+                          field: 'endDate',
+                          value: endDateValue
+                        })}}
                     />
+                    {errors[`experience-${index}-endDate`] && (
+                      <span className={styles.error}>{errors[`experience-${index}-endDate`]}</span>
+                    )}
                   </div>
                 </div>
 
@@ -428,6 +481,7 @@ const StudentCreateProfile = ({StarRating}) => {
                   <label>Skills</label>
                   <div className={styles.skillsContainer}>
                     <div className={styles.availableSkills}>
+                    <div className={styles.skillsGrid}>
                       {allSkills.map(skill => (
                         <button
                           key={skill.id}
@@ -453,23 +507,26 @@ const StudentCreateProfile = ({StarRating}) => {
                           {skill.name}
                         </button>
                       ))}
+                      </div>
                     </div>
                     <div className={styles.selectedSkills}>
-                      {exp.skills.map((skill, skillIndex) => (
-                        <div key={skill.id} className={styles.skillPill}>
-                          {skill.name}
-                          <button
-                            className={styles.removeSkill}
-                            onClick={() => dispatch({
-                              type: 'REMOVE_EXPERIENCE_SKILL',
-                              expIndex: index,
-                              skillIndex: skillIndex
-                            })}
-                          >
-                            ×
-                          </button>
-                        </div>
-                      ))}
+                      <div className={styles.skillsGrid}>
+                        {exp.skills.map((skill, skillIndex) => (
+                          <div key={skill.id} className={styles.skillPill}>
+                            {skill.name}
+                            <button
+                              className={styles.removeSkill}
+                              onClick={() => dispatch({
+                                type: 'REMOVE_EXPERIENCE_SKILL',
+                                expIndex: index,
+                                skillIndex: skillIndex
+                              })}
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -554,14 +611,27 @@ const StudentCreateProfile = ({StarRating}) => {
                     <label>Expiration Date</label>
                     <input
                       type="date"
-                      value={cert.expirationDate}
-                      onChange={(e) => dispatch({
-                        type: 'UPDATE_CERTIFICATE',
-                        index,
-                        field: 'expirationDate',
-                        value: e.target.value
-                      })}
+                      value={cert.expirationDate || ''}
+                      min={cert.issueDate}
+                      onChange={(e) => {
+                         const expirationDate = e.target.value || null;
+                         if (expirationDate && expirationDate < cert.issueDate) {
+                           setErrors(prev => ({
+                             ...prev,
+                             [`certificate-${index}-expirationDate`]: 'Expiration date cannot be before issue date'
+                           }));
+                           return;
+                         }
+                        dispatch({
+                         type: 'UPDATE_CERTIFICATE',
+                         index,
+                         field: 'expirationDate',
+                         value: expirationDate
+                      })}}
                     />
+                    {errors[`certificate-${index}-expirationDate`] && (
+                      <span className={styles.error}>{errors[`certificate-${index}-expirationDate`]}</span>
+                    )}
                   </div>
                 </div>
 
@@ -659,6 +729,7 @@ const StudentCreateProfile = ({StarRating}) => {
                     // }}
                     // Inside the select element's onChange handler
                     onChange={(e) => {
+                      console.log(allLanguages)
                       const selectedLang = allLanguages.find(l => l.id === parseInt(e.target.value));
                       if (selectedLang) {
                         dispatch({
@@ -718,10 +789,16 @@ const StudentCreateProfile = ({StarRating}) => {
               <h2>Profile Preview</h2>
               <div className={styles.profileHeader}>
                 <div className={styles.banner}>
-                  {bannerImage && <img src={bannerImage} alt="Banner" />}
+                  {bannerPreview ? (
+                    <img src={bannerPreview} alt="Banner Preview" className={styles.bannerPreview} />
+                  ) : 
+                  <img src={StudentBackgound} alt="Banner Preview" className={styles.bannerPreview} />}
                 </div>
                 <div className={styles.profileInfo}>
-                  {profileImage && <img src={profileImage} alt="Profile" className={styles.profileImage} />}
+                {profilePreview ? (
+                  <img src={profilePreview} alt="Profile Preview" className={styles.imagePreview} />
+                ) : 
+                  <img src={ProfilePic} alt="Profile Preview" className={styles.imagePreview} />}
                   <h3>{state.username}</h3>
                   <p>{state.title}</p>
                 </div>
@@ -737,7 +814,7 @@ const StudentCreateProfile = ({StarRating}) => {
 
               <div className={styles.reviewGroup}>
                 <h3>About</h3>
-                <p>{state.bio || 'No bio provided'}</p>
+                <p className={styles.aboutText}>{state.bio || 'No bio provided'}</p>
               </div>
 
               <div className={styles.reviewGroup}>
@@ -750,9 +827,42 @@ const StudentCreateProfile = ({StarRating}) => {
                 ))}
               </div>
 
-              <button className={styles.submitButton} onClick={handleSubmit}>
-                Create Profile
-              </button>
+              <div className={styles.reviewGroup}>
+                <h3>Certificates ({state.certificates.length})</h3>
+                {state.certificates.map((cert, i) => (
+                  <div key={i} className={styles.reviewItem}>
+                    <p><strong>{cert.title}</strong></p>
+                    <p>Issued by: {cert.issuingOrganization}</p>
+                    <p>Issued: {cert.issueDate}</p>
+                    {cert.expirationDate && <p>Expires: {cert.expirationDate}</p>}
+                  </div>
+                ))}
+              </div>
+
+              <div className={styles.reviewGroup}>
+                <h3>Skills ({state.skills.length})</h3>
+                <div className={styles.skillsGrid}>
+                  {state.skills.map((skill, i) => (
+                    <div key={i} className={styles.skillPill}>{skill.name}</div>
+                  ))}
+                </div>
+              </div>
+
+              <div className={styles.reviewGroup}>
+                <h3>Languages ({state.languages.length})</h3>
+                {state.languages.map((lang, i) => (
+                  <div key={i} className={styles.languageItem}>
+                    <span>{lang.name}</span>
+                    <StarRating rating={lang.rating} isEditing={false} />
+                  </div>
+                ))}
+              </div>
+
+              <div className={styles.buttonContainer}>
+                <button className={styles.submitButton} onClick={handleSubmit}>
+                  Create Profile
+                </button>
+              </div>
             </div>
           </div>
         );

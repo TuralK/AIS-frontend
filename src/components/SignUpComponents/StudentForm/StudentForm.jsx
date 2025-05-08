@@ -42,7 +42,8 @@ const StudentForm = ({ reset }) => {
     try {
       const response = await registerStudent({ email, password, confirmPassword });
       if (response.status === 200) {
-        // navigate to Student's homepage
+        // alert(response.data.message);
+        window.location.reload();
       }
     } catch (error) {
       if (error.status === 400) {

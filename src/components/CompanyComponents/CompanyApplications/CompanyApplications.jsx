@@ -12,7 +12,7 @@ const CompanyApplications = () => {
   useEffect(() => {
     fetchApplications()
       .then(applicationsData => {
-        const formattedData = applicationsData.map(app => ({
+        const formattedData = applicationsData.applications.map(app => ({
           application_id: app.id,
           student_name: app.Student.username,
           applied_at: new Date(app.applyDate).toLocaleDateString("en-US", {

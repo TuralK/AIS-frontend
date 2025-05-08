@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Menu, X, ChevronDown, Bell } from 'lucide-react';
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import IYTElogo from '../../assets/iyte_logo_eng.png';
+import DefaultProfileIcon from '../../assets/default_profile_icon.png'
 import TurkeyFlag from '../../assets/turkey.png'
 import UKFlag from '../../assets/united-kingdom.png'
 import Loading from '../../components/LoadingComponent/Loading.jsx';

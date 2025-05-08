@@ -55,7 +55,8 @@ const CompanyForm = (reset) => {
         confirmPassword: companyConfirmPassword
       });
       if(response.status === 200) {
-        alert(response.data.message);
+        // alert(response.data.message);
+        window.location.reload();
       }
     } catch (error) {
       if (error.status === 400) {
