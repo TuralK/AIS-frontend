@@ -29,11 +29,13 @@ import CompanyApplications from './components/CompanyComponents/CompanyApplicati
 import PublishAnnouncement from "./components/CompanyComponents/PublishAnnouncement/PublishAnnouncement.jsx";
 import CompanyApplication from "./components/CompanyComponents/CompanyApplication/CompanyApplication.jsx";
 import Settings from "./components/Settings/Settings.jsx";
+import StudentInternshipWrapper from "./components/StudentComponents/StudentInternship/StudentInternshipWrapper.jsx";
 import StudentProfile from "./components/StudentComponents/StudentProfileComponent/StudentProfile.jsx";
 import NotFound from "./components/UtilComponents/NotFound.jsx";
 
 const initialVh = window.innerHeight;
 document.documentElement.style.setProperty('--initial-vh', `${initialVh}px`);
+
 
 const App = () => {
   const { t, i18n } = useTranslation();
@@ -59,6 +61,8 @@ const App = () => {
         { path: "home", element: <StudentHome /> },
         { path: "announcements", element: <StudentAnnouncements /> },
         { path: 'announcements/:announcementId', element: <StudentAnnouncement /> },
+        { path: "applications", element: <StudentApplications />},
+        { path: "internship", element: <StudentInternshipWrapper />}
         { path: "applications", element: <StudentApplications /> },
         { path: "files", element: <StudentFiles /> },
         { path: "settings", element: <Settings apiUrl={'http://localhost:3004'} /> },
