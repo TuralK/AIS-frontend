@@ -714,15 +714,6 @@ const StudentProfile = () => {
 
   if (loading) return <Loading />;
 
-  const handleProfileCreated = async () => {
-    try {
-      const profile = await fetchStudentProfile();
-      setStudentData(profile);
-      // Reset other states with new profile data...
-    } catch (error) {
-      console.error('Error loading new profile:', error);
-    }
-  };
   if (!studentData) {return <StudentCreateProfile StarRating={StarRating}/>}
 
   const renderTabContent = () => {

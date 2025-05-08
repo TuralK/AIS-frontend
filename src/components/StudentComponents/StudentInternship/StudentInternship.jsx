@@ -47,9 +47,22 @@ const StudentInternship = () => {
 
   if (loading) return <div className="text-center mt-10"><Loading /></div>;
 
-  const companyName = internshipData.Application.Announcement.Company.name || t("companyNameNotFound");
-  const internshipTitle = internshipData.Application.Announcement.announcementName || t("internshipTitleNotFound");
-  const internshipStatus = internshipData.status === 0 ? t("ongoing") : t("finished");
+  let companyName;
+  let internshipTitle;
+  let internshipStatus;
+  if (!internshipData) {
+    return (
+      <div className="flex justify-center items-center m-screen text-2xl font-semibold text-gray-700 min-h-[80vh]">
+        No Active Internship
+      </div>
+    );
+  }
+  
+  else {
+    companyName = internshipData.Application.Announcement.Company.name || t("companyNameNotFound");
+    internshipTitle = internshipData.Application.Announcement.announcementName || t("internshipTitleNotFound");
+    internshipStatus = internshipData.status === 0 ? t("ongoing") : t("finished");
+  }
 
   return (
     <div className="min-h-screen px-4">
