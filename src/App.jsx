@@ -6,13 +6,14 @@ import './utils/translatePage.js';
 import Login from "./pages/auth_pages/Login/Login";
 import ChangePassword from "./pages/auth_pages/ChangePassword/ChangePassword";
 import SignUp from "./pages/auth_pages/SignUp/SignUp";
-import { StudentLayout } from "./layouts/StudentLayout/StudentLayout.jsx";
+import StudentLayout from "./layouts/StudentLayout/StudentLayout.jsx";
 import StudentHome from "./components/StudentComponents/StudentHomePageComponent/StudentHomePage.jsx";
 import DICHome from "./components/DICcomponents/DICHome/DICHome.jsx";
 import StudentAnnouncements from "./components/StudentComponents/StudentAnnouncementsComponent/StudentAnnouncements.jsx";
 import StudentAnnouncement from "./components/StudentComponents/StudentAnnouncementComponent/StudentAnnouncement.jsx";
 import StudentApplications from "./components/StudentComponents/StudentApplicationsComponent/StudentApplications.jsx";
-import { DICLayout } from "./layouts/DICLayout/DICLayout.jsx";
+import StudentFiles from "./components/StudentComponents/StudentFilesComponent/StudentFiles.jsx";
+import DICLayout from "./layouts/DICLayout/DICLayout.jsx";
 import CompanyCards from "./components/DICcomponents/DICCompanyRequests/companyRequestComponent.jsx";
 import DICAnnouncementRequest from "./components/DICcomponents/DICAnnouncementRequests/DICAnnouncementRequest.jsx";
 import DICAnouncementDetails from "./components/DICcomponents/DICAnnouncemenDetails/DICAnouncementDetails.jsx";
@@ -20,14 +21,21 @@ import DICApplications from "./components/DICcomponents/DICApplications/DICAppli
 import DICInnerApplication from "./components/DICcomponents/DICApplications/InnerApplication/DICInnerApplication.jsx";
 import DICInternships from "./components/DICcomponents/DICInternships/DICInternships.jsx";
 import DICInnerInternships from "./components/DICcomponents/DICInternships/InnerApplication/DICInnerInternships.jsx";
-import { SecretaryLayout } from "./layouts/SecretaryLayout/SecretaryLayout.jsx";
+import SecretaryLayout from "./layouts/SecretaryLayout/SecretaryLayout.jsx";
 import PendingApplicationList from "./components/SecretaryComponents/PendingApplicationList.jsx";
-import { CompanyLayout } from "./layouts/CompanyLayout/CompanyLayout.jsx";
+import CompanyLayout from "./layouts/CompanyLayout/CompanyLayout.jsx";
+import CompanyHome from "./components/CompanyComponents/CompanyHome/CompanyHome.jsx";
 import CompanyApplications from './components/CompanyComponents/CompanyApplications/CompanyApplications.jsx';
 import PublishAnnouncement from "./components/CompanyComponents/PublishAnnouncement/PublishAnnouncement.jsx";
 import CompanyApplication from "./components/CompanyComponents/CompanyApplication/CompanyApplication.jsx";
 import Settings from "./components/Settings/Settings.jsx";
 import StudentInternshipWrapper from "./components/StudentComponents/StudentInternship/StudentInternshipWrapper.jsx";
+import StudentProfile from "./components/StudentComponents/StudentProfileComponent/StudentProfile.jsx";
+import NotFound from "./components/UtilComponents/NotFound.jsx";
+
+const initialVh = window.innerHeight;
+document.documentElement.style.setProperty('--initial-vh', `${initialVh}px`);
+
 
 const App = () => {
   const { t, i18n } = useTranslation();
@@ -55,21 +63,21 @@ const App = () => {
         { path: 'announcements/:announcementId', element: <StudentAnnouncement /> },
         { path: "applications", element: <StudentApplications />},
         { path: "internship", element: <StudentInternshipWrapper />}
+        { path: "applications", element: <StudentApplications /> },
+        { path: "files", element: <StudentFiles /> },
+        { path: "settings", element: <Settings apiUrl={'http://localhost:3004'} /> },
+        { path: "profile", element: <StudentProfile />},
       ]
-      // children: [
-      //   {path: "applications", element: }
-      //   {path: "notifications", element: },
-      //   {path: "profile", element: }
-      //   {path: "settings", element: }
-      // ]
     },
     {
       path: '/company',
       element: <CompanyLayout />,
       children: [
-        {path: "applications", element: <CompanyApplications />},
-        {path: "publishAnnouncement", element: <PublishAnnouncement />},
-        {path: "applications/:id", element: <CompanyApplication />}
+        { index: true, element: <CompanyHome /> },
+        { path: "home", element: <CompanyHome /> },
+        { path: "applications", element: <CompanyApplications /> },
+        { path: "publishAnnouncement", element: <PublishAnnouncement /> },
+        { path: "applications/:id", element: <CompanyApplication /> }
       ]
     },
     {
@@ -96,6 +104,10 @@ const App = () => {
         { path: "home", element: <PendingApplicationList />},
         { path: "settings", element: <Settings apiUrl= 'http://localhost:3006' /> },
       ]
+    },
+    {
+      path: '*',
+      element: <NotFound />
     }
   ]);
 

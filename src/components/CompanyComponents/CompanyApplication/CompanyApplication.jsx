@@ -10,8 +10,9 @@ import axios from "axios";
 import { rejectApplication } from "../../../api/CompanyApi/rejectApplicationAPI";
 import { fillApplicationForm } from "../../../api/CompanyApi/fillApplicationFormAPI";
 import { downloadApplicationForm } from "../../../api/CompanyApi/downloadApplicationFormAPI";
-import { FaDownload, FaUpload, FaFile, FaTrash } from "react-icons/fa";
+import { FaDownload, FaUpload, FaFile, FaTrash, FaFilePdf, FaRegFilePdf } from "react-icons/fa";
 import { acceptApplication } from "../../../api/CompanyApi/acceptApplicationAPI";
+import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 
 const CompanyApplication = () => {
   const [application, setApplication] = useState(null);
@@ -78,6 +79,25 @@ const CompanyApplication = () => {
 
     getApplication();
   }, [id]);
+
+  const downloadFile = async (fileDisplayName, fileType) => {
+    try {
+      const { blobData, contentType } = await downloadApplicationForm(id, fileType);
+      const fileBlob = new Blob([blobData], { type: contentType });
+      const downloadUrl = window.URL.createObjectURL(fileBlob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.setAttribute("download", fileDisplayName);
+      document.body.appendChild(link);
+      link.click();
+      // Clean up the URL object and remove the temporary element
+      link.remove();
+      window.URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+      console.error("Error downloading file:", error);
+      alert("Failed to download file.");
+    }
+  };
 
   const handleDownload = async () => {
     await downloadFile("CV", "CV");
@@ -433,18 +453,18 @@ const CompanyApplication = () => {
 
           <div className={styles.files}>
             <button onClick={handleApplicationDownload} className={styles.downloadFile}>
-              Fill and Download Application Form <FaDownload />
+            <FontAwesomeIcon icon={faFilePdf} /> Fill and Download Application Form <FaDownload />
             </button>
             
             <div className={styles.uploadFile} onClick={handleFileClick}>
               {selectedFileName ? (
                 <>
-                  <FaFile /> {selectedFileName}
+                  <FontAwesomeIcon icon={faFilePdf} /> {selectedFileName}
                   <FaTrash className={styles.deleteIcon} onClick={handleDeleteFile} />
                 </>
               ) : (
                 <>
-                  Upload Application Form <FaUpload />
+                  <FontAwesomeIcon icon={faFilePdf} /> Upload Application Form <FaUpload /> 
                 </>
               )}
             </div>

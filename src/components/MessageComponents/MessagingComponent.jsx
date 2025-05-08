@@ -94,8 +94,8 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle }) => {
           isMobile ? "fixed left-4 right-3 bottom-1 rounded-lg shadow-xl" : "rounded-t-lg shadow-xl w-[380px]",
         )}
         style={{
-          height: isMobile ? "auto" : "calc(100vh - 110px)",
-          maxHeight: isMobile ? "calc(100vh - 100px)" : "calc(100vh - 110px)",
+          height: isMobile ? "calc(100dvh - 110px)" : "calc(100dvh - 110px)",
+          maxHeight: isMobile ? "calc(100dvh - 100px)" : "calc(100dvh - 110px)",
         }}>
           <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200">
             <div className="flex items-center gap-2">
@@ -170,7 +170,7 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle }) => {
                   </button>
                 </div>
               </div>
-              <ScrollArea className="flex-1 overflow-y-auto" style={{ maxHeight: isMobile ? "calc(100vh - 280px)" : undefined }}>
+              <ScrollArea className="flex-1 overflow-y-auto" style={{ maxHeight: isMobile ? "calc(100dvh - 280px)" : undefined }}>
                 <div className="p-3">
                   {(loading || usersLoading) ? (
                     <div className="h-full flex items-center justify-center min-h-[200px]">
