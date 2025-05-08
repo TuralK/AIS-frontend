@@ -9,7 +9,6 @@ const DICLayout = () => {
         <UserLayout
             validateFunction={validateDIC}
             menuItems = {[
-            { item: t('home'), route: 'home' },
             { item: t('company'), route: 'companyRequests' },
             { item: t('announcements'), route: 'announcementRequests' },
             { item: t('applications'), route: 'applicationRequests' },

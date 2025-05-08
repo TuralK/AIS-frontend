@@ -8,7 +8,6 @@ import ChangePassword from "./pages/auth_pages/ChangePassword/ChangePassword";
 import SignUp from "./pages/auth_pages/SignUp/SignUp";
 import StudentLayout from "./layouts/StudentLayout/StudentLayout.jsx";
 import StudentHome from "./components/StudentComponents/StudentHomePageComponent/StudentHomePage.jsx";
-import DICHome from "./components/DICcomponents/DICHome/DICHome.jsx";
 import StudentAnnouncements from "./components/StudentComponents/StudentAnnouncementsComponent/StudentAnnouncements.jsx";
 import StudentAnnouncement from "./components/StudentComponents/StudentAnnouncementComponent/StudentAnnouncement.jsx";
 import StudentApplications from "./components/StudentComponents/StudentApplicationsComponent/StudentApplications.jsx";
@@ -32,6 +31,7 @@ import Settings from "./components/Settings/Settings.jsx";
 import StudentInternship from "./components/StudentComponents/StudentInternship/StudentInternship.jsx";
 import StudentProfile from "./components/StudentComponents/StudentProfileComponent/StudentProfile.jsx";
 import NotFound from "./components/UtilComponents/NotFound.jsx";
+import AnnouncementRequest from "./components/DICcomponents/DICAnnouncementRequests/DICAnnouncementRequest.jsx";
 
 const initialVh = window.innerHeight;
 document.documentElement.style.setProperty('--initial-vh', `${initialVh}px`);
@@ -84,18 +84,17 @@ const App = () => {
       path: '/admin',
       element: <DICLayout />,
       children: [
-        { index: true, element: <DICHome /> },
-        { path: "home", element: <DICHome /> },
-        { path: "settings", element: <Settings apiUrl= {'http://localhost:3003'} /> },
+        { index: true, element: <Navigate to="/admin/announcementRequests" /> },
+        { path: "settings", element: <Settings apiUrl={'http://localhost:3003'} /> },
         { path: "companyRequests", element: <CompanyCards /> },
         { path: 'announcementRequests', element: <DICAnnouncementRequest /> },
         { path: 'announcement/:id', element: <DICAnouncementDetails /> },
         { path: 'applicationRequests', element: <DICApplications /> },
-        { path: 'application/:id', element: <DICInnerApplication />},
-        { path: 'internships', element: <DICInternships />},
-        { path: 'internship/:id', element: <DICInnerInternships />}
+        { path: 'application/:id', element: <DICInnerApplication /> },
+        { path: 'internships', element: <DICInternships /> },
+        { path: 'internship/:id', element: <DICInnerInternships /> }
       ]
-    },
+    },    
     {
       path: '/secretary',
       element: <SecretaryLayout />,
