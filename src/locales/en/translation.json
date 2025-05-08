@@ -224,5 +224,7 @@
   "clickToSelectFile": "Click to upload Summer Internship Application Form",
   "clickToSendFile": "Summer Internship Application Form",
   "clearFile": "Clear file",
-  "sendFile": "Send file"
+  "sendFile": "Send file",
+  "isInternshipFinished": "Is the internship finished?",
+  "yes": "Yes"
 }

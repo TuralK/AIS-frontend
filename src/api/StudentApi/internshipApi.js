@@ -13,18 +13,21 @@ export const uploadApplicationForm = async (file) => {
     return response
 }
 
-const finishInternship = async (internshipId) => {
+export const finishInternship = async () => {
     try {
-      const response = await axios.put("http://localhost:3004/internship/finishInternship", {
-        internshipId: internshipId
-      }, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      })
-        return response
+      const response = await axios.put(
+        "http://localhost:3004/internship/finishInternship",
+        {}, 
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true, 
+        }
+      );
+      return response;
     } catch (error) {
-      console.error("Error:", error.response?.data || error.message)
+      console.error("Error:", error.response?.data || error.message);
     }
-  }
+  };
+  
