@@ -29,7 +29,7 @@ import CompanyApplications from './components/CompanyComponents/CompanyApplicati
 import PublishAnnouncement from "./components/CompanyComponents/PublishAnnouncement/PublishAnnouncement.jsx";
 import CompanyApplication from "./components/CompanyComponents/CompanyApplication/CompanyApplication.jsx";
 import Settings from "./components/Settings/Settings.jsx";
-import StudentInternshipWrapper from "./components/StudentComponents/StudentInternship/StudentInternshipWrapper.jsx";
+import StudentInternship from "./components/StudentComponents/StudentInternship/StudentInternship.jsx";
 import StudentProfile from "./components/StudentComponents/StudentProfileComponent/StudentProfile.jsx";
 import NotFound from "./components/UtilComponents/NotFound.jsx";
 
@@ -62,7 +62,7 @@ const App = () => {
         { path: "announcements", element: <StudentAnnouncements /> },
         { path: 'announcements/:announcementId', element: <StudentAnnouncement /> },
         { path: "applications", element: <StudentApplications />},
-        { path: "internship", element: <StudentInternshipWrapper />},
+        { path: "internship", element: <StudentInternship />},
         { path: "applications", element: <StudentApplications /> },
         { path: "files", element: <StudentFiles /> },
         { path: "settings", element: <Settings apiUrl={'http://localhost:3004'} /> },

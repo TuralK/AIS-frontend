@@ -220,5 +220,16 @@
   "sendFile": "Dosyayı gönder",
   "isInternshipFinished": "Staj tamamlandı mı?",
   "yes": "Evet",
-  "files": "Dosyalar"
+  "files": "Dosyalar",
+  "internshipTitleNotFound": "Staj adı bulunamadı",
+  "companyNameNotFound": "Şirket adı bulunamadı",
+  "ongoing": "Devam Ediyor",
+  "finished": "Staj Tamamlandı",
+  "uploadSPES": "Staj Değerlendirme Anketini Yükle",
+  "pleaseUploadSPES": "Lütfen staj değerlendirme anketini yükleyin",
+  "finishInternshipConfirm": "Stajı bitirdiğinizi onaylıyor musunuz?",
+  "noFilesToUpload": "Yüklemek için dosya yok, en az bir dosya yükleyin",
+  "finishing": "Bitiriliyor...",
+  "haveAnInternship": "Halihazırda stajınız var, başka bir staj başvurusu yapamazsınız"
+  
 }

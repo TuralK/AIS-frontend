@@ -36,37 +36,45 @@ const StudentHomePage = () => {
   }
 
   const sendFile = async () => {
-    if (!selectedFile) return
-
+    if (!selectedFile) return;
+  
     try {
-      setIsUploading(true)
-      setErrorMessage("")
-      setSuccessMessage("")
-
-      const response = await uploadApplicationForm(selectedFile)
-
+      setIsUploading(true);
+      setErrorMessage("");
+      setSuccessMessage("");
+  
+      const response = await uploadApplicationForm(selectedFile);
+  
       if (response.status === 200 || response.status === 201) {
-        setSuccessMessage(t("fileUploaded"))
-        setIsSubmitted(true)
-        setTimeout(() => setSuccessMessage(""), 5000)
+        setSuccessMessage(t("fileUploaded"));
+        setIsSubmitted(true);
+        setTimeout(() => setSuccessMessage(""), 5000);
       } else {
-        setErrorMessage(t("tryAgain"))
-        setTimeout(() => setErrorMessage(""), 5000)
+        setErrorMessage(t("tryAgain"));
+        setTimeout(() => setErrorMessage(""), 5000);
       }
     } catch (error) {
-      console.error("Upload error:", error)
-      if (error.response) {
-        setErrorMessage(`${t("tryAgain")} (${error.response.status})`)
+      console.error("Upload error:", error);
+  
+      // Öncelikle backend’den gelen mesajı alıyoruz
+      const backendMsg = error.response?.data?.message;
+  
+      if (backendMsg === "You already have an internship") {
+        setErrorMessage(t("haveAnInternship"));
+      } else if (backendMsg === "File already exists") {
+        setErrorMessage(t("fileAlreadyExists"));
       } else if (error.request) {
-        setErrorMessage(t("noResponse"))
+        setErrorMessage(t("noResponse"));
       } else {
-        setErrorMessage(`${t("requestError")}: ${error.message}`)
+        setErrorMessage(`${t("requestError")}: ${error.message}`);
       }
-      setTimeout(() => setErrorMessage(""), 5000)
+  
+      setTimeout(() => setErrorMessage(""), 5000);
     } finally {
-      setIsUploading(false)
+      setIsUploading(false);
     }
-  }
+  };
+  
 
   const handleButtonClick = () => {
     if (!selectedFile) {

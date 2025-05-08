@@ -39,12 +39,12 @@ const FeedbackSection = ({ feedback, companyStatus, coordinatorStatus, score }) 
       </div>
 
       {/* Feedback Area */}
-      <div className="mt-6 flex-1! space-y-2">
+      {/* <div className="mt-6 flex-1! space-y-2">
         <h3 className="text-sm font-medium">{t('feedback')}</h3>
         <div className="rounded-lg border bg-gray-50 p-4">
           <p className="text-sm text-gray-600">{feedback}</p>
         </div>
-      </div>
+      </div> */}
 
       {/* Score */}
       <div className="flex mt-5 items-center justify-between rounded-lg border bg-background p-4">

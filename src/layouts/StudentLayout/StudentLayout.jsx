@@ -25,6 +25,7 @@ const StudentLayout = () => {
             messaging: 'http://localhost:3004',
             logout: 'http://localhost:3001'
             }}
+            hasAITab={true}
             // outletContext={{ userId, email, firstName, applications, setApplications }}
         />
     )

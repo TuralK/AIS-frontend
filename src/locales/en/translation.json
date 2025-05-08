@@ -227,5 +227,16 @@
   "sendFile": "Send file",
   "isInternshipFinished": "Is the internship finished?",
   "yes": "Yes",
-  "files": "Files"
+  "files": "Files",
+  "companyNameNotFound": "Company name not found",
+  "internshipTitleNotFound": "Internship title not found",
+  "ongoing": "Ongoing",
+  "finished": "Finished",
+  "uploadSPES": "Upload Summer Practice Evaluation Survey",
+  "pdfDocument": "PDF Document",
+  "pleaseUploadSPES": "Please upload your Summer Practice Evaluation Survey",
+  "finishInternshipConfirm": "Are you sure you want to finish the internship?",
+  "noFilesToUpload": "No files to upload, please upload at least one file",
+  "finishing": "Finishing...",
+  "haveAnInternship": "You have an internship, so you cannot apply for another internship"
 }

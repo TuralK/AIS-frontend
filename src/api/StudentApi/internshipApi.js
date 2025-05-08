@@ -31,3 +31,23 @@ export const finishInternship = async () => {
     }
   };
   
+  export const getInternship = async () => {
+    try {
+      const response = await axios.get("http://localhost:3004/internship", {
+        withCredentials: true,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching internship:", error.response?.data || error.message);
+      throw error;
+    }
+  };
+
+
+  export const requestLink = async (applicationId) => {
+    return axios.post(
+      `http://localhost:3004/internship/requestLink`,
+      { applicationId },
+      { withCredentials: true }
+    );
+  };
