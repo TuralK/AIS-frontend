@@ -76,14 +76,19 @@ const DICInnerApplication = () => {
       setIsTypeAlertOpen(true);
       return;
     }
-
+  
     setIsSubmitting(true);
     const formData = new FormData();
-
+  
     if (file) {
-      // This is the file that signed and uploaded by coordinator
       formData.append('studentFile', file);
     }
+  
+    formData.append('isApproved', isApproved); 
+    if (!isApproved && feedback) {
+      formData.append('feedback', feedback); 
+    }
+  
     try {
       const response = await updateApplicationDetail(id, formData);
       const alertMessage = isApproved ? t('applicationApprovedByAdmin') : t('applicationDisapprovedByAdmin');
@@ -98,6 +103,7 @@ const DICInnerApplication = () => {
       setFeedbackModalOpen(false);
     }
   };
+  
 
   const downloadButton = async (fileType) => {
     try {

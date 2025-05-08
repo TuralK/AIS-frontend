@@ -5,10 +5,10 @@ const fetchApplicationDetails = async (applicationId) => {
         const response = await axios.get(`http://localhost:3003/applications/${applicationId}`, {
             withCredentials: true,
         });
-        return response.data; // This will be the JSON response from the server
+        return response.data; 
     } catch (error) {
         console.error('Error fetching application details:', error);
-        throw error; // Rethrow the error for further handling if needed
+        throw error; 
     }
 };
 
@@ -17,10 +17,10 @@ const updateApplicationDetail = async (applicationId, formData) => {
         const response =await axios.put(`http://localhost:3003/applications/${applicationId}`, formData, {
             withCredentials: true,
         });
-        return response.data; // This will be the JSON response from the server
+        return response.data; 
     } catch (error) {
         console.error('Error fetching application details:', error);
-        throw error; // Rethrow the error for further handling if needed
+        throw error; 
     }
 };
 
