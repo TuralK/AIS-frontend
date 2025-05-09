@@ -10,6 +10,9 @@ import {
   deleteMessageWS,
   markReadWS
 } from "../../thunks/messagingActions";
+import {
+  deleteConversationThunk,
+} from "../../thunks/messageThunks";
 import { scrollToBottom } from "../../utils/conversationUtils";
 import CustomDropdown from "../ui/custom_dropdown";
 import ErrorMessage from "../ui/error_message";
@@ -20,7 +23,12 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
   const dispatch = useDispatch();
   const convId = initialConversation.id;
   const messages = useSelector(state => selectConversationMessages(state, convId));
-  
+  const loading = useSelector((state) => state.messaging.loading);
+  const [errorSendingMessage, setErrorSendingMessage] = useState(false)
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const [selectedMessages, setSelectedMessages] = useState([]); // Added missing state
+  const [isDeletingConversation, setIsDeletingConversation] = useState(false)
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
   const otherName = initialConversation.user2_name;
 
   const [attachedFile, setAttachedFile] = useState(null);
@@ -53,24 +61,70 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
   useEffect(() => {
     messages.forEach(msg => {
       if (!msg.isSentByUser && !msg.is_read) {
+        console.log("Marking message as read:", msg.id);
         dispatch(markReadWS(msg.id));
       }
     });
   }, [messages, dispatch]);
 
+  const handleDeleteConversation = async () => {
+    let conversationId = initialConversation.id;
+    setIsDeletingConversation(true)
+    try {
+      await dispatch(deleteConversationThunk({ apiUrl, conversationId })).unwrap()
+      onBack()
+    } catch (error) {
+      console.error("Conversation deletion failed:", error)
+      setShowDeleteConfirmation(false)
+      alert(t("delete_conversation_error"))
+    } finally {
+      setIsDeletingConversation(false)
+    }
+  }
+
+  const toggleMessageSelection = (messageId) => {
+    setSelectedMessages((prev) =>
+      prev.includes(messageId)
+        ? prev.filter((id) => id !== messageId)
+        : [...prev, messageId]
+    )
+  }
+
   const handleSend = text => {
     if (!text.trim() && !attachedFile) return;
-    dispatch(sendMessageWS(convId, text.trim(), attachedFile, attachedFile?.name));
-    setAttachedFile(null);
+    try {
+      dispatch(sendMessageWS(convId, text.trim(), attachedFile, attachedFile?.name));
+      setErrorSendingMessage(false)
+      setAttachedFile(null);
+    } catch (error) {
+      setErrorSendingMessage(true)
+      setTimeout(() => setErrorSendingMessage(false), 4000)
+    }
+
   };
 
   const handleDeleteMsg = id => {
-    dispatch(deleteMessageWS(id));
+    try {
+      dispatch(deleteMessageWS(id));
+    } catch (error) {
+      alert(t("delete_message_error"))
+    }
   };
 
   const handleFileChange = e => {
-    const file = e.target.files[0];
-    if (file) setAttachedFile(file);
+    const file = e.target.files[0]
+    if (file) {
+      const allowedTypes = [
+        "application/pdf",
+        "application/msword",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ]
+      if (allowedTypes.includes(file.type)) {
+        setAttachedFile(file)
+      } else {
+        alert(t("invalid_file_type"))
+      }
+    }
   };
 
   const downloadFile = (name, data) => {
@@ -89,29 +143,76 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
     <div className={`flex flex-col w-full border bg-white ${isMobile ? "h-screen" : "h-full max-h-[90%]"}`}>
       {/* Header */}
       <div className="flex justify-between items-center p-4 border-b">
-        <button onClick={onBack}><ArrowLeft size={20} /></button>
-        <span className="font-semibold">{otherName}</span>
-        <button onClick={onBack}><Trash2 size={20} /></button>
+        <div className="flex items-center gap-2">
+          <button onClick={onBack} className="text-gray-800 hover:text-gray-900">
+            <ArrowLeft size={20} />
+          </button>
+          <span className="font-semibold">{otherName}</span>
+        </div>
+        <div className="flex items-center gap-2">
+          {showDeleteConfirmation ? (
+            <>
+              <button
+                onClick={handleDeleteConversation}
+                disabled={isDeletingConversation}
+                className="flex items-center gap-1 px-2 py-1 text-xs sm:text-sm bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+              >
+                <Trash2 size={16} />
+                <span className="hidden sm:inline">{t("confirm_delete")}</span>
+              </button>
+              <button
+                onClick={() => setShowDeleteConfirmation(false)}
+                className="text-gray-600 hover:text-gray-800"
+              >
+                <X size={20} />
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => setShowDeleteConfirmation(true)}
+              className="p-2 rounded-full text-gray-600 hover:bg-gray-100 transition-colors"
+            >
+              <Trash2 size={20} />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Messages */}
       <div className={`flex-1 overflow-y-auto flex flex-col ${isMobile ? "pb-36" : "pb-0"}`}>
-        {messages.length > 0 ? (
+      {loading ? (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="w-8 h-8 border-4 border-t-[#8B0000] border-gray-200 rounded-full animate-spin"></div>
+          </div>
+        ) : messages.length > 0 ? (
           <div className="p-4 space-y-2">
             {messages.map(msg => {
               const isSender = msg.isSentByUser;
               return (
                 <div
                   key={msg.id}
-                  className={`flex ${isSender ? "justify-end" : "justify-start"} items-center gap-2`}
+                  className={`flex ${isSender ? "justify-end" : "justify-start"} items-center gap-2 group`}
                 >
                   {isSender && (
-                    <CustomDropdown onDelete={() => handleDeleteMsg(msg.id)} isSentByUser />
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                      {isSelectionMode ? (
+                        <input
+                          type="checkbox"
+                          checked={selectedMessages.includes(msg.id)}
+                          onChange={() => toggleMessageSelection(msg.id)}
+                          className="mr-2"
+                        />
+                      ) : (
+                        <CustomDropdown
+                          onDelete={() => handleDeleteMsg(msg.id)}
+                          isSentByUser={true}
+                        />
+                      )}
+                    </div>
                   )}
                   <div
-                    className={`max-w-[75%] rounded-lg p-3 ${
-                      isSender ? "bg-red-700 text-white" : "bg-gray-300 text-black"
-                    }`}
+                    className={`max-w-[75%] rounded-lg p-3 ${isSender ? "bg-red-700 text-white" : "bg-gray-300 text-black"
+                      }`}
                   >
                     {msg.fileName && (
                       <div className="flex items-center gap-2 p-2 mb-2 bg-gray-400 rounded">
@@ -133,7 +234,7 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
                     </div>
                   </div>
                 </div>
-              );
+              )
             })}
             <div ref={endRef} />
           </div>
