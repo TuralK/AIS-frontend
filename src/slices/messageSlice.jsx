@@ -1,90 +1,84 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchConversationsThunk, fetchConversationMessagesThunk, sendMessageThunk, fetchUsersThunk, markMessagesAsReadThunk } from '../thunks/messageThunks';
-
+import { fetchConversationsThunk, fetchUsersThunk} from '../thunks/messageThunks';
+import {
+  connectConversation,
+  disconnectConversation,
+  sendMessageWS,
+  deleteMessageWS,
+  markReadWS
+} from "../thunks/messagingActions";
 const initialState = {
+  // REST tarafı
   conversations: [],
-  conversationMessages: {}, // conversationId bazında mesajları saklayabilirsiniz
   users: [],
   loading: false,
   usersLoading: false,
   error: null,
-  lastUpdated: null,
+
+  // WS tarafı
+  conversationMessages: {},   // { [convId]: Message[] }
+  wsLoading: false,
 };
 
 const messagingSlice = createSlice({
-  name: 'messaging',
+  name: "messaging",
   initialState,
   reducers: {
-    clearError: (state) => {
-      state.error = null;
+    clearError: (state) => { state.error = null; },
+    resetMessaging: () => initialState,
+    // Socket.IO’dan gelenler:
+    messagesLoaded: (state, { payload }) => {
+      state.wsLoading = false;
+      state.conversationMessages[payload.conversationId] = payload.messages;
     },
-    resetMessaging: () => initialState
+    addMessage: (state, { payload }) => {
+      const arr = state.conversationMessages[payload.conversationId] ||= [];
+      arr.push(payload.msg);
+    },
+    messageDeleted: (state, { payload }) => {
+      const arr = state.conversationMessages[payload.conversationId] || [];
+      state.conversationMessages[payload.conversationId] =
+        arr.filter(m => m.id !== payload.messageId);
+    },
+    messageRead: (state, { payload }) => {
+      const arr = state.conversationMessages[payload.conversationId] || [];
+      const msg = arr.find(m => m.id === payload.messageId);
+      if (msg) msg.is_read = true;
+    },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
+    // -------- REST THUNKS --------
     builder
-      .addCase(fetchConversationsThunk.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+      .addCase(fetchConversationsThunk.pending, (s) => { s.loading = true; s.error = null; })
+      .addCase(fetchConversationsThunk.fulfilled, (s, a) => {
+        s.loading = false; s.conversations = a.payload;
       })
-      .addCase(fetchConversationsThunk.fulfilled, (state, action) => {
-        state.loading = false;
-        state.conversations = action.payload;
-        state.lastUpdated = Date.now();
+      .addCase(fetchConversationsThunk.rejected, (s, a) => {
+        s.loading = false; s.error = a.payload || a.error.message;
       })
-      .addCase(fetchConversationsThunk.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || action.error.message;
+
+      .addCase(fetchUsersThunk.pending, (s) => { s.usersLoading = true; s.error = null; })
+      .addCase(fetchUsersThunk.fulfilled, (s, a) => {
+        s.usersLoading = false; s.users = a.payload;
       })
-      .addCase(fetchConversationMessagesThunk.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+      .addCase(fetchUsersThunk.rejected, (s, a) => {
+        s.usersLoading = false; s.error = a.payload || a.error.message;
       })
-      .addCase(fetchConversationMessagesThunk.fulfilled, (state, action) => {
-        state.loading = false;
-        state.conversationMessages[action.payload.conversationId] = action.payload.messages;
-      })
-      .addCase(fetchConversationMessagesThunk.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || action.error.message;
-      })
-      .addCase(sendMessageThunk.pending, (state) => {
-        state.error = null;
-      })
-      .addCase(sendMessageThunk.fulfilled, (state, action) => {
-        
-      })
-      .addCase(sendMessageThunk.rejected, (state, action) => {
-        state.error = action.payload || action.error.message;
-      })
-      .addCase(fetchUsersThunk.pending, (state) => {
-        state.usersLoading = true;
-        state.error = null;
-      })
-      .addCase(fetchUsersThunk.fulfilled, (state, action) => {
-        state.usersLoading = false;
-        state.users = action.payload;
-      })
-      .addCase(fetchUsersThunk.rejected, (state, action) => {
-        state.usersLoading = false;
-        state.error = action.payload || action.error.message;
-      })
-      .addCase(markMessagesAsReadThunk.pending, (state) => {
-        state.error = null;
-      })
-      .addCase(markMessagesAsReadThunk.fulfilled, (state, action) => {
-        action.payload.forEach((msg) => {
-          if (state.conversationMessages[msg.conversationId]) {
-            state.conversationMessages[msg.conversationId] = state.conversationMessages[msg.conversationId].map(m =>
-              m.id === msg.id ? { ...m, read: true } : m
-            );
-          }
-        });
-      })
-      .addCase(markMessagesAsReadThunk.rejected, (state, action) => {
-        state.error = action.payload || action.error.message;
-      });
-  },
+
+    // -------- WS ACTIONS --------
+    builder
+      .addCase(connectConversation, (s) => { s.wsLoading = true; })
+      .addCase(disconnectConversation, (s) => { /* s.wsLoading = false; */ });
+  }
 });
 
-export const { clearError, resetMessaging } = messagingSlice.actions;
+export const {
+  clearError,
+  messagesLoaded,
+  resetMessaging,
+  addMessage,
+  messageDeleted,
+  messageRead
+} = messagingSlice.actions;
+
 export default messagingSlice.reducer;

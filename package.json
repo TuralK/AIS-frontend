@@ -44,6 +44,7 @@
     "react-router-dom": "^6.26.1",
     "react-sticky-el": "^2.1.1",
     "react-textarea-autosize": "^8.5.4",
+    "socket.io-client": "^4.8.1",
     "tailwind-merge": "^2.5.4",
     "zod": "^3.23.8"
   },
