@@ -146,7 +146,7 @@ const StudentHomePage = () => {
             {rules.map((rule, index) => (
               <tr key={index}>
                 <td className="border border-[#ddd] p-2 bg-[#f2f2f2] text-left">{index + 1}</td>
-                <td className="border border-[#ddd] p-2 align-top">{rule}</td>
+                <td className="border border-[#ddd] p-2 align-top text-left">{rule}</td>
               </tr>
             ))}
           </tbody>

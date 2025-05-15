@@ -59,8 +59,8 @@ const StudentInternship = () => {
   }
   
   else {
-    companyName = internshipData.Application.Announcement.Company.name || t("companyNameNotFound");
-    internshipTitle = internshipData.Application.Announcement.announcementName || t("internshipTitleNotFound");
+    companyName = (internshipData.Application && internshipData.Application.Announcement.Company.name) || t("companyNameNotFound");
+    internshipTitle = (internshipData.Application && internshipData.Application.Announcement.announcementName) || t("internshipTitleNotFound");
     internshipStatus = internshipData.status === 0 ? t("ongoing") : t("finished");
   }
 

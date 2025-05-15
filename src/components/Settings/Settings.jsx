@@ -97,24 +97,27 @@ export default function Settings({ apiUrl }) {
 
   useEffect(() => {
     if (userData?.username) {
-      const parts = userData.username.split(" ")
-      let firstName, lastName
+      const parts = userData.username.split(" ");
+      let firstName, lastName;
 
       if (parts.length === 3) {
-        firstName = parts.slice(0, 2).join(" ")
-        lastName = parts[2]
+        firstName = parts.slice(0, 2).join(" ");
+        lastName = parts[2];
       } else {
-        firstName = parts[0] || ""
-        lastName = parts.slice(1).join(" ") || ""
+        firstName = parts[0] || "";
+        lastName = parts.slice(1).join(" ") || "";
       }
 
       reset({
         firstName,
         lastName,
         email: userData.email || "",
-      })
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+      });
     }
-  }, [userData, reset])
+  }, [userData, reset]);
 
   useEffect(() => {
     if (error) {

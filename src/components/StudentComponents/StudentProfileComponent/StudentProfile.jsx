@@ -29,6 +29,8 @@ import { deleteStudentBannerImage } from '../../../api/StudentApi/StudentProfile
 import { deleteStudentProfilePhoto } from '../../../api/StudentApi/StudentProfileAPI/deleteStudentProfilePhotoAPI';
 import StudentCreateProfile from '../StudentCreateProfileComponent/StudentCreateProfile';
 
+document.title = `AIS | Profile`;
+
 const baseUrl = 'http://localhost:3004';
 
 const starDescriptions = {
