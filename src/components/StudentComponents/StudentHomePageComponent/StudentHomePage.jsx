@@ -1,11 +1,21 @@
-import { useRef, useState } from "react"
+import React, { useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Tooltip } from "../../ui/tooltip"
 import { uploadApplicationForm } from "../../../api/StudentApi/internshipApi"
 import { FileHelpers } from "../../../utils/filehelper"
+import { useMatches } from 'react-router-dom';
 
 const StudentHomePage = () => {
-  const { t } = useTranslation()
+  const matches = useMatches();
+  const { t } = useTranslation();
+  const currentMatch = matches[matches.length - 1];
+  const titleKey = currentMatch?.handle?.titleKey;
+  
+  React.useEffect(() => {
+    const baseTitle = 'AIS';
+    document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
+  }, [titleKey, t]);
+  
   const fileInputRef = useRef(null)
   const [selectedFile, setSelectedFile] = useState(null)
   const [errorMessage, setErrorMessage] = useState("")

@@ -4,8 +4,20 @@ import { fetchApplicationsStatuses } from '../../../api/StudentApi/fetchApplicat
 import Loading from '../../LoadingComponent/Loading.jsx';
 import StatusOverview from './StatusOverviewComponent/StatusOverview.jsx';
 import FilterOptions from './FilterOptionsComponent/FilteredStatuses.jsx';
+import { useMatches } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const StudentApplications = () => {
+  const matches = useMatches();
+  const { t } = useTranslation();
+  const currentMatch = matches[matches.length - 1];
+  const titleKey = currentMatch?.handle?.titleKey;
+
+  React.useEffect(() => {
+    const baseTitle = 'AIS';
+    document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
+  }, [titleKey, t]);
+
   const [applicationsStatuses, setApplicationsStatuses] = useState([]);
   const [loading, setLoading] = useState(true);
 

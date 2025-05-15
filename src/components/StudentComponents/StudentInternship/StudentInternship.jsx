@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import SubmissionForm from "./components/SubmissionForm";
 import FeedbackSection from "./components/FeedbackSection";
 import CustomAlertDialog from "../../ui/custom_alert";
@@ -6,14 +6,24 @@ import { useTranslation } from "react-i18next";
 import { finishInternship, getInternship } from "../../../api/StudentApi/internshipApi";
 import { Building2, FileText } from "lucide-react";
 import Loading from "../../LoadingComponent/Loading";
+import { useMatches } from 'react-router-dom';
 
 const StudentInternship = () => {
+  const matches = useMatches();
+  const { t } = useTranslation();
+  const currentMatch = matches[matches.length - 1];
+  const titleKey = currentMatch?.handle?.titleKey;
+
+  React.useEffect(() => {
+    const baseTitle = 'AIS';
+    document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
+  }, [titleKey, t]);
+
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [internshipData, setInternshipData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [finishing, setFinishing] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
-  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchInternship = async () => {

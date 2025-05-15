@@ -7,13 +7,24 @@ import { motion } from "framer-motion"
 import CompanyTestimonialCard from "./CompanyCard"
 import { fetchCompanyRequests } from "../../../api/DICApi/getCompanyRequests"
 import Loading from "../../LoadingComponent/Loading"
+import { useMatches } from 'react-router-dom';
 
 const CompanyTestimonialCards = () => {
+  const matches = useMatches();
+  const { t } = useTranslation();
+  const currentMatch = matches[matches.length - 1];
+  const titleKey = currentMatch?.handle?.titleKey;
+
+  React.useEffect(() => {
+    const baseTitle = 'AIS';
+    document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
+  }, [titleKey, t]);
+
+
   const [companies, setCompanies] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [activeCard, setActiveCard] = useState(null)
-  const { t } = useTranslation()
 
   useEffect(() => {
     const getCompanyRequests = async () => {

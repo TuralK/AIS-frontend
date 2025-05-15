@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import LoginCSS from './Login.module.css';
-import { Helmet } from "react-helmet";
+import { useMatches } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import IYTElogo from '../../../assets/iyte_logo_eng.png';
@@ -9,6 +10,16 @@ import { forgotPassword } from '../../../api/ChangePasswordApi/forgotPasswordAPI
 import Loading from '../../../components/LoadingComponent/Loading';
 
 const Login = () => {
+  const matches = useMatches();
+  const { t } = useTranslation();
+  const currentMatch = matches[matches.length - 1];
+  const titleKey = currentMatch?.handle?.titleKey;
+
+  React.useEffect(() => {
+    const baseTitle = 'AIS';
+    document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
+  }, [titleKey, t]);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
@@ -127,8 +138,6 @@ const Login = () => {
     }
   };
 
-  const googleLoginURL = 'http://localhost:8080/realms/LSM_REALM/protocol/openid-connect/auth?client_id=LSM_CLIENT&redirect_uri=https://example.com/&response_type=code&scope=openid&kc_idp_hint=google';
-
   if (loading) {
     return (
       <Loading />
@@ -137,9 +146,6 @@ const Login = () => {
 
   return (
     <div className={LoginCSS.background}>
-      <Helmet>
-        <title>Automated Internship System Login</title>
-      </Helmet>
       <div className={LoginCSS['form-container']}>
         <div className={LoginCSS['form-top']}>
           <div className={LoginCSS['form-top-middle']}>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useMatches } from 'react-router-dom';
 import { useParams, useNavigate } from 'react-router-dom';
 import StudentAnnouncementCSS from "./StudentAnnouncement.module.css";
 import { fetchAnnouncementData } from '../../../api/StudentApi/fetchAnnouncementDataAPI';
@@ -10,6 +11,16 @@ import RenderPropSticky from 'react-sticky-el';
 import { applyAnnouncement } from '../../../api/StudentApi/applyAnnouncementAPI.js';
 
 const StudentAnnouncementComponent = () => {    
+  const matches = useMatches();
+  const currentMatch = matches[matches.length - 1];
+  const titleKey = currentMatch?.handle?.titleKey;
+  
+  React.useEffect(() => {
+    const baseTitle = 'AIS';
+    document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
+  }, [titleKey, t]);
+
+  
   const [announcement, setAnnouncement] = useState();
   const [loading, setLoading] = useState(true);
   const [loadingApply, setLoadingApply] = useState(false);

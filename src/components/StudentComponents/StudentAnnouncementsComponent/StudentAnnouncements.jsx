@@ -4,13 +4,24 @@ import StudentAnnouncementsCSS from "./StudentAnnouncements.module.css";
 import { fetchAnnouncements } from '../../../api/StudentApi/fetchAnnouncementsAPI';
 import AnnouncementImage from '../../../assets/office.jpg';
 import { useTranslation } from 'react-i18next';
+import { useMatches } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import Loading from '../../LoadingComponent/Loading.jsx';
 
 const StudentAnnouncements = () => {
+  const matches = useMatches();
+  const { t } = useTranslation();
+  const currentMatch = matches[matches.length - 1];
+  const titleKey = currentMatch?.handle?.titleKey;
+  
+  React.useEffect(() => {
+    const baseTitle = 'AIS';
+    document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
+  }, [titleKey, t]);
+
+  
   const[announcements, setAnnouncements] = useState([]);
   const[loading, setLoading] = useState(true);
-  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     fetchAnnouncements()

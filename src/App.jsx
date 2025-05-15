@@ -42,69 +42,72 @@ const App = () => {
   const routes = createBrowserRouter([
     { 
       path: '/',
-      element: <Login />
+      element: <Login />,
+      handle: { titleKey: 'login' }
     },
     {
       path: '/changePassword',
-      element: <ChangePassword />
+      element: <ChangePassword />,
+      handle: { titleKey: 'changePassword' }
     },
     {
       path: `/${t('signUpLink')}`, 
-      element: <SignUp />
+      element: <SignUp />,
+      handle: { titleKey: 'signUp' }
     },
     {
       path: '/student',
       element: <StudentLayout />,
       children: [
-        { index: true, element: <StudentHome /> },
-        { path: "home", element: <StudentHome /> },
-        { path: "announcements", element: <StudentAnnouncements /> },
-        { path: 'announcements/:announcementId', element: <StudentAnnouncement /> },
-        { path: "applications", element: <StudentApplications />},
-        { path: "internship", element: <StudentInternship />},
-        { path: "applications", element: <StudentApplications /> },
-        { path: "settings", element: <Settings apiUrl={'http://localhost:3004'} /> },
-        { path: "profile", element: <StudentProfile />},
+        { index: true, element: <StudentHome />, handle: { titleKey: 'home' } },
+        { path: "home", element: <StudentHome />, handle: { titleKey: 'home' } },
+        { path: "announcements", element: <StudentAnnouncements />, handle: { titleKey: 'announcements' } },
+        { path: 'announcements/:announcementId', element: <StudentAnnouncement />, handle: { titleKey: 'announcementDetails' } },
+        { path: "applications", element: <StudentApplications />, handle: { titleKey: 'applications' } },
+        { path: "internship", element: <StudentInternship />, handle: { titleKey: 'internship' } },
+        { path: "settings", element: <Settings apiUrl={'http://localhost:3004'} />, handle: { titleKey: 'settings' } },
+        { path: "profile", element: <StudentProfile />, handle: { titleKey: 'profile' }},
       ]
     },
     {
       path: '/company',
       element: <CompanyLayout />,
       children: [
-        { index: true, element: <CompanyHome /> },
-        { path: "home", element: <CompanyHome /> },
-        { path: "applications", element: <CompanyApplications /> },
-        { path: "publishAnnouncement", element: <PublishAnnouncement /> },
-        { path: "applications/:id", element: <CompanyApplication /> }
+        { index: true, element: <CompanyHome />, handle: { titleKey: 'home' } },
+        { path: "home", element: <CompanyHome />, handle: { titleKey: 'home' } },
+        { path: "applications", element: <CompanyApplications />, handle: { titleKey: 'applications' } },
+        { path: "publishAnnouncement", element: <PublishAnnouncement />, handle: { titleKey: 'publishAnnouncement' } },
+        { path: "applications/:id", element: <CompanyApplication />, handle: { titleKey: 'application' } }
       ]
     },
     {
       path: '/admin',
       element: <DICLayout />,
       children: [
-        { index: true, element: <Navigate to="/admin/announcementRequests" /> },
-        { path: "settings", element: <Settings apiUrl={'http://localhost:3003'} /> },
-        { path: "companyRequests", element: <CompanyCards /> },
-        { path: 'announcementRequests', element: <DICAnnouncementRequest /> },
-        { path: 'announcement/:id', element: <DICAnouncementDetails /> },
-        { path: 'applicationRequests', element: <DICApplications /> },
-        { path: 'application/:id', element: <DICInnerApplication /> },
-        { path: 'internships', element: <DICInternships /> },
-        { path: 'internship/:id', element: <DICInnerInternships /> }
+        { index: true, element: <Navigate to="/admin/announcementRequests" />, handle: { titleKey: 'announcements' } },
+        { path: "settings", element: <Settings apiUrl={'http://localhost:3003'} />, handle: { titleKey: 'settings' } },
+        { path: "companyRequests", element: <CompanyCards />, handle: { titleKey: 'pendingCompanyRequest' } },
+        { path: 'announcementRequests', element: <DICAnnouncementRequest />, handle: { titleKey: 'announcementHeader' } },
+        { path: 'announcement/:id', element: <DICAnouncementDetails />, handle: { titleKey: 'announcement' } },
+        { path: 'applicationRequests', element: <DICApplications />, handle: { titleKey: 'applicationRequests' } },
+        { path: 'application/:id', element: <DICInnerApplication />, handle: { titleKey: 'application' } },
+        { path: 'internships', element: <DICInternships />, handle: { titleKey: 'internships' } },
+        { path: 'internship/:id', element: <DICInnerInternships />, handle: { titleKey: 'internship' } }
       ]
     },    
     {
       path: '/secretary',
       element: <SecretaryLayout />,
       children: [
-        { index: true, element: <Navigate to="home" replace /> },
-        { path: "home", element: <PendingApplicationList />},
-        { path: "settings", element: <Settings apiUrl= 'http://localhost:3006' /> },
+        { index: true, element: <Navigate to="home" replace />, handle: { titleKey: 'home' } },
+        { path: "home", element: <PendingApplicationList />, handle: { titleKey: 'home' }},
+        { path: "settings", element: <Settings apiUrl= 'http://localhost:3006' />, handle: { titleKey: 'settings' } },
       ]
     },
     {
       path: '*',
-      element: <NotFound />
+      element: <NotFound />,
+      handle: { titleKey: 'notFound' }
     }
   ]);
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
-import { useTranslation } from "react-i18next"
+import { useMatches } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from "react-router-dom"
 import { ArrowRight } from "lucide-react"
 import fetchApplicationRequests from "../../../api/DICApi/applicationsApi.js"
@@ -7,9 +8,19 @@ import Loading from "../../LoadingComponent/Loading"
 import AnnouncementImage from "../../../assets/office.jpg"
 
 const DICApplications = () => {
+  const matches = useMatches();
+  const { t } = useTranslation();
+  const currentMatch = matches[matches.length - 1];
+  const titleKey = currentMatch?.handle?.titleKey;
+
+  React.useEffect(() => {
+    const baseTitle = 'AIS';
+    document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
+  }, [titleKey, t]);
+
+
   const [applications, setApplications] = useState([])
   const [loading, setLoading] = useState(true)
-  const { t } = useTranslation()
   const navigate = useNavigate()
 
   useEffect(() => {

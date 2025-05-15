@@ -1,18 +1,29 @@
 import React, { useState, useEffect } from 'react'; 
 import { useNavigate, useParams } from 'react-router-dom'; 
+import { useMatches } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Loading from '../../LoadingComponent/Loading';
 import { fetchAnnouncementById, updateAnnouncementById } from '../../../api/DICApi/announcementDetailApi.js';
 import office from '../../../assets/office.jpg';
 
 const DICAnouncementDetails = () => {
+  const matches = useMatches();
+  const { t } = useTranslation();
+  const currentMatch = matches[matches.length - 1];
+  const titleKey = currentMatch?.handle?.titleKey;
+
+  React.useEffect(() => {
+    const baseTitle = 'AIS';
+    document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
+  }, [titleKey, t]);
+
+  
   const [announcement, setAnnouncement] = useState(null); 
   const [feedback, setFeedback] = useState('');
   const [error, setError] = useState(null); 
   const [loading, setLoading] = useState(true); 
   const [showPopup, setShowPopup] = useState(false); // State for popup visibility
-  const navigate = useNavigate();
-  const { t } = useTranslation(); 
+  const navigate = useNavigate(); 
   const { id } = useParams(); 
 
   useEffect(() => {

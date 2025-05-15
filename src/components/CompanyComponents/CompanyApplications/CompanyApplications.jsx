@@ -1,10 +1,23 @@
 import React, {useState, useEffect} from "react"
+import { useMatches } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import ListTable from "../../ListTableComponent/ListTable"
 import CompanyApplicationsCSS from "./CompanyApplications.module.css"
 import { fetchApplications } from "../../../api/CompanyApi/fetchApplicationsAPI"
 import Loading from "../../LoadingComponent/Loading"
 
 const CompanyApplications = () => {
+  const matches = useMatches();
+  const { t } = useTranslation();
+  const currentMatch = matches[matches.length - 1];
+  const titleKey = currentMatch?.handle?.titleKey;
+
+  React.useEffect(() => {
+    const baseTitle = 'AIS';
+    document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
+  }, [titleKey, t]);
+
+
   const headers = ["Student Name", "Applied At", "Grade", "Announcement"]
   const[applications, setApplications] = useState([]);
   const[loading, setLoading] = useState(true);

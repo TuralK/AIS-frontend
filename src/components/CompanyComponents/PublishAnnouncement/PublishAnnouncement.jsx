@@ -1,9 +1,22 @@
-import { useState, useRef } from "react"
+import React, { useState, useRef } from "react"
 import styles from "./PublishAnnouncement.module.css"
 import { publishAnnouncement } from "../../../api/CompanyApi/publishAnnouncementAPI"
 import { AiOutlineInfoCircle } from "react-icons/ai"
+import { useMatches } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function PublishAnnouncement() {
+  const matches = useMatches();
+  const { t } = useTranslation();
+  const currentMatch = matches[matches.length - 1];
+  const titleKey = currentMatch?.handle?.titleKey;
+
+  React.useEffect(() => {
+    const baseTitle = 'AIS';
+    document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
+  }, [titleKey, t]);
+
+  
   // New state variables for inputs
   const [title, setTitle] = useState("")
   const [details, setDetails] = useState("")

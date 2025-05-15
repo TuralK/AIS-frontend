@@ -2,11 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ChangePasswordCSS from './ChangePassword.module.css';
 import axios from 'axios';
-import Login from '../Login/Login';
+import { useMatches } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { validateToken } from '../../../api/ChangePasswordApi/validateTokenAPI';
 import Loading from '../../../components/LoadingComponent/Loading';
 
 const ChangePassword = () => {
+    const matches = useMatches();
+    const { t } = useTranslation();
+    const currentMatch = matches[matches.length - 1];
+    const titleKey = currentMatch?.handle?.titleKey;
+    
+    React.useEffect(() => {
+      const baseTitle = 'AIS';
+      document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
+    }, [titleKey, t]);
+    
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [token, setToken] = useState('');

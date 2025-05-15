@@ -1,16 +1,26 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { PendingApplicationCard } from './PendingApplicationCard.jsx';
 import { useOutletContext } from "react-router-dom";
+import { useMatches } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Search, ArrowUp } from 'lucide-react';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 
 export default function PendingApplicationList() {
+  const matches = useMatches();
+  const { t } = useTranslation();
+  const currentMatch = matches[matches.length - 1];
+  const titleKey = currentMatch?.handle?.titleKey;
+
+  React.useEffect(() => {
+    const baseTitle = 'AIS';
+    document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
+  }, [titleKey, t]);
+
   const [searchTerm, setSearchTerm] = useState('');
   const { applications } = useOutletContext();
   const [showScrollToTop, setShowScrollToTop] = useState(false);
-  const { t } = useTranslation();
 
   const filteredApplications = useMemo(() => {
     return applications.filter(app =>

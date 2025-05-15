@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useMatches } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Pencil, Trash2 } from 'lucide-react';
 import styles from "./StudentProfile.module.css";
 import StudentBackgound from "../../../assets/default_background.jpg";
@@ -28,8 +30,6 @@ import { deleteStudentLanguage } from '../../../api/StudentApi/StudentProfileAPI
 import { deleteStudentBannerImage } from '../../../api/StudentApi/StudentProfileAPI/deleteStudentBannerImageAPI';
 import { deleteStudentProfilePhoto } from '../../../api/StudentApi/StudentProfileAPI/deleteStudentProfilePhotoAPI';
 import StudentCreateProfile from '../StudentCreateProfileComponent/StudentCreateProfile';
-
-document.title = `AIS | Profile`;
 
 const baseUrl = 'http://localhost:3004';
 
@@ -250,6 +250,17 @@ const ImageUpload = ({ isProfilePic, currentImage, onImageChange, isEditing, def
 };
 
 const StudentProfile = () => {
+  const matches = useMatches();
+  const { t } = useTranslation();
+  const currentMatch = matches[matches.length - 1];
+  const titleKey = currentMatch?.handle?.titleKey;
+
+  React.useEffect(() => {
+    const baseTitle = 'AIS';
+    document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
+  }, [titleKey, t]);
+
+
   const [activeTab, setActiveTab] = useState("About");
   const [isEditing, setIsEditing] = useState(false);
 

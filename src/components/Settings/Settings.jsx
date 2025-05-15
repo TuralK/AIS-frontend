@@ -1,10 +1,11 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { useTranslation } from "react-i18next"
+import { useMatches } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from "react-redux"
 import { resetState as resetSuccessState } from "../../slices/settingsSlice"
 import { fetchInfo, updateUserInfo } from "../../thunks/settingsThunk"
@@ -68,7 +69,17 @@ function InputField({ label, id, register, type = "text", error, disabled }) {
 }
 
 export default function Settings({ apiUrl }) {
-  const { t } = useTranslation()
+  const matches = useMatches();
+  const { t } = useTranslation();
+  const currentMatch = matches[matches.length - 1];
+  const titleKey = currentMatch?.handle?.titleKey;
+
+  React.useEffect(() => {
+    const baseTitle = 'AIS';
+    document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
+  }, [titleKey, t]);
+
+  
   const dispatch = useDispatch()
   const { userData, loading, error, success } = useSelector((state) => state.settings)
 

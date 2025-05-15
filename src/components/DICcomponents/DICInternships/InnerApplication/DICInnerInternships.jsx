@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useMatches } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
@@ -20,12 +21,21 @@ import { updateApplicationDetail, downloadFile } from '../../../../api/DICApi/ap
 import { fetchInternshipDetails } from '../../../../api/DICApi/internshipDetailApi';
 
 const DICInnerInternships = () => {
+  const matches = useMatches();
+  const { t } = useTranslation();
+  const currentMatch = matches[matches.length - 1];
+  const titleKey = currentMatch?.handle?.titleKey;
+
+  React.useEffect(() => {
+    const baseTitle = 'AIS';
+    document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
+  }, [titleKey, t]); 
+
   const { id } = useParams();
   const [application, setApplication] = useState(null);
   const [feedback, setFeedback] = useState('');
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState('');
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const [isFeedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import SignUpCSS from './SignUp.module.css';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useMatches } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { getUserType } from '../../../api/LoginApi/getUserTypeAPI';
 import IYTElogo from '../../../assets/iyte_logo_eng.png'
 import StudentForm from '../../../components/SignUpComponents/StudentForm/StudentForm';
@@ -9,6 +10,17 @@ import CompanyForm from '../../../components/SignUpComponents/CompanyForm/Compan
 import Loading from '../../../components/LoadingComponent/Loading';
 
 const SignUp = () => {
+    const matches = useMatches();
+    const { t } = useTranslation();
+    const currentMatch = matches[matches.length - 1];
+    const titleKey = currentMatch?.handle?.titleKey;
+  
+    React.useEffect(() => {
+      const baseTitle = 'AIS';
+      document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
+    }, [titleKey, t]);
+
+
     const [studentForm, setForm] = useState(true);
     const [resetKey, setResetKey] = useState(0);
     const [loading, setLoading] = useState(true);

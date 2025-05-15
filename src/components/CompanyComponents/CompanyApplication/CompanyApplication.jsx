@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { fetchApplication } from "../../../api/CompanyApi/fetchApplicationAPI";
 import styles from "./CompanyApplication.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,7 +6,8 @@ import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import { faUpRightAndDownLeftFromCenter } from "@fortawesome/free-solid-svg-icons";
 import { useParams, useNavigate } from "react-router-dom";
 import Loading from "../../LoadingComponent/Loading";
-import axios from "axios";
+import { useMatches } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { rejectApplication } from "../../../api/CompanyApi/rejectApplicationAPI";
 import { fillApplicationForm } from "../../../api/CompanyApi/fillApplicationFormAPI";
 import { downloadApplicationForm } from "../../../api/CompanyApi/downloadApplicationFormAPI";
@@ -15,6 +16,16 @@ import { acceptApplication } from "../../../api/CompanyApi/acceptApplicationAPI"
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 
 const CompanyApplication = () => {
+  const matches = useMatches();
+  const { t } = useTranslation();
+  const currentMatch = matches[matches.length - 1];
+  const titleKey = currentMatch?.handle?.titleKey;
+
+  React.useEffect(() => {
+    const baseTitle = 'AIS';
+    document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
+  }, [titleKey, t]);
+
   const [application, setApplication] = useState(null);
   const [documentUrl, setDocumentUrl] = useState("");
   const [documentId, setDocumentId] = useState(-1);
