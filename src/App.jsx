@@ -77,7 +77,8 @@ const App = () => {
         { path: "home", element: <CompanyHome />, handle: { titleKey: 'home' } },
         { path: "applications", element: <CompanyApplications />, handle: { titleKey: 'applications' } },
         { path: "publishAnnouncement", element: <PublishAnnouncement />, handle: { titleKey: 'publishAnnouncement' } },
-        { path: "applications/:id", element: <CompanyApplication />, handle: { titleKey: 'application' } }
+        { path: "applications/:id", element: <CompanyApplication />, handle: { titleKey: 'application' } },
+        { path: "settings", element: <Settings apiUrl={'http://localhost:3005'} />, handle: { titleKey: 'settings' } },
       ]
     },
     {

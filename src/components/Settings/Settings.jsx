@@ -17,9 +17,12 @@ const settingsSchema = z
     firstName: z.string().min(2, { message: "firstNameMinLength" }).optional(),
     lastName: z.string().min(2, { message: "lastNameMinLength" }).optional(),
     email: z.string().email({ message: "validEmail" }).optional(),
-    currentPassword: z.string().optional(),
-    newPassword: z.string().min(6, { message: "passwordMinLength" }).optional(),
-    confirmPassword: z.string().optional(),
+    currentPassword: z
+      .preprocess(val => (val === "" ? undefined : val), z.string().optional()),
+    newPassword: z
+      .preprocess(val => (val === "" ? undefined : val), z.string().min(6, { message: "passwordMinLength" }).optional()),
+    confirmPassword: z
+      .preprocess(val => (val === "" ? undefined : val), z.string().optional()),
   })
   .superRefine((data, ctx) => {
     if (!data.firstName && !data.lastName && !data.email && !data.newPassword) {
