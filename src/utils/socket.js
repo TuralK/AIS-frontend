@@ -3,6 +3,8 @@ import { io } from "socket.io-client";
 let socket = null;
 const apiUrl = "http://localhost:3007";
 
+export const getSocket = () => socket;
+
 export const connectSocket = ({ conversationId }) => {
   socket = io(apiUrl, {
     withCredentials: true,
