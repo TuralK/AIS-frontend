@@ -37,8 +37,8 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle }) => {
     return conversations.some(conv => conv.user1_email === userEmail || conv.user2_email === userEmail)
   }
 
-  const filteredUsers = users.filter(user => 
-    (user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  const filteredUsers = users.filter(user =>
+  (user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase())
   )).filter(user => !hasExistingConversation(user.email))
 
@@ -93,10 +93,10 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle }) => {
           "bg-white border border-gray-200 flex flex-col",
           isMobile ? "fixed left-4 right-3 bottom-1 rounded-lg shadow-xl" : "rounded-t-lg shadow-xl w-[380px]",
         )}
-        style={{
-          height: isMobile ? "calc(100dvh - 110px)" : "calc(100dvh - 110px)",
-          maxHeight: isMobile ? "calc(100dvh - 100px)" : "calc(100dvh - 110px)",
-        }}>
+          style={{
+            height: isMobile ? "calc(100dvh - 110px)" : "calc(100dvh - 110px)",
+            maxHeight: isMobile ? "calc(100dvh - 100px)" : "calc(100dvh - 110px)",
+          }}>
           <div className="flex justify-between items-center px-4 py-3 border-b border-gray-200">
             <div className="flex items-center gap-2">
               <MessageCircle size={20} className="text-blue-600" />
@@ -202,7 +202,7 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle }) => {
                           .filter(conv => conv.user2_name.toLowerCase().includes(searchTerm.toLowerCase()))
                           .map(conv => {
                             const hasNewMessages = conv.user1_new_messages > 0
-                        
+
                             return (
                               <div
                                 key={conv.id}
@@ -226,7 +226,7 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle }) => {
                                       )}
                                     </div>
                                   </div>
-                        
+
                                   {hasNewMessages && (
                                     <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
                                       {conv.user1_new_messages}
@@ -236,7 +236,7 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle }) => {
                               </div>
                             )
                           })
-                        ): (
+                      ) : (
                         <div className="h-full flex items-center justify-center min-h-[200px]">
                           <p className="text-sm text-gray-500 text-center">{t("no_conversation")}</p>
                         </div>
@@ -249,7 +249,10 @@ const Messaging = ({ hasAITab, apiUrl, isOpen, onToggle }) => {
           ) : selectedConversation && (
             <Conversation
               conversation={selectedConversation}
-              onBack={() => setSelectedConversation(null)}
+              onBack={() => {
+                setSelectedConversation(null)
+                dispatch(fetchConversationsThunk(apiUrl)) 
+              }}
               apiUrl={apiUrl}
             />
           )}
