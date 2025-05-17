@@ -23,12 +23,13 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
   const dispatch = useDispatch();
   const convId = initialConversation.id;
   const messages = useSelector(state => selectConversationMessages(state, convId));
-  const loading = useSelector((state) => state.messaging.loading);
+  const loading = useSelector((state) => state.messaging.wsLoading);
   const [errorSendingMessage, setErrorSendingMessage] = useState(false)
   const [isSelectionMode, setIsSelectionMode] = useState(false);
-  const [selectedMessages, setSelectedMessages] = useState([]); // Added missing state
+  const [selectedMessages, setSelectedMessages] = useState([]); 
   const [isDeletingConversation, setIsDeletingConversation] = useState(false)
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
+  const messageStatus = useSelector((state) => state.messaging.messageStatus);
   const otherName = initialConversation.user2_name;
 
   const [attachedFile, setAttachedFile] = useState(null);
@@ -61,11 +62,14 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
   useEffect(() => {
     messages.forEach(msg => {
       if (!msg.isSentByUser && !msg.is_read) {
-        console.log("Marking message as read:", msg.id);
         dispatch(markReadWS(msg.id));
       }
     });
   }, [messages, dispatch]);
+
+  useEffect(() => {
+    scrollToBottom(endRef);
+  }, [messages.length]);
 
   const handleDeleteConversation = async () => {
     let conversationId = initialConversation.id;
@@ -94,13 +98,16 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
     if (!text.trim() && !attachedFile) return;
     try {
       dispatch(sendMessageWS(convId, text.trim(), attachedFile, attachedFile?.name));
-      setErrorSendingMessage(false)
+      setErrorSendingMessage(false);
       setAttachedFile(null);
+      
+      setTimeout(() => {
+        scrollToBottom(endRef);
+      }, 50);
     } catch (error) {
-      setErrorSendingMessage(true)
-      setTimeout(() => setErrorSendingMessage(false), 4000)
+      setErrorSendingMessage(true);
+      setTimeout(() => setErrorSendingMessage(false), 4000);
     }
-
   };
 
   const handleDeleteMsg = id => {
@@ -188,9 +195,13 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
           <div className="p-4 space-y-2">
             {messages.map(msg => {
               const isSender = msg.isSentByUser;
+              // Mesaj durumunu kontrol et
+              const isLoading = msg.tempId && messageStatus[msg.tempId]?.sending;
+              const hasError = msg.tempId && messageStatus[msg.tempId]?.error;
+              
               return (
                 <div
-                  key={msg.id}
+                  key={msg.id || msg.tempId}
                   className={`flex ${isSender ? "justify-end" : "justify-start"} items-center gap-2 group`}
                 >
                   {isSender && (
@@ -198,21 +209,26 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
                       {isSelectionMode ? (
                         <input
                           type="checkbox"
-                          checked={selectedMessages.includes(msg.id)}
-                          onChange={() => toggleMessageSelection(msg.id)}
+                          checked={selectedMessages.includes(msg.id || msg.tempId)}
+                          onChange={() => toggleMessageSelection(msg.id || msg.tempId)}
                           className="mr-2"
                         />
                       ) : (
                         <CustomDropdown
-                          onDelete={() => handleDeleteMsg(msg.id)}
+                          onDelete={() => handleDeleteMsg(msg.id || msg.tempId)}
                           isSentByUser={true}
                         />
                       )}
                     </div>
                   )}
                   <div
-                    className={`max-w-[75%] rounded-lg p-3 ${isSender ? "bg-red-700 text-white" : "bg-gray-300 text-black"
-                      }`}
+                    className={`max-w-[75%] rounded-lg p-3 ${
+                      isSender 
+                        ? hasError 
+                          ? "bg-red-200 text-red-900" 
+                          : "bg-red-700 text-white" 
+                        : "bg-gray-300 text-black"
+                    }`}
                   >
                     {msg.fileName && (
                       <div className="flex items-center gap-2 p-2 mb-2 bg-gray-400 rounded">
@@ -223,7 +239,15 @@ const Conversation = ({ conversation: initialConversation, onBack, apiUrl }) => 
                       </div>
                     )}
                     {msg.message && <p>{msg.message}</p>}
-                    <div className="mt-1 text-xs text-right">
+                    <div className="mt-1 text-xs text-right flex justify-end items-center">
+                      {/* Yükleniyor göstergesi */}
+                      {isLoading && (
+                        <Loader size={12} className="mr-1 animate-spin" />
+                      )}
+                      {/* Hata göstergesi */}
+                      {hasError && (
+                        <span className="text-red-600 mr-1 text-xs">!</span>
+                      )}
                       {new Date(msg.timestamp).toLocaleString("tr-TR", {
                         day: "2-digit",
                         month: "2-digit",

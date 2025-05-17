@@ -22,11 +22,9 @@ socketListener.startListening({
   actionCreator: connectConversation,
   effect: (action, { dispatch, getState }) => {
     const { apiUrl, conversationId } = action.payload;
-    console.log("Connecting to socket", apiUrl, conversationId);
     connectSocket({ apiUrl, conversationId });
 
     onSocket("conversationMessages", ({ messages }) => {
-        console.log(conversationId, messages.length)
       dispatch(messagesLoaded({ conversationId, messages }));
     });
     
@@ -56,8 +54,55 @@ socketListener.startListening({
 // SEND / DELETE / READ via WS
 socketListener.startListening({
   actionCreator: sendMessageWS,
-  effect: (action) => {
-    emitSocket("sendMessage", action.payload);
+  effect: (action, { dispatch }) => {
+    const { conversationId, message, file, fileName } = action.payload;
+    
+    const tempId = Date.now().toString();
+    
+    dispatch(messageSending({ tempId }));
+    
+    dispatch(addMessage({
+      conversationId,
+      msg: {
+        id: null,
+        tempId: tempId,
+        message,
+        fileName,
+        data: file ? btoa(String.fromCharCode.apply(null, new Uint8Array(file))) : null,
+        timestamp: new Date().toISOString(),
+        isSentByUser: true,
+        is_read: false,
+        delivered: false
+      }
+    }));
+    
+    
+    onSocket("messageDelivered", (data) => {
+      if (data.tempId === tempId) {
+        dispatch(messageSent({ tempId }));
+        dispatch(messageDelivered({ 
+          conversationId, 
+          messageId: tempId, 
+          id: data.id, 
+          timestamp: data.timestamp 
+        }));
+      }
+    });
+    
+    onSocket("messageSendError", (data) => {
+      if (data.tempId === tempId) {
+        dispatch(messageSendFailed({ tempId }));
+      }
+    });
+    
+    
+    emitSocket("sendMessage", {
+      conversationId,
+      message,
+      file,
+      fileName,
+      tempId 
+    });
   }
 });
 socketListener.startListening({
