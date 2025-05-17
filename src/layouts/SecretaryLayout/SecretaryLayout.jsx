@@ -17,7 +17,6 @@ const SecretaryLayout = () => {
             ]}
             basePath="secretary"
             apiUrls={{ 
-            messaging: 'http://localhost:3006',
             logout: 'http://localhost:3001'
             }}
             // outletContext={{ userId, email, firstName, applications, setApplications }}

@@ -310,12 +310,9 @@ export const UserLayout = ({
         </footer>
       </main>
 
-      
-      
-
       <Messaging
         hasAITab={hasAITab}
-        apiUrl={apiUrls.messaging}
+        apiUrl={"http://localhost:3007"}
         isOpen={isMessagingOpen}
         onToggle={setIsMessagingOpen}
       />

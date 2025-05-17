@@ -21,7 +21,6 @@ const CompanyLayout = () => {
           ]}
           basePath="company"
           apiUrls={{ 
-            messaging: 'http://localhost:3005',
             logout: 'http://localhost:3001'
           }}
           // outletContext={{ userId, email, firstName, applications, setApplications }}

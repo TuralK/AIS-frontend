@@ -21,7 +21,6 @@ const StudentLayout = () => {
             ]}
             basePath="student"
             apiUrls={{ 
-            messaging: 'http://localhost:3004',
             logout: 'http://localhost:3001'
             }}
             hasAITab={true}

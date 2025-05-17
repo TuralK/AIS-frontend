@@ -20,7 +20,6 @@ const DICLayout = () => {
             ]}
             basePath="admin"
             apiUrls={{ 
-            messaging: 'http://localhost:3003',
             logout: 'http://localhost:3001'
             }}
             // outletContext={{ userId, email, firstName, applications, setApplications }}
