@@ -8,37 +8,30 @@ const FileUploadSection = ({
   uploadedFile,
   onFileChange,
   onRemove,
-  isSubmitted,
-  disabled = false, // yeni prop
+  disabled = false,
 }) => {
   const { t } = useTranslation();
   const inputRef = useRef(null);
-  const overlay = isSubmitted || disabled;
 
   const handleFileUpload = (e) => {
-    if (overlay) return;
     const file = e.target.files?.[0];
     if (file?.type === "application/pdf") onFileChange(file);
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
-    if (overlay) return;
     const file = e.dataTransfer.files?.[0];
     if (file?.type === "application/pdf") onFileChange(file);
   };
 
   const handleButtonClick = () => {
-    if (!overlay && inputRef.current) inputRef.current.click();
+    if (inputRef.current) inputRef.current.click();
   };
 
   return (
-    <div className="space-y-4 relative">
-      {overlay && (
-        <div className="absolute inset-0 z-10 bg-white/50 backdrop-blur-[0.5px] rounded-lg pointer-events-none" />
-      )}
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-base font-medium text-gray-800">{label}</h3>
+        <h3 className="text-base font-medium text-gray-800 mt-0">{label}</h3>
         {uploadedFile && (
           <div className="flex items-center gap-2 rounded-lg bg-green-50 px-3 py-1.5 text-sm font-medium text-green-600">
             <CheckCircle className="h-4 w-4" />
@@ -60,7 +53,6 @@ const FileUploadSection = ({
           </div>
           <button
             onClick={onRemove}
-            disabled={overlay}
             className="rounded-full p-2 text-gray-400 hover:bg-gray-200 hover:text-[#a51c30] transition-colors"
             aria-label="Remove file"
           >
@@ -69,7 +61,7 @@ const FileUploadSection = ({
         </div>
       ) : (
         <div
-          className={`relative cursor-pointer ${overlay ? "opacity-70" : ""}`}
+          className={`relative cursor-pointer ${disabled ? "opacity-70" : ""}`}
           onClick={handleButtonClick}
           onDrop={handleDrop}
           onDragOver={(e) => e.preventDefault()}
@@ -89,7 +81,7 @@ const FileUploadSection = ({
               className="hidden"
               accept=".pdf,application/pdf"
               onChange={handleFileUpload}
-              disabled={overlay}
+              disabled={disabled}
             />
           </div>
         </div>

@@ -66,7 +66,6 @@ const StudentHomePage = () => {
     } catch (error) {
       console.error("Upload error:", error);
   
-      // Öncelikle backend’den gelen mesajı alıyoruz
       const backendMsg = error.response?.data?.message;
   
       if (backendMsg === "You already have an internship") {

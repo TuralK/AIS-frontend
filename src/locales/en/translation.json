@@ -228,7 +228,7 @@
   "clickToSendFile": "Summer Internship Application Form",
   "clearFile": "Clear file",
   "sendFile": "Send file",
-  "isInternshipFinished": "Is the internship finished?",
+  "isInternshipFinished": "Did you finish your internship?",
   "yes": "Yes",
   "files": "Files",
   "companyNameNotFound": "Company name not found",
@@ -241,5 +241,17 @@
   "finishInternshipConfirm": "Are you sure you want to finish the internship?",
   "noFilesToUpload": "No files to upload, please upload at least one file",
   "finishing": "Finishing...",
-  "haveAnInternship": "You have an internship, so you cannot apply for another internship"
+  "haveAnInternship": "You have an internship, so you cannot apply for another internship",
+  "noInternshipFound": "No active internship found",
+  "requestLink": "Request Link",
+  "requestLinkTooltip": "Request a link from coordinator to send your company",
+  "uploadFailed": "Upload failed. Please try again.",
+  "companyName": "Company Name",
+  "companyEmail": "Company Email",
+  "linkRequestedSuccessfully": "Link requested successfully",
+  "companyNameEmailRequired": "Company name and email are required",
+  "invalidEmailFormat": "Invalid email format",
+  "requestLinkFailed": "Failed to request link",
+  "submissionSuccess": "File submission successful"
+
 }

@@ -63,14 +63,14 @@ const StudentInternship = () => {
   if (!internshipData) {
     return (
       <div className="flex justify-center items-center m-screen text-2xl font-semibold text-gray-700 min-h-[80vh]">
-        No Active Internship
+        {t("noInternshipFound")}
       </div>
     );
   }
   
   else {
-    companyName = (internshipData.Application && internshipData.Application.Announcement.Company.name) || t("companyNameNotFound");
-    internshipTitle = (internshipData.Application && internshipData.Application.Announcement.announcementName) || t("internshipTitleNotFound");
+    companyName = (internshipData.Application && internshipData.Application.Announcement.Company.name) || "-";
+    internshipTitle = (internshipData.Application && internshipData.Application.Announcement.announcementName) || "-";
     internshipStatus = internshipData.status === 0 ? t("ongoing") : t("finished");
   }
 
@@ -135,14 +135,13 @@ const StudentInternship = () => {
       {/* Finished: Submission & Feedback */}
       {internshipData.status !== 0 && (
         <div className="mx-auto max-w-6xl flex gap-6 mt-8">
-          <div className={`${internshipData.status === 4 ? "w-1/2" : "w-full"}`}>
+          <div className={`${internshipData.studentStatus === 3 ? "w-1/2" : "w-full"}`}>
             <SubmissionForm
-              status={internshipData.status}
+              status={internshipData.studentStatus}
               manualApplicationId={internshipData.manualApplicationId}
-
             />
           </div>
-          {internshipData.status === 4 && (
+          {internshipData.status === 1 && internshipData.studentStatus === 3 && (
             <div className="w-1/2">
               <FeedbackSection
                 feedback="Örnek geri bildirim..."

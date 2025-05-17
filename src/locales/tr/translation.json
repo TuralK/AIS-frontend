@@ -233,6 +233,17 @@
   "finishInternshipConfirm": "Stajı bitirdiğinizi onaylıyor musunuz?",
   "noFilesToUpload": "Yüklemek için dosya yok, en az bir dosya yükleyin",
   "finishing": "Bitiriliyor...",
-  "haveAnInternship": "Halihazırda stajınız var, başka bir staj başvurusu yapamazsınız"
-  
+  "haveAnInternship": "Halihazırda stajınız var, başka bir staj başvurusu yapamazsınız",
+  "noInternshipFound": "Aktif stajınız bulunamadı",
+  "requestLink": "Link talep et",
+  "requestLinkTooltip": "Staj başvuru formu için koordinatörden link talep et",
+  "uploadFailed": "Yükleme başarısız oldu. Lütfen tekrar deneyin.",
+  "companyName": "Şirket Adı",
+  "companyEmail": "Şirket Emaili",
+  "linkRequestedSuccessfully": "Link talebi başarıyla gönderildi",
+  "companyNameEmailRequired": "Şirket adı ve emaili gereklidir",
+  "invalidEmailFormat": "Geçersiz email formatı",
+  "requestLinkFailed": "Link talebi başarısız oldu. Lütfen tekrar deneyin.",
+  "submissionSuccess": "Dosya başarıyla gönderildi"
+
 }
