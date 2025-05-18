@@ -82,7 +82,7 @@ const StudentInternship = () => {
   return (
     <div className="min-h-screen px-4">
       {/* Status Bar */}
-      <div className="max-w-5xl mx-auto flex justify-end p-4 border-b">
+      <div className="max-w-6xl mx-auto flex justify-end p-4 border-b border-gray-400">
         <div
           className={`flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium ${internshipData.status === 0 ? 'bg-green-50 text-green-600' : 'bg-orange-50 text-orange-600'
             }`}
