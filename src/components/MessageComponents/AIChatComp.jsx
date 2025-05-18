@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import RoundedInput from "./MessageInputComp";
-import { clearAIError } from "../../slices/aiChatSlice";
+import { clearAIError, addOptimisticMessage } from "../../slices/aiChatSlice";
 import { sendMessageToAI, getConversationThunk } from "../../thunks/aiChatThunk";
 import { deleteMessageThunk } from "../../thunks/messageThunks";
 import IYTElogo from "../../assets/iyte_logo_eng.png";
@@ -43,7 +43,25 @@ const AIComponent = ({ apiUrl }) => {
 
   const handleSend = (message) => {
     if (!message.trim()) return;
-    dispatch(sendMessageToAI({ message, apiUrl }));
+    
+    // Create a temporary ID for optimistic UI update
+    const tempMessageId = `temp-${Date.now()}`;
+    
+    // Add optimistic message to UI immediately
+    dispatch(addOptimisticMessage({
+      id: tempMessageId,
+      message: message,
+      isSentByUser: true,
+      isOptimistic: true,
+      timestamp: new Date().toISOString(),
+    }));
+    
+    // Send actual message to API with the temporary ID
+    dispatch(sendMessageToAI({ 
+      message, 
+      apiUrl, 
+      tempMessageId 
+    }));
   };
 
   const handleDeleteMessage = async (messageId) => {
@@ -56,28 +74,47 @@ const AIComponent = ({ apiUrl }) => {
     }
   };
 
+  const sortedMessages = [...messages].sort((a, b) => {
+    const timeA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+    const timeB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+    return timeA - timeB;
+  });
+
   return (
     <div className={`flex flex-col w-full bg-background ${isMobile ? "h-screen" : "h-full max-h-[90%]"} `}>
       <div className={`flex-1 overflow-y-auto flex flex-col ${isMobile ? "pb-36" : "pb-0"} p-2 md:p-4 space-y-4 relative`}>
-        {historyLoading ? (
+        {historyLoading && messages.length === 0 ? (
           <div className="flex-1 flex items-center justify-center min-h-[200px]">
             <div className="w-8 h-8 border-4 border-gray-200 border-t-[#8B0000] rounded-full animate-spin"></div>
           </div>
-        ) : messages.length === 0 ? (
+        ) : sortedMessages.length === 0 ? (
           <div className="flex-1 flex justify-center items-center text-center px-4">
             <div className="text-muted-foreground">{t("start_conversation")}</div>
           </div>
         ) : (
-          messages.map((msg) => (
+          sortedMessages.map((msg) => (
             <div
               key={msg.id}
               className={`flex items-center gap-0 group ${msg.isSentByUser ? "justify-end" : "justify-start"}`}
             >
               {msg.isSentByUser ? (
                 <div className="flex items-center gap-0 relative hover:dropup-container">
-                  <CustomDropdown onDelete={() => handleDeleteMessage(msg.id)} isSentByUser={true} />
-                  <div className="p-3 rounded-lg break-words text-sm md:text-base bg-red-800 text-white rounded-br-none max-w-[90%] xs:max-w-[80%] relative">
+                  <CustomDropdown 
+                    onDelete={() => handleDeleteMessage(msg.id)} 
+                    isSentByUser={true} 
+                    disabled={msg.isOptimistic}
+                  />
+                  <div 
+                    className={`p-3 rounded-lg break-words text-sm md:text-base bg-red-800 text-white rounded-br-none max-w-[90%] xs:max-w-[80%] relative ${
+                      msg.isOptimistic ? "opacity-70" : ""
+                    }`}
+                  >
                     {msg.message}
+                    {msg.isOptimistic && (
+                      <div className="absolute bottom-1 right-1">
+                        <div className="w-2 h-2 rounded-full bg-gray-200 animate-pulse"></div>
+                      </div>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -86,7 +123,10 @@ const AIComponent = ({ apiUrl }) => {
                   <div className="p-3 rounded-lg break-words text-sm md:text-base bg-gray-200 text-foreground rounded-bl-none max-w-[90%] xs:max-w-[80%]">
                     {msg.message}
                   </div>
-                  <CustomDropdown onDelete={() => handleDeleteMessage(msg.id)} isSentByUser={false} />
+                  <CustomDropdown 
+                    onDelete={() => handleDeleteMessage(msg.id)} 
+                    isSentByUser={false}
+                  />
                 </div>
               )}
             </div>

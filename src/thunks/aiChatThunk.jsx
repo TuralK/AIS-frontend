@@ -16,18 +16,22 @@ export const getConversationThunk = createAsyncThunk(
 
 export const sendMessageToAI = createAsyncThunk(
   "aiMessages/sendMessage",
-  async ({ message, apiUrl }, { dispatch, rejectWithValue }) => {
+  async ({ message, apiUrl, tempMessageId }, { rejectWithValue }) => {
     try {
-      const response = await sendMessageApi(apiUrl, message);
+      const response = await sendMessageApi(apiUrl, message, tempMessageId);
       
-      //get the new messages
-      await dispatch(getConversationThunk(apiUrl));
       return {
         userMessage: response.userMessage,
-        aiMessage: response.aiMessage
+        aiMessage: response.aiMessage,
+        tempMessageId: response.tempMessageId,
+        userMessageId: response.userMessageId,
+        aiMessageId: response.aiMessageId
       };
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || "Unknown error");
+      return rejectWithValue({
+        error: error.response?.data?.message || "Unknown error",
+        tempMessageId: tempMessageId
+      });
     }
   }
 );
