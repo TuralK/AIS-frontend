@@ -13,7 +13,6 @@ const SubmitSection = ({
 }) => {
   const { t } = useTranslation();
 
-  // Hata ve başarı için ayrı state’ler
   const [submissionError, setSubmissionError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successOpen, setSuccessOpen] = useState(false);
@@ -49,7 +48,7 @@ const SubmitSection = ({
     } else {
       if (uploadedFileSPR) {
         const form = new FormData();
-        form.append("Report", uploadedFileSPR);
+        form.append("internshipFile", uploadedFileSPR);
 
         requests.push(
           axios
@@ -62,7 +61,9 @@ const SubmitSection = ({
               }
             )
             .then((res) => {
-              if (res.status !== 200) throw new Error("Bad status: " + res.status);
+              if (res.status < 200 || res.status >= 300) {
+                throw new Error("Bad status: " + res.status);
+              }
               return res;
             })
         );
@@ -90,7 +91,6 @@ const SubmitSection = ({
       }
     }
 
-    
     if (requests.length === 0) {
       setErrorMessage(t("noFilesToUpload"));
       setSubmissionError(true);
@@ -99,14 +99,20 @@ const SubmitSection = ({
 
     try {
       await Promise.all(requests);
-      
-      setSuccessMessage(t("uploadSuccess")); 
+
+      setSuccessMessage(t("uploadSuccess"));
       setSuccessOpen(true);
     } catch (err) {
       const msgFromServer = err.response?.data?.message;
       setErrorMessage(msgFromServer || t("uploadFailed"));
       setSubmissionError(true);
     }
+  };
+
+  // Başarı dialog'unu kapatırken sayfayı yenile
+  const handleSuccessClose = () => {
+    setSuccessOpen(false);
+    window.location.reload();
   };
 
   return (
@@ -128,7 +134,7 @@ const SubmitSection = ({
 
       <CustomAlertDialog
         isOpen={successOpen}
-        onClose={() => setSuccessOpen(false)}
+        onClose={handleSuccessClose}
         title={t("submissionSuccess")}
         description={successMessage}
         confirmLabel={t("ok")}

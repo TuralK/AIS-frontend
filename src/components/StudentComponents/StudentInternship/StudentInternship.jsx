@@ -119,7 +119,7 @@ const StudentInternship = () => {
         </div>
       </div>
 
-      {/* Internship bitirme onayı */}
+      {/* Internship finish approval */}
       {internshipData.status === 0 && (
         <div className="max-w-6xl mx-auto text-center mt-8">
           <h3 className="text-2xl font-bold text-gray-800 mb-4">
@@ -151,13 +151,14 @@ const StudentInternship = () => {
           {/* SubmissionForm */}
           <div className="flex-1">
             <SubmissionForm
-              status={internshipData.studentStatus}
+              status={internshipData.status}
               manualApplicationId={internshipData.manualApplicationId}
+              studentStatus={internshipData.studentStatus}
+              companyStatus={internshipData.companyStatus}
             />
           </div>
-
-          {/* FeedbackSection (eğer gösterilecekse) */}
-          {internshipData.studentStatus !== 2 && (
+          {/* FeedbackSection */}
+          {internshipData.studentStatus !== 2 && internshipData.studentStatus !== 0 || internshipData.companyStatus === 2 && (
             <div className="flex-1">
               <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
                 <FeedbackSection internshipData={internshipData} />

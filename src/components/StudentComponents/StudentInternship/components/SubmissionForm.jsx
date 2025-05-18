@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { requestLink } from "../../../../api/StudentApi/internshipApi";
 import { Tooltip } from "@mui/material";
 
-const SubmissionForm = ({ status, manualApplicationId, onRequestLink }) => {
+const SubmissionForm = ({ status, manualApplicationId, onRequestLink, studentStatus, companyStatus }) => {
   const [fileSPR, setFileSPR] = useState(null);
   const [fileSPES, setFileSPES] = useState(null);
   const [companyName, setCompanyName] = useState("");
@@ -60,6 +60,8 @@ const SubmissionForm = ({ status, manualApplicationId, onRequestLink }) => {
           uploadedFile={fileSPR}
           onFileChange={setFileSPR}
           onRemove={() => setFileSPR(null)}
+          showQuestionMark={studentStatus > 1 && studentStatus !== 2 && status !== 0 && status !== 2}
+          disabled={status === 2 || companyStatus === 2}
         />
       )}
       <FileUploadSection
@@ -67,6 +69,8 @@ const SubmissionForm = ({ status, manualApplicationId, onRequestLink }) => {
         uploadedFile={fileSPES}
         onFileChange={setFileSPES}
         onRemove={() => setFileSPES(null)}
+        showQuestionMark={studentStatus > 2 && status !== 0 && status !== 2}
+        disabled={status === 2}
       />
 
       {onlySPES && (

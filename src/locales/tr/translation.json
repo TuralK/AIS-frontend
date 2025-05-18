@@ -247,11 +247,17 @@
   "submissionSuccess": "Dosya başarıyla gönderildi",
   "Pending": "Beklemede",
   "Accepted": "Onaylandı",
-  "Form uploaded, awaiting approval": "Form yüklendi, onay bekleniyor",
+  "Report approved by company": "Şirket tarafından raporunuz onaylandı",
   "Company gave a feedback to student": "Şirket öğrenciye geri bildirim verdi",
   "Finished": "Tamamlandı",
   "Approved": "Onaylandı",
   "Rejected": "Reddedildi",
   "feedbackFromCoordinator": "Koordinatörden geri bildirim",
-  "feedbackFromCompanySupervisor": "Şirket temsilcisinden geri bildirim"
+  "feedbackFromCompanySupervisor": "Şirket temsilcisinden geri bildirim",
+  "questionMarkTooltip": "Dosyanızı güncellemek için tekrar yükleyebilirsiniz",
+    "AdminFeedbackBoth_StudOnlyReport": "Koordinatör her ikisi içinde bildirim verdi, yalnızca raporu güncellediniz.",
+  "AdminFeedbackBoth_StudOnlySurvey": "Koordinatör her ikisi içinde bildirim verdi, yalnızca anketi güncellediniz.",
+  "AdminFeedbackBoth": "Koordinatör hem rapor hem de anket için geri bildirim verdi.",
+  "AdminFeedbackReport_StudUpdated": "Koordinatör rapor için geri bildirim verdi, güncelleme yapıldı.",
+  "AdminFeedbackSurvey_StudUpdated": "Koordinatör anket için geri bildirim verdi, güncelleme yapıldı."
 }

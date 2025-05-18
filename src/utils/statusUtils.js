@@ -9,7 +9,7 @@
  * @returns {string} - status label for company supervisor
  */
 export const getCompanySupervisorStatus = (data) => {
-  const { companyStatus, studentStatus, feedbackContextStudent } = data;
+  const { companyStatus, studentStatus } = data;
 
   // If company has given feedback to student
   if (studentStatus === 5) {
@@ -23,7 +23,7 @@ export const getCompanySupervisorStatus = (data) => {
 
   // companyStatus 2 means form uploaded but not yet approved, consider Pending
   if (companyStatus === 2) {
-    return "Form uploaded, awaiting approval";
+    return "Report approved by company";
   }
 
   // default or 0
@@ -37,17 +37,47 @@ export const getCompanySupervisorStatus = (data) => {
  * @param {string|null} data.feedbackContextCompany
  * @returns {string} - status label for coordinator
  */
+// utils/statusUtils.js
 export const getCoordinatorStatus = (data) => {
-  const { status, feedbackContextCompany } = data;
+  const { status, studentStatus, feedbackContextStudent } = data;
 
-  switch (status) {
-    case 1:
-      return "Pending"; // student marked internship as finished
-    case 2:
-      return "Approved"; // admin approved
-    case 3:
-      return "Rejected"; // admin rejected
-    default:
-      return "Pending";
+  // Öncelikle status’a göre genel durum
+  if (status === 1) {
+    return "Pending"; // student marked internship as finished
   }
+  if (status === 2) {
+    // Admin onaylamış
+    // Eğer öğrencinin geri bildirim eksiklik durumu varsa, özel mesaj döneceğiz
+    switch (feedbackContextStudent) {
+      case "MissingReport":
+        return "AdminFeedbackBoth_StudOnlySurvey"; 
+        // Örneğin "Admin gave feedback for both report and survey, student only updated the survey."
+      case "MissingSurvey":
+        return "AdminFeedbackBoth_StudOnlyReport";
+        // Örneğin "Admin gave feedback for both report and survey, student only updated the report."
+      case "Report":
+        // Admin yalnızca raporla ilgili geri bildirim vermiş, öğrenci durumu 4 veya 6 ise
+        if (studentStatus === 4 || studentStatus === 6) {
+          return "AdminFeedbackReport_StudUpdated"; 
+          // Örneğin "Admin gave feedback on report, student updated accordingly."
+        }
+        break;
+      case "Survey":
+        if (studentStatus === 4 || studentStatus === 6) {
+          return "AdminFeedbackSurvey_StudUpdated";
+          // Örneğin "Admin gave feedback on survey, student updated accordingly."
+        }
+        break;
+      case "Both":
+        // Admin her ikisi için de geri bildirim vermiş, burayı tek bir durumda tutabiliriz
+        return "AdminFeedbackBoth";
+      default:
+        return "Approved";
+    }
+  }
+  if (status === 3) {
+    return "Rejected"; // admin rejected
+  }
+
+  return "Pending";
 };

@@ -255,11 +255,18 @@
   "submissionSuccess": "File submission successful",
   "Pending": "Pending",
   "Accepted": "Accepted",
-  "Form uploaded, awaiting approval": "Form uploaded, awaiting approval",
+  "Report approved by company": "Report approved by company",
   "Company gave a feedback to student": "Company gave a feedback to student",
   "Finished": "Finished",
   "Approved": "Approved",
   "Rejected": "Rejected",
   "feedbackFromCoordinator": "Feedback from Coordinator",
-  "feedbackFromCompanySupervisor": "Feedback from Company supervisor"
+  "feedbackFromCompanySupervisor": "Feedback from Company supervisor",
+  "questionMarkTooltip": "You can update via reuploading the document",
+  "AdminFeedbackBoth_StudOnlyReport": "Coordinator gave feedback for both documents, you only updated the report.",
+  "AdminFeedbackBoth_StudOnlySurvey": "Coordinator gave feedback for both documents, you only updated the survey..",
+  "AdminFeedbackBoth": "Coordinator gave feedback for both documents.",
+  "AdminFeedbackReport_StudUpdated": "Coordinator gave feedback for report,and you updated the report.",
+  "AdminFeedbackSurvey_StudUpdated": "Coordinator gave feedback for survey,and you updated the survey."
+
 }
