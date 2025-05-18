@@ -2,16 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import RoundedInput from "./MessageInputComp";
-import { clearAIError, setConversationId } from "../../slices/aiChatSlice";
-import {
-  sendMessageToAI,
-  getMessages,
-  createConversationThunk,
-  getConversationThunk,
-} from "../../thunks/aiChatThunk";
-import {
-  deleteMessageThunk,
-} from "../../thunks/messageThunks"
+import { clearAIError } from "../../slices/aiChatSlice";
+import { sendMessageToAI, getConversationThunk } from "../../thunks/aiChatThunk";
+import { deleteMessageThunk } from "../../thunks/messageThunks";
 import IYTElogo from "../../assets/iyte_logo_eng.png";
 import ErrorMessage from "../ui/error_message";
 import CustomDropdown from "../ui/custom_dropdown";
@@ -22,57 +15,20 @@ const AIComponent = ({ apiUrl }) => {
   const messagesEndRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
 
+  const { messages, loading: aiLoading, error: aiError, historyLoading } = useSelector(
+    (state) => state.aiMessaging
+  );
+
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const {
-    messages,
-    loading: aiLoading,
-    error: aiError,
-    historyLoading,
-    conversationId,
-  } = useSelector((state) => state.aiMessaging);
-
   useEffect(() => {
-    const createAndFetchConversation = async () => {
-      const action = await dispatch(createConversationThunk(apiUrl));
-      if (createConversationThunk.fulfilled.match(action)) {
-        const convAction = await dispatch(getConversationThunk(apiUrl));
-        if (getConversationThunk.fulfilled.match(convAction)) {
-          const newConversationId = convAction.payload.id;
-          dispatch(setConversationId(newConversationId));
-          localStorage.setItem("conversationId", newConversationId);
-          dispatch(getMessages({ apiUrl, conversationId: newConversationId }));
-        }
-      } else if (action.payload?.error === "Conversation already exists") {
-        const convAction = await dispatch(getConversationThunk(apiUrl));
-        if (getConversationThunk.fulfilled.match(convAction)) {
-          const existingConversationId = convAction.payload.id;
-          dispatch(setConversationId(existingConversationId));
-          localStorage.setItem("conversationId", existingConversationId);
-          dispatch(getMessages({ apiUrl, conversationId: existingConversationId }));
-        }
-      } else {
-        //console.error("Error creating conversation", action.error);
-      }
-    };
-
-    if (!conversationId) {
-      const storedId = localStorage.getItem("conversationId");
-      if (storedId) {
-        dispatch(setConversationId(storedId));
-        dispatch(getMessages({ apiUrl, conversationId: storedId }));
-      } else {
-        createAndFetchConversation();
-      }
-    }
-  }, [dispatch, apiUrl, conversationId]);
+    dispatch(getConversationThunk(apiUrl));
+  }, [dispatch, apiUrl]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -86,14 +42,14 @@ const AIComponent = ({ apiUrl }) => {
   }, [aiError, dispatch]);
 
   const handleSend = (message) => {
-    if (!message.trim() || !conversationId) return;
-    dispatch(sendMessageToAI({ message, apiUrl, conversationId }));
+    if (!message.trim()) return;
+    dispatch(sendMessageToAI({ message, apiUrl }));
   };
 
   const handleDeleteMessage = async (messageId) => {
     try {
       await dispatch(deleteMessageThunk({ apiUrl, messageId })).unwrap();
-      dispatch(getMessages({ apiUrl, conversationId }));
+      dispatch(getConversationThunk(apiUrl));
     } catch (error) {
       console.error("Message deletion failed:", error);
       alert(t("delete_message_error"));
@@ -101,14 +57,8 @@ const AIComponent = ({ apiUrl }) => {
   };
 
   return (
-    <div
-      className={`flex flex-col w-full bg-background ${isMobile ? "h-screen" : "h-full max-h-[90%]"
-        }`}
-    >
-      <div
-        className={`flex-1 overflow-y-auto flex flex-col ${isMobile ? "pb-36" : "pb-0"
-          } p-2 md:p-4 space-y-4 relative`}
-      >
+    <div className={`flex flex-col w-full bg-background ${isMobile ? "h-screen" : "h-full max-h-[90%]"} `}>
+      <div className={`flex-1 overflow-y-auto flex flex-col ${isMobile ? "pb-36" : "pb-0"} p-2 md:p-4 space-y-4 relative`}>
         {historyLoading ? (
           <div className="flex-1 flex items-center justify-center min-h-[200px]">
             <div className="w-8 h-8 border-4 border-gray-200 border-t-[#8B0000] rounded-full animate-spin"></div>
@@ -120,28 +70,20 @@ const AIComponent = ({ apiUrl }) => {
         ) : (
           messages.map((msg) => (
             <div
-              key={msg.id || Math.random()}
+              key={msg.id}
               className={`flex items-center gap-0 group ${msg.isSentByUser ? "justify-end" : "justify-start"}`}
             >
               {msg.isSentByUser ? (
                 <div className="flex items-center gap-0 relative hover:dropup-container">
                   <CustomDropdown onDelete={() => handleDeleteMessage(msg.id)} isSentByUser={true} />
-                  <div
-                    className={`p-3 rounded-lg break-words text-sm md:text-base bg-red-800 text-white rounded-br-none max-w-[90%] xs:max-w-[80%] relative`}
-                  >
+                  <div className="p-3 rounded-lg break-words text-sm md:text-base bg-red-800 text-white rounded-br-none max-w-[90%] xs:max-w-[80%] relative">
                     {msg.message}
                   </div>
                 </div>
               ) : (
                 <div className="flex items-center gap-0 relative hover:dropup-container">
-                  <img
-                    src={IYTElogo}
-                    alt="IYTE Logo"
-                    className="w-9 h-9 object-contain hidden sm:block mr-2"
-                  />
-                  <div
-                    className={`p-3 rounded-lg break-words text-sm md:text-base bg-gray-200 text-foreground rounded-bl-none max-w-[90%] xs:max-w-[80%]`}
-                  >
+                  <img src={IYTElogo} alt="IYTE Logo" className="w-9 h-9 object-contain hidden sm:block mr-2" />
+                  <div className="p-3 rounded-lg break-words text-sm md:text-base bg-gray-200 text-foreground rounded-bl-none max-w-[90%] xs:max-w-[80%]">
                     {msg.message}
                   </div>
                   <CustomDropdown onDelete={() => handleDeleteMessage(msg.id)} isSentByUser={false} />

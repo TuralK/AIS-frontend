@@ -1,18 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { sendMessageToAI, getMessages, createConversationThunk, getConversationThunk } from '../thunks/aiChatThunk';
+import { sendMessageToAI, getConversationThunk } from "../thunks/aiChatThunk";
 
 const initialState = {
-  messages: [],
-  loading: false,
-  error: null,
-  historyLoading: false,
-  historyError: null,
-  conversationCreated: false,
-  conversations: [],
-  conversationId: null
-}
+  messages: [],        // AI chat messages
+  loading: false,      // loading state for sendMessage or getMessages
+  error: null,         // sendMessage error state 
+  historyLoading: false, // loading state for getConversation
+  historyError: null    // getConversation error state
+};
 
-const messagingAISlice = createSlice({
+const aiChatSlice = createSlice({
   name: "aiMessages",
   initialState,
   reducers: {
@@ -20,74 +17,47 @@ const messagingAISlice = createSlice({
       state.error = null;
       state.historyError = null;
     },
-    resetAIChat: () => initialState,
-    setConversationId: (state, action) => {
-      state.conversationId = action.payload;
-    }
+    resetAIChat: () => initialState
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(createConversationThunk.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(createConversationThunk.fulfilled, (state, action) => {
-        state.loading = false;
-        state.conversationCreated = true;
-        state.conversationId = action.payload.id;
-      })
-      .addCase(createConversationThunk.rejected, (state, action) => {
-        state.loading = false;
-        state.error = typeof action.payload === "object" ? action.payload.error || "An error occurred" : action.payload;
-      })
+    // ── getConversationThunk ──
+    builder.addCase(getConversationThunk.pending, (state) => {
+      state.historyLoading = true;
+      state.historyError = null;
+    });
+    builder.addCase(getConversationThunk.fulfilled, (state, action) => {
+      state.historyLoading = false;
+      state.messages = action.payload;
+    });
+    builder.addCase(getConversationThunk.rejected, (state, action) => {
+      state.historyLoading = false;
+      state.historyError = action.payload;
+    });
 
-      .addCase(getConversationThunk.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(getConversationThunk.fulfilled, (state, action) => {
-        state.loading = false;
-        state.conversations = action.payload;
-      })
-      .addCase(getConversationThunk.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-
-      .addCase(sendMessageToAI.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(sendMessageToAI.fulfilled, (state, action) => {
-        state.loading = false;
-        state.messages.push(
-          { message: action.payload.userMessage, fromUser: true },
-          { message: action.payload.aiMessage, fromUser: false }
-        );
-      })
-      .addCase(sendMessageToAI.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-        state.messages.push({
-          message: "Error: Could not get AI response",
-          fromUser: false
-        });
-      })
-
-      .addCase(getMessages.pending, (state) => {
-        state.historyLoading = true;
-        state.historyError = null;
-      })
-      .addCase(getMessages.fulfilled, (state, action) => {
-        state.historyLoading = false;
-        state.messages = action.payload; 
-      })
-      .addCase(getMessages.rejected, (state, action) => {
-        state.historyLoading = false;
-        state.historyError = action.payload;
+    // ── sendMessageToAI ──
+    builder.addCase(sendMessageToAI.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(sendMessageToAI.fulfilled, (state, action) => {
+      state.loading = false;
+      
+      state.messages.push(
+        { id: Date.now(), message: action.payload.userMessage, isSentByUser: true },
+        { id: Date.now() + 1, message: action.payload.aiMessage, isSentByUser: false }
+      );
+    });
+    builder.addCase(sendMessageToAI.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+      state.messages.push({
+        id: Date.now(),
+        message: "Error: Could not get AI response",
+        isSentByUser: false
       });
+    });
   }
 });
 
-export const { clearAIError, resetAIChat, setConversationId } = messagingAISlice.actions;
-export default messagingAISlice.reducer;
+export const { clearAIError, resetAIChat } = aiChatSlice.actions;
+export default aiChatSlice.reducer;
