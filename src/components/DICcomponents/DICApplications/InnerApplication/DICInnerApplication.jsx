@@ -20,6 +20,13 @@ import { fetchApplicationDetails, updateApplicationDetail, downloadFile } from '
 import office from '../../../../assets/office.jpg'
 import CustomAlertDialog from '../../../ui/custom_alert';
 
+function bufferToBase64(bufferData) {
+  let binary = '';
+  const bytes = bufferData instanceof Uint8Array ? bufferData : new Uint8Array(bufferData);
+  bytes.forEach((b) => (binary += String.fromCharCode(b)));
+  return window.btoa(binary);
+}
+
 const DICInnerApplication = () => {
   const { id } = useParams();
   const [application, setApplication] = useState(null);
@@ -31,11 +38,11 @@ const DICInnerApplication = () => {
   const [isFeedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [downloadError, setDownloadError] = useState(false)
-  const [errorMessage, setErrorMessage] = useState("")
+  const [downloadError, setDownloadError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [isTypeAlertOpen, setIsTypeAlertOpen] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
+  const [alertMessage, setAlertMessage] = useState('');
 
   useEffect(() => {
     const loadApplicationDetails = async () => {
@@ -55,7 +62,7 @@ const DICInnerApplication = () => {
     };
 
     loadApplicationDetails();
-  }, [id]);
+  }, [id, t]);
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -76,26 +83,25 @@ const DICInnerApplication = () => {
       setIsTypeAlertOpen(true);
       return;
     }
-  
+
     setIsSubmitting(true);
     const formData = new FormData();
-  
+
     if (file) {
       formData.append('studentFile', file);
     }
-  
-    formData.append('isApproved', isApproved); 
+
+    formData.append('isApproved', isApproved);
     if (!isApproved && feedback) {
-      formData.append('feedback', feedback); 
+      formData.append('feedback', feedback);
     }
-  
+
     try {
-      const response = await updateApplicationDetail(id, formData);
+      await updateApplicationDetail(id, formData);
       const alertMessage = isApproved ? t('applicationApprovedByAdmin') : t('applicationDisapprovedByAdmin');
       setAlertMessage(alertMessage);
       setIsAlertOpen(true);
     } catch (error) {
-      console.error('Update error:', error);
       setAlertMessage(t('failedToUpdateApplication'));
       setIsTypeAlertOpen(true);
     } finally {
@@ -103,31 +109,25 @@ const DICInnerApplication = () => {
       setFeedbackModalOpen(false);
     }
   };
-  
 
   const downloadButton = async (fileType) => {
     try {
       const response = await downloadFile(application.id, fileType);
       const blob = new Blob([response.data], { type: response.headers["content-type"] || "application/pdf" });
-      
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      
       const disposition = response.headers["content-disposition"];
       const fileName = disposition ? disposition.split("filename=")[1].replace(/"/g, "") : fileType;
       link.setAttribute("download", fileName);
-      
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     } catch (error) {
-      console.error("File download error:", error);
       setErrorMessage(t('error_message'));
       setDownloadError(true);
     }
   };
-  
 
   if (isLoading) {
     return (
@@ -145,6 +145,17 @@ const DICInnerApplication = () => {
     );
   }
 
+  if (!application) {
+    return null;
+  }
+
+  let imageSrc = office;
+  const imgData = application.Announcement.image?.data;
+  if (imgData) {
+    const base64String = bufferToBase64(imgData);
+    imageSrc = `data:image/jpeg;base64,${base64String}`;
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -152,7 +163,6 @@ const DICInnerApplication = () => {
       transition={{ duration: 0.5 }}
     >
       <div>
-        {/* Component will be shown when the downloaded file is not sent by server to indicate */}
         <CustomAlertDialog
           isOpen={downloadError}
           onClose={() => setDownloadError(false)}
@@ -168,36 +178,64 @@ const DICInnerApplication = () => {
           <CardContent className="flex flex-col lg:flex-row gap-8">
             <div className="w-full lg:w-2/5 flex-shrink-0 aspect-video">
               <img
-                src={application.Announcement.image || office}
+                src={imageSrc}
                 alt={application.Announcement.announcementName}
-                className="w-full h-full object-cover rounded-lg"
+                className="w-full h-full object-cover rounded-lg max-h-64"
               />
-            </div>
-            <div className="w-full lg:w-3/5">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">{t('studentInfo')}</h3>
-                  <p className="break-words"><strong>{t('studentName')}:</strong> <span className="break-all">{application.Student.username}</span></p>
-                  <p><strong>{t('id')}:</strong> {application.Student.id}</p>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">{t('companyInfo')}</h3>
-                  <p className="break-words"><strong>{t('company')}:</strong> <span className="break-all">{application.Announcement.Company.name}</span></p>
-                  <p className="break-words"><strong>{t('description')}:</strong> <span className="break-all">{application.Announcement.description || 'N/A'}</span></p>
-                </div>
-              </div>
-              <div className="mt-6">
-                <h3 className="text-lg font-semibold mb-2">{t('internshipPeriod')}</h3>
+
+              <div className="mt-4 space-y-2 lg:hidden">
+                <h3 className="text-lg font-semibold">{t('internshipPeriod')}</h3>
                 <p><strong>{t('startDate')}:</strong> {new Date(application.Announcement.startDate).toLocaleDateString()}</p>
                 <p><strong>{t('endDate')}:</strong> {new Date(application.Announcement.endDate).toLocaleDateString()}</p>
               </div>
             </div>
+
+            <div className="w-full lg:w-3/5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">{t('studentInfo')}</h3>
+                  <p className="break-words">
+                    <strong>{t('studentName')}:</strong>{" "}
+                    <span className="break-all">{application.Student.username}</span>
+                  </p>
+                  <p>
+                    <strong>{t('id')}:</strong> {application.Student.id}
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">{t('companyInfo')}</h3>
+                    <p className="break-words">
+                      <strong>{t('company')}:</strong>{" "}
+                      <span className="break-all">{application.Announcement.Company.name}</span>
+                    </p>
+                  </div>
+
+                  <div className="hidden lg:block">
+                    <h3 className="text-lg font-semibold mb-2">{t('internshipPeriod')}</h3>
+                    <p><strong>{t('startDate')}:</strong> {new Date(application.Announcement.startDate).toLocaleDateString()}</p>
+                    <p><strong>{t('endDate')}:</strong> {new Date(application.Announcement.endDate).toLocaleDateString()}</p>
+                  </div>
+                </div>
+
+                <div className="md:col-span-2 w-full">
+                  <div className="break-words w-full space-y-2">
+                    <strong className="block text-lg font-semibold">{t('description')}:</strong>
+                    <div className="whitespace-pre-line bg-gray-50 p-4 rounded-lg border border-gray-200 max-h-[400px] overflow-y-auto">
+                      {application.Announcement.description || 'N/A'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </CardContent>
+
           <CardFooter className="flex flex-col gap-4 mt-4">
             <div className="grid grid-cols-2 gap-4 w-full">
               <Button
                 onClick={() => downloadButton('Updated Application Form')}
-                className="w-full bg-blue-100 hover:border-blue-500 hover:bg-blue-300 transition-colors duration-200"
+                className="w-full bg-blue-100 hover:border-blue-500 hover:bg-blue-300"
                 variant="outline"
               >
                 <Download className="mr-2 h-4 w-4" />
@@ -206,7 +244,7 @@ const DICInnerApplication = () => {
               <div className="relative w-full">
                 <Button
                   onClick={handleUploadClick}
-                  className="w-full bg-green-100 hover:border-green-500 hover:bg-green-300 transition-colors duration-200"
+                  className="w-full bg-green-100 hover:border-green-500 hover:bg-green-300"
                   variant="outline"
                 >
                   <Upload className="mr-2 h-4 w-4" />
@@ -231,7 +269,6 @@ const DICInnerApplication = () => {
                     }
                   }}
                 />
-                {/* Component will be shown when the uploaded file is not in correct format to warn */}
                 <CustomAlertDialog
                   isOpen={isAlertOpen}
                   onClose={() => setIsAlertOpen(false)}
@@ -242,11 +279,12 @@ const DICInnerApplication = () => {
                 />
               </div>
             </div>
+
             <div className="grid grid-cols-2 gap-4 w-full">
               <Button
                 onClick={() => updateApplication(true)}
                 disabled={isSubmitting}
-                className="w-full text-white bg-[#990000] hover:bg-[#700000] hover:text-white"
+                className="w-full text-white bg-[#990000] hover:bg-[#700000]"
               >
                 <Send className="mr-2 h-4 w-4" />
                 {t('sendSecretary')}
@@ -260,15 +298,14 @@ const DICInnerApplication = () => {
                 <X className="mr-2 h-4 w-4" />
                 {t('reject')}
               </Button>
-              {/* Component will be shown when the application approved/disapproved to indicate */}
               <CustomAlertDialog
                 isOpen={isAlertOpen}
                 onClose={() => setIsAlertOpen(false)}
                 title={t("error")}
                 description={alertMessage}
                 onConfirm={() => {
-                  setIsAlertOpen(false); 
-                  navigate('/admin/applicationRequests'); 
+                  setIsAlertOpen(false);
+                  navigate('/admin/applicationRequests');
                 }}
                 confirmLabel={t("ok")}
               />
@@ -277,9 +314,7 @@ const DICInnerApplication = () => {
                 onClose={() => setIsTypeAlertOpen(false)}
                 title={t("error")}
                 description={alertMessage}
-                onConfirm={() => {
-                  setIsTypeAlertOpen(false); // Alert'ı kapat
-                }}
+                onConfirm={() => setIsTypeAlertOpen(false)}
                 confirmLabel={t("ok")}
               />
             </div>
@@ -300,14 +335,14 @@ const DICInnerApplication = () => {
               <Button
                 variant="outline"
                 onClick={() => setFeedbackModalOpen(false)}
-                className="bg-gray-200 hover:bg-gray-500 hover:text-white text-gray-700 border-gray-200"
+                className="bg-gray-200 hover:bg-gray-500 hover:text-white"
               >
                 {t('cancel')}
               </Button>
               <Button
                 onClick={() => updateApplication(false)}
                 disabled={isSubmitting}
-                className="bg-[#990000] hover:bg-[#500000] text-white border-none transition-colors"
+                className="bg-[#990000] hover:bg-[#500000] text-white"
               >
                 {t('submit')}
               </Button>
