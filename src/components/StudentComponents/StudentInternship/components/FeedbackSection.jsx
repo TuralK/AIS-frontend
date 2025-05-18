@@ -8,16 +8,12 @@ import {
 const FeedbackSection = ({ internshipData }) => {
   const { t } = useTranslation();
 
-  // Utils fonksiyonları, yalnızca label (Pending/Accepted/… gibi) döner
   const companySupervisorLabel = getCompanySupervisorStatus(internshipData);
   const coordinatorLabel = getCoordinatorStatus(internshipData);
 
   const {
-    companyStatus,
-    status,                 
-    studentStatus,          
-    feedbackToStudent,      
-    feedbackContextStudent, 
+    studentStatus,
+    feedbackToStudent,
     score,
   } = internshipData;
 
@@ -42,20 +38,15 @@ const FeedbackSection = ({ internshipData }) => {
         </div>
       </div>
 
-      {/* Eğer studentStatus === 5 (şirket öğrenciye geri bildirim verdi) ise:
-          feedbackToStudent metnini, Company Supervisor blokunun hemen altına yerleştir */}
       {studentStatus === 5 && feedbackToStudent && (
-        <div className="mt-2 ml-4 rounded-lg border-l-4 border-blue-500 bg-blue-50 p-3">
+        <div className="rounded-lg border bg-blue-50 p-4">
           <h4 className="text-sm font-medium text-blue-700">
-            {t("feedbackToStudentLabel")}
+            {t("feedbackFromCompanySupervisor")}
           </h4>
           <p className="mt-1 text-sm text-gray-700">{feedbackToStudent}</p>
         </div>
       )}
 
-      {/* ========================== */}
-      {/* Coordinator Status (Admin) */}
-      {/* ========================== */}
       <div className="flex items-center justify-between rounded-lg border bg-background p-4">
         <span className="text-sm font-medium">{t("coordinatorStatus")}</span>
         <div className="flex items-center gap-2">
@@ -74,20 +65,15 @@ const FeedbackSection = ({ internshipData }) => {
         </div>
       </div>
 
-      {/* Eğer studentStatus === 4 (admin öğrenciye geri bildirim verdi) ise:
-          feedbackToStudent metnini, Coordinator blokunun hemen altına yerleştir */}
       {studentStatus === 4 && feedbackToStudent && (
-        <div className="mt-2 ml-4 rounded-lg border-l-4 border-blue-500 bg-blue-50 p-3">
+        <div className="rounded-lg border bg-blue-50 p-4">
           <h4 className="text-sm font-medium text-blue-700">
-            {t("feedbackToStudentLabel")}
+            {t("feedbackFromCoordinator")}
           </h4>
           <p className="mt-1 text-sm text-gray-700">{feedbackToStudent}</p>
         </div>
       )}
 
-      {/* ========================== */}
-      {/* Score Bölümü */}
-      {/* ========================== */}
       <div className="flex mt-5 items-center justify-between rounded-lg border bg-background p-4">
         <span className="text-sm font-medium">{t("score")}</span>
         <span className="text-lg font-semibold text-primary">

@@ -252,5 +252,6 @@
   "Finished": "Tamamlandı",
   "Approved": "Onaylandı",
   "Rejected": "Reddedildi",
-  "feedbackToStudentLabel": "Öğrenciye Geri Bildirim"
+  "feedbackFromCoordinator": "Koordinatörden geri bildirim",
+  "feedbackFromCompanySupervisor": "Şirket temsilcisinden geri bildirim"
 }

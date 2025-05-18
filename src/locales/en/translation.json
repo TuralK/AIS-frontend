@@ -260,6 +260,6 @@
   "Finished": "Finished",
   "Approved": "Approved",
   "Rejected": "Rejected",
-  "feedbackToStudentLabel": "Feedback to Student"
-
+  "feedbackFromCoordinator": "Feedback from Coordinator",
+  "feedbackFromCompanySupervisor": "Feedback from Company supervisor"
 }

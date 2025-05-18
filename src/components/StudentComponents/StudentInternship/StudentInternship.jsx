@@ -1,3 +1,4 @@
+// pages/StudentInternship.jsx
 import React, { useEffect, useState } from "react";
 import SubmissionForm from "./components/SubmissionForm";
 import FeedbackSection from "./components/FeedbackSection";
@@ -6,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { finishInternship, getInternship } from "../../../api/StudentApi/internshipApi";
 import { Building2, FileText } from "lucide-react";
 import Loading from "../../LoadingComponent/Loading";
-import { useMatches } from 'react-router-dom';
+import { useMatches } from "react-router-dom";
 
 const StudentInternship = () => {
   const matches = useMatches();
@@ -19,7 +20,6 @@ const StudentInternship = () => {
     document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
   }, [titleKey, t]);
 
-  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [internshipData, setInternshipData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [finishing, setFinishing] = useState(false);
@@ -47,7 +47,9 @@ const StudentInternship = () => {
     setFinishing(true);
     try {
       const res = await finishInternship(internshipData.id);
-      if (res.status === 200) setInternshipData(prev => ({ ...prev, status: 1 }));
+      if (res.status === 200) {
+        setInternshipData(prev => ({ ...prev, status: 1 }));
+      }
     } catch (err) {
       console.error("Finish error:", err);
     } finally {
@@ -55,11 +57,14 @@ const StudentInternship = () => {
     }
   };
 
-  if (loading) return <div className="text-center mt-10"><Loading /></div>;
+  if (loading) {
+    return (
+      <div className="text-center mt-10">
+        <Loading />
+      </div>
+    );
+  }
 
-  let companyName;
-  let internshipTitle;
-  let internshipStatus;
   if (!internshipData) {
     return (
       <div className="flex justify-center items-center m-screen text-2xl font-semibold text-gray-700 min-h-[80vh]">
@@ -67,27 +72,33 @@ const StudentInternship = () => {
       </div>
     );
   }
-  
-  else {
-    companyName = (internshipData.Application && internshipData.Application.Announcement.Company.name) || "-";
-    internshipTitle = (internshipData.Application && internshipData.Application.Announcement.announcementName) || "-";
-    internshipStatus = internshipData.status === 0 ? t("ongoing") : t("finished");
-  }
+
+  const companyName =
+    (internshipData.Application && internshipData.Application.Announcement.Company.name) || "-";
+  const internshipTitle =
+    (internshipData.Application && internshipData.Application.Announcement.announcementName) || "-";
+  const internshipStatus = internshipData.status === 0 ? t("ongoing") : t("finished");
 
   return (
     <div className="min-h-screen px-4">
-      {/* Status Bar (same width as info) */}
+      {/* Status Bar */}
       <div className="max-w-5xl mx-auto flex justify-end p-4 border-b">
-        <div className={`flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium ${internshipData.status === 0 ? 'bg-green-50 text-green-600' : 'bg-orange-50 text-orange-600'}`}>
-          <div className={`h-2.5 w-2.5 rounded-full ${internshipData.status === 0 ? 'bg-green-500 animate-pulse' : 'bg-orange-500'}`} />
+        <div
+          className={`flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium ${internshipData.status === 0 ? 'bg-green-50 text-green-600' : 'bg-orange-50 text-orange-600'
+            }`}
+        >
+          <div
+            className={`h-2.5 w-2.5 rounded-full ${internshipData.status === 0 ? 'bg-green-500 animate-pulse' : 'bg-orange-500'
+              }`}
+          />
           {internshipStatus}
         </div>
       </div>
 
-      {/* Company and Internship Info */}
+      {/* Company ve Internship Info */}
       <div className="p-6 space-y-8 relative max-w-6xl mx-auto">
         <div className="grid gap-4 md:grid-cols-2">
-          <div className="space-y-2 rounded-lg border border-gray-200 p-4 hover:shadow-md">
+          <div className="space-y-2 rounded-lg border border-gray-200 p-4 hover:shadow-md flex flex-col justify-between">
             <div className="text-sm font-medium text-gray-500">{t("company")}</div>
             <div className="flex items-center gap-3 mt-2">
               <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[#a51c30]/10">
@@ -96,7 +107,7 @@ const StudentInternship = () => {
               <h2 className="text-base font-semibold">{companyName}</h2>
             </div>
           </div>
-          <div className="space-y-2 rounded-lg border border-gray-200 p-4 hover:shadow-md">
+          <div className="space-y-2 rounded-lg border border-gray-200 p-4 hover:shadow-md flex flex-col justify-between">
             <div className="text-sm font-medium text-gray-500">{t("internshipName")}</div>
             <div className="flex items-center gap-3 mt-2">
               <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[#a51c30]/10">
@@ -108,10 +119,12 @@ const StudentInternship = () => {
         </div>
       </div>
 
-      {/* Ongoing: prompt question + button */}
+      {/* Internship bitirme onayı */}
       {internshipData.status === 0 && (
         <div className="max-w-6xl mx-auto text-center mt-8">
-          <h3 className="text-2xl font-bold text-gray-800 mb-4">{t("isInternshipFinished")}</h3>
+          <h3 className="text-2xl font-bold text-gray-800 mb-4">
+            {t("isInternshipFinished")}
+          </h3>
           <button
             onClick={handleFinishConfirm}
             disabled={finishing}
@@ -132,20 +145,23 @@ const StudentInternship = () => {
         confirmLabel={t("yes")}
       />
 
-      {/* Finished: Submission & Feedback */}
+
       {internshipData.status !== 0 && (
-        <div className="mx-auto max-w-6xl flex gap-6 mt-8">
-          <div className={`${internshipData.studentStatus === 3 ? "w-1/2" : "w-full"}`}>
+        <div className="mx-auto max-w-6xl flex flex-col md:flex-row items-stretch gap-6 mt-8">
+          {/* SubmissionForm */}
+          <div className="flex-1">
             <SubmissionForm
               status={internshipData.studentStatus}
               manualApplicationId={internshipData.manualApplicationId}
             />
           </div>
-          {internshipData.status === 1 && internshipData.studentStatus !== 2 && (
-            <div className="w-1/2">
-              <FeedbackSection
-                internshipData={internshipData}
-              />
+
+          {/* FeedbackSection (eğer gösterilecekse) */}
+          {internshipData.studentStatus !== 2 && (
+            <div className="flex-1">
+              <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+                <FeedbackSection internshipData={internshipData} />
+              </div>
             </div>
           )}
         </div>
