@@ -5,9 +5,12 @@ export const handleDownload = (applicationId) => {
     return downloadFile(applicationId);
 };
 
-export const handleSubmit = (applicationId, selectedFile) => {
+export const handleSubmit = async (applicationId, selectedFile) => {
     if (selectedFile) {
-        submitApplication(applicationId, selectedFile);
+        const response = await submitApplication(applicationId, selectedFile);
+        if (response.status === 200) {
+            window.location.reload(); 
+        }
     } else {
         console.log('No file selected for application', applicationId);
         throw new Error('Submit failed');

@@ -43,18 +43,14 @@ export const submitApplication = async (applicationId, selectedFile) => {
         withCredentials: true, 
       }
     );
-
-    return response.data;
+    return response;
+    return response;
   } catch (error) {
-    // Axios hatalarını ayrıştır
     if (error.response) {
-      // Sunucudan dönen hata
       throw new Error(error.response.data.message || "An error occurred while submitting the application.");
     } else if (error.request) {
-      // Sunucuya ulaşılamadıysa
       throw new Error("No response from the server. Please try again.");
     } else {
-      // Diğer hatalar
       throw new Error(error.message || "An unexpected error occurred.");
     }
   }

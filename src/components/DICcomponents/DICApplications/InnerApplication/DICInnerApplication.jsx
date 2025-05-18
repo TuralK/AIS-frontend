@@ -234,7 +234,7 @@ const DICInnerApplication = () => {
           <CardFooter className="flex flex-col gap-4 mt-4">
             <div className="grid grid-cols-2 gap-4 w-full">
               <Button
-                onClick={() => downloadButton('Updated Application Form')}
+                onClick={() => downloadButton('UpdatedApplicationForm')}
                 className="w-full bg-blue-100 hover:border-blue-500 hover:bg-blue-300"
                 variant="outline"
               >

@@ -12,7 +12,7 @@ export function PendingApplicationCard({ application }) {
   const [uploadAlert, setUploadAlert] = useState(false);
   const [fileSelected, setFileSelected] = useState(false);
 
-
+  console.log('PendingApplicationCard', application);
   return (
     <div className="bg-white shadow-md rounded-lg overflow-hidden mb-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
       <form
@@ -24,7 +24,7 @@ export function PendingApplicationCard({ application }) {
         <div className="lg:col-span-2 flex items-center gap-4">
           <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
             <img
-              src={LogoPlaceholder}
+              src={application.Announcement.Company.CompanyProfile?.companyLogo ? `http://localhost:3005/${application.Announcement.Company.CompanyProfile.companyLogo}` : LogoPlaceholder}
               alt={application.Announcement.Company.name}
               className="w-full h-full object-cover"
             />
