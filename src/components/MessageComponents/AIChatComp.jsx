@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
+import { Loader } from "lucide-react";
 import RoundedInput from "./MessageInputComp";
 import { clearAIError, addOptimisticMessage } from "../../slices/aiChatSlice";
 import { sendMessageToAI, getConversationThunk } from "../../thunks/aiChatThunk";
@@ -15,7 +16,7 @@ const AIComponent = ({ apiUrl }) => {
   const messagesEndRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
 
-  const { messages, loading: aiLoading, error: aiError, historyLoading } = useSelector(
+  const { messages, loading: aiLoading, error: aiError, historyLoading, messageStatus } = useSelector(
     (state) => state.aiMessaging
   );
 
@@ -62,6 +63,11 @@ const AIComponent = ({ apiUrl }) => {
       apiUrl, 
       tempMessageId 
     }));
+    
+    // Scroll to bottom after sending
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 50);
   };
 
   const handleDeleteMessage = async (messageId) => {
@@ -92,45 +98,68 @@ const AIComponent = ({ apiUrl }) => {
             <div className="text-muted-foreground">{t("start_conversation")}</div>
           </div>
         ) : (
-          sortedMessages.map((msg) => (
-            <div
-              key={msg.id}
-              className={`flex items-center gap-0 group ${msg.isSentByUser ? "justify-end" : "justify-start"}`}
-            >
-              {msg.isSentByUser ? (
-                <div className="flex items-center gap-0 relative hover:dropup-container">
-                  <CustomDropdown 
-                    onDelete={() => handleDeleteMessage(msg.id)} 
-                    isSentByUser={true} 
-                    disabled={msg.isOptimistic}
-                  />
-                  <div 
-                    className={`p-3 rounded-lg break-words text-sm md:text-base bg-red-800 text-white rounded-br-none max-w-[90%] xs:max-w-[80%] relative ${
-                      msg.isOptimistic ? "opacity-70" : ""
-                    }`}
-                  >
-                    {msg.message}
-                    {msg.isOptimistic && (
-                      <div className="absolute bottom-1 right-1">
-                        <div className="w-2 h-2 rounded-full bg-gray-200 animate-pulse"></div>
+          sortedMessages.map((msg) => {
+            // Check message status
+            const isLoading = msg.isOptimistic;
+            const hasError = messageStatus && messageStatus[msg.id]?.error;
+            
+            return (
+              <div
+                key={msg.id}
+                className={`flex items-center gap-0 group ${msg.isSentByUser ? "justify-end" : "justify-start"}`}
+              >
+                {msg.isSentByUser ? (
+                  <div className="flex items-center gap-0 relative hover:dropup-container">
+                    <CustomDropdown 
+                      onDelete={() => handleDeleteMessage(msg.id)} 
+                      isSentByUser={true} 
+                      disabled={isLoading}
+                    />
+                    <div 
+                      className={`p-3 rounded-lg break-words text-sm md:text-base ${
+                        hasError ? "bg-red-200 text-red-900" : "bg-red-800 text-white"
+                      } rounded-br-none max-w-[90%] xs:max-w-[80%] relative ${
+                        isLoading ? "opacity-70" : ""
+                      }`}
+                    >
+                      {msg.message}
+                      <div className="mt-1 text-xs text-right flex justify-end items-center">
+                        {/* Loading indicator */}
+                        {isLoading && (
+                          <Loader size={12} className="mr-1 animate-spin" />
+                        )}
+                        {/* Error indicator */}
+                        {hasError && (
+                          <span className="text-red-600 mr-1 text-xs">!</span>
+                        )}
+                        {new Date(msg.timestamp).toLocaleString("tr-TR", {
+                          hour: "2-digit",
+                          minute: "2-digit"
+                        })}
                       </div>
-                    )}
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div className="flex items-center gap-0 relative hover:dropup-container">
-                  <img src={IYTElogo} alt="IYTE Logo" className="w-9 h-9 object-contain hidden sm:block mr-2" />
-                  <div className="p-3 rounded-lg break-words text-sm md:text-base bg-gray-200 text-foreground rounded-bl-none max-w-[90%] xs:max-w-[80%]">
-                    {msg.message}
+                ) : (
+                  <div className="flex items-center gap-0 relative hover:dropup-container">
+                    <img src={IYTElogo} alt="IYTE Logo" className="w-9 h-9 object-contain hidden sm:block mr-2" />
+                    <div className="p-3 rounded-lg break-words text-sm md:text-base bg-gray-200 text-foreground rounded-bl-none max-w-[90%] xs:max-w-[80%]">
+                      {msg.message}
+                      <div className="mt-1 text-xs text-right flex justify-end items-center">
+                        {new Date(msg.timestamp).toLocaleString("tr-TR", {
+                          hour: "2-digit",
+                          minute: "2-digit"
+                        })}
+                      </div>
+                    </div>
+                    <CustomDropdown 
+                      onDelete={() => handleDeleteMessage(msg.id)} 
+                      isSentByUser={false}
+                    />
                   </div>
-                  <CustomDropdown 
-                    onDelete={() => handleDeleteMessage(msg.id)} 
-                    isSentByUser={false}
-                  />
-                </div>
-              )}
-            </div>
-          ))
+                )}
+              </div>
+            );
+          })
         )}
         <div ref={messagesEndRef} />
       </div>
