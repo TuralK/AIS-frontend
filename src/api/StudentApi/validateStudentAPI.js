@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { studentAPI } from '../../services/index'
 
 export const validateStudent = async () => {
     try {
-        const response = await axios.get(`http://localhost:3004/`, {
+        const response = await studentAPI.get(`/`, {
             withCredentials: true
         })
         return response.data.dataValues;

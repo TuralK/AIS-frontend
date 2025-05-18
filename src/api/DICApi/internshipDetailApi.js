@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { adminAPI } from '../../services/index'
 
 const fetchInternshipDetails = async (applicationId) => {
     try {
-        const response = await axios.get(`http://localhost:3003/interns/${applicationId}`, {
+        const response = await adminAPI.get(`/interns/${applicationId}`, {
             withCredentials: true,
         });
         return response.data; // This will be the JSON response from the server

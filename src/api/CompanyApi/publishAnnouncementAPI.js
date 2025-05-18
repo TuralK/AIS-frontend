@@ -1,7 +1,7 @@
-import axios from 'axios';
+import { companyAPI } from '../../services/index'
 
 export const publishAnnouncement = (announcementData) => {
-  return axios.post('http://localhost:3005/announcement', announcementData, {
+  return companyAPI.post('/announcement', announcementData, {
     withCredentials: true,
   });
 };

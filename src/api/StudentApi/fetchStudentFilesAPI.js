@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { studentAPI } from '../../services/index'
 
 export const fetchStudentFiles = async () => {
     try {
-        const response = await axios.get('http://localhost:3004/files', {
+        const response = await studentAPI.get('/files', {
             withCredentials: true,
         });
         return response.data;

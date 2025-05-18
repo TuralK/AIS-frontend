@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { studentAPI } from '../../../services/index'
 
 export const deleteStudentCertificate = async (certificateId) => {
     try {
-        const response = await axios.delete(`http://localhost:3004/profile/certificate/${certificateId}`, {
+        const response = await studentAPI.delete(`/profile/certificate/${certificateId}`, {
             withCredentials: true,
         });
         return response.data;

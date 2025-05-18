@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { companyAPI } from '../../services/index'
 
 export const rejectApplication = async (applicationId, isApproved) => {
   try {
-      const response = await axios.put(`http://localhost:3005/applications/${applicationId}`, isApproved, {
+      const response = await companyAPI.put(`/applications/${applicationId}`, isApproved, {
         withCredentials: true,
       });
       return response.data;

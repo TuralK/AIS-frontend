@@ -19,6 +19,7 @@ export const UserLayout = ({
   menuItems,
   userMenuItems,
   basePath,
+  baseUrl,
   apiUrls,
   hasAITab = false,
   outletContext = {}
@@ -27,6 +28,7 @@ export const UserLayout = ({
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [userName, setUserName] = useState('');
+  const [profilePicture, setProfilePicture] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isMessagingOpen, setIsMessagingOpen] = useState(false);
   const [email, setUserMail] = useState('');
@@ -61,6 +63,8 @@ export const UserLayout = ({
         setApplications(apps);
         setUserMail(userData.email);
         setUserId(userData.id);
+        if(!baseUrl) {setProfilePicture(IYTElogo)}
+        else{setProfilePicture((userData.profilePicture) ? `${baseUrl}/${userData.profilePicture}` : DefaultProfileIcon);}
       })
       .catch(err => {
         alert(err || 'An error occured');
@@ -169,7 +173,7 @@ export const UserLayout = ({
                     className={`${styles.menuItem} ${isUserRouteActive ? styles.activeMenuItem : ''}`}
                     style={{ background: 'transparent', border: 'none', display: 'flex', alignItems: 'center' }}
                   >
-                    <img src={IYTElogo} alt="User profile" className={styles.profilePhoto} />
+                    <img src={profilePicture} alt="User profile" className={styles.profilePhoto} />
                     {userName}
                     <ChevronDown style={{ marginLeft: '0.25rem', width: '24px', height: '24px' }} />
                   </button>
@@ -210,15 +214,10 @@ export const UserLayout = ({
                   setIsMessagingOpen(false);
                 }}
                 className={styles.mobileMenuButton}
-                style={{
-                  display: 'flex',
-                  marginRight: '-0.1rem',
-                  width: '50px',
-                  height: '50px'
-                }}
               >
-                <span className="sr-only">Open main menu</span>
-                {isMenuOpen ? <X style={{ width: '32px', height: '32px' }} /> : <Menu style={{ width: '32px', height: '32px' }} />}
+                {/* <span className="sr-only">Open main menu</span>
+                {isMenuOpen ? <X style={{ width: '32px', height: '32px' }} /> : <Menu style={{ width: '32px', height: '32px' }} />} */}
+                {isMenuOpen ? <X size={32}/> : <Menu size={32}/>}
               </button>
             )}
           </div>
@@ -227,25 +226,38 @@ export const UserLayout = ({
         {isMobile && isMenuOpen && (
           <div className={styles.mobileMenu}>
             {menuItems.map(({ item, route }) => (
-              <NavLink key={route} to={`/${basePath}/${route}`}>
-                <a
-                  href="#"
-                  className={styles.menuItem}
-                  style={{ display: 'block', padding: '0.75rem 0' }}
-                >
-                  <center>{item}</center>
-                </a>
+              <NavLink
+                key={route}
+                to={`/${basePath}/${route}`}
+                className={styles.menuItem}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <center>{item}</center>
               </NavLink>
             ))}
-            <a
-              href="#"
+
+            {/* Language switcher */}
+            <button
               className={styles.menuItem}
-              style={{ display: 'flex', alignItems: 'center', padding: '0.75rem 0' }}
+              style={{ display: 'block', width: '100%' }}
+              onClick={() => { changeLanguage(i18n.language === 'tr' ? 'en' : 'tr'); }}
             >
-              <Bell size={24} style={{ marginRight: '0.5rem' }} />
-              {t('notifications')}
-            </a>
-            <div style={{ position: 'relative' }}>
+              {i18n.language === 'tr' ? 'EN' : 'TR'}
+              {/* {i18n.language === 'tr' ? <img className={styles.flagImage} src={UKFlag}/> : <img className={styles.flagImage} src={TurkeyFlag}/>} */}
+            </button>
+
+            {/* Notifications in middle */}
+            <button
+              className={styles.menuItem}
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}
+              onClick={() => { navigate(`/${basePath}/notifications`); setIsMenuOpen(false); }}
+            >
+              <Bell size={24} />
+              <span style={{ marginLeft: '0.5rem' }}>{t('notifications')}</span>
+            </button>
+            
+            {/* User menu toggle */}
+            <div style={{ position: 'relative' }} ref={userMenuRef}>
               <button
                 onClick={() => {
                   setIsUserMenuOpen(!isUserMenuOpen);
@@ -254,6 +266,7 @@ export const UserLayout = ({
                 className={`${styles.menuItem} ${isUserRouteActive ? styles.activeMenuItem : ''}`}
                 style={{
                   display: 'flex',
+                  flexDirection: "column",
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   width: '100%',
@@ -262,13 +275,15 @@ export const UserLayout = ({
                 }}
               >
                 <div className={styles.flexCenter}>
-                  <img src={IYTElogo} alt="User profile" className={styles.profilePhoto} />
+                  <img src={profilePicture} alt="User profile" className={styles.profilePhoto} />
                   {userName}
                 </div>
-                <ChevronDown style={{ width: '24px', height: '24px' }} />
+                <ChevronDown
+      className={`${styles.chevron} ${isUserMenuOpen ? styles.chevronOpen : ''}`}
+    />
               </button>
               {isUserMenuOpen && (
-                <div style={{ marginTop: '0.5rem' }}>
+                <div style={{ marginTop: '0.5rem', textAlign: 'center'}}>
                   {userMenuItems.map(({ item, route }) => (
                     <NavLink
                       key={route}
@@ -281,6 +296,7 @@ export const UserLayout = ({
                           logout();
                         } else {
                           handleDropdownItemClick(item.toLowerCase());
+                          setIsMenuOpen(false);
                         }
                       }}
                     >

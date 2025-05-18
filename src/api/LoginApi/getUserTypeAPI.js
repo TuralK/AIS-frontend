@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { loginAPI } from '../../services/index'
 
 export const getUserType = async () => {
     try {
-        const response = await axios.get(`http://localhost:3001/`, {
+        const response = await loginAPI.get(`/`, {
           withCredentials: true
         });
         localStorage.removeItem("conversationId");

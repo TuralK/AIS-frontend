@@ -1,14 +1,12 @@
-import axios from 'axios';
+import { studentAPI } from '../../../services/index'
 
 export const fetchStudentProfile = async () => {
     try {
-        const response = await axios.get('http://localhost:3004/profile', {
+        const response = await studentAPI.get('/profile', {
             withCredentials: true,
         });
-        console.log(response.data)
         return response.data;
     } catch (error) {
-        console.log(error)
         throw new Error(error);
     }
 }

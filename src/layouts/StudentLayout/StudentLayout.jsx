@@ -20,6 +20,7 @@ const StudentLayout = () => {
             { item: t('logout'), route: 'logout' }
             ]}
             basePath="student"
+            baseUrl='http://localhost:3004'
             apiUrls={{ 
             logout: 'http://localhost:3001'
             }}

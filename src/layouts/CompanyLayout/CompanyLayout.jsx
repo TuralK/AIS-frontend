@@ -20,6 +20,7 @@ const CompanyLayout = () => {
             { item: t('logout'), route: 'logout' }
           ]}
           basePath="company"
+          baseUrl='http://localhost:3005'
           apiUrls={{ 
             logout: 'http://localhost:3001'
           }}

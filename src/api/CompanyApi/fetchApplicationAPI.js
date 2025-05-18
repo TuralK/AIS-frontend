@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { companyAPI } from '../../services/index'
 
 export const fetchApplication = async (applicationId) => {
     try {
-        const response = await axios.get(`http://localhost:3005/applications/${applicationId}`, {
+        const response = await companyAPI.get(`/applications/${applicationId}`, {
             withCredentials: true,
         });
         return response.data;

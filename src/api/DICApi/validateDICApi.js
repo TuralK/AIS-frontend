@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { adminAPI } from '../../services/index'
 
 export const validateDIC = async () => {
     try {
-        const response = await axios.get(`http://localhost:3003/`, {
+        const response = await adminAPI.get(`/`, {
             withCredentials: true
         })
         return response.data.dataValues;

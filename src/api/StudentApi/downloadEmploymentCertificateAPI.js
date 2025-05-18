@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { studentAPI } from '../../services/index'
 
 export const downloadEmploymentCertificate = async () => {
     try {
-        const response = await axios.get('http://localhost:3004/download/CV', {
+        const response = await studentAPI.get('/download/CV', {
             withCredentials: true,
             responseType: 'blob',
         });

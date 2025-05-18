@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { loginAPI } from '../../services/index'
 
 export const validateToken = async (tokenFromURL) => {
     try {
-        const response = await axios.get(`http://localhost/changePassword?token=${tokenFromURL}`);
+        const response = await loginAPI.get(`/changePassword?token=${tokenFromURL}`);
         return response.data;
     } catch (err) {
         if (err.response) {

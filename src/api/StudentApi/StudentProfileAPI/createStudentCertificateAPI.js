@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { studentAPI } from '../../../services/index'
 
 export const createStudentCertificate = async (certificateData) => {
     try {
-        const response = await axios.post(`http://localhost:3004/profile/certificate`, certificateData, {
+        const response = await studentAPI.post(`/profile/certificate`, certificateData, {
             withCredentials: true,
         });
         return response.data;

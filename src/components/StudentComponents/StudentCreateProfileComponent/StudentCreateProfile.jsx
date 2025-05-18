@@ -154,11 +154,11 @@ const StudentCreateProfile = ({StarRating}) => {
       //   if (!state.username.trim()) newErrors.username = 'Username is required';
       //   if (!state.title.trim()) newErrors.title = 'Professional title is required';
       //   break;
-      // case 1:
-      //   if (!/^\S+@\S+\.\S+$/.test(state.email)) newErrors.email = 'Invalid email format';
-      //   if (state.phoneNumber && !/^\+\d{1,3}\d{6,}$/.test(state.phoneNumber)) 
-      //     newErrors.phoneNumber = 'Invalid phone format (e.g. +1234567890)';
-      //   break;
+      case 1:
+        if (state.email && !/^\S+@\S+\.\S+$/.test(state.email)) newErrors.email = 'Invalid email format';
+        if (state.phoneNumber && !/^\+\d{1,3}\d{6,}$/.test(state.phoneNumber)) 
+          newErrors.phoneNumber = 'Invalid phone format (e.g. +1234567890)';
+        break;
       case 3:
         state.experiences.forEach((exp, index) => {
           if (!exp.pos) newErrors[`experience-${index}-pos`] = 'Position required';
@@ -318,7 +318,7 @@ const StudentCreateProfile = ({StarRating}) => {
         return (
           <div className={styles.stepContent}>
             <div className={styles.formGroup}>
-              <label>Email *</label>
+              <label>Email</label>
               <input
                 type="email"
                 value={state.email}

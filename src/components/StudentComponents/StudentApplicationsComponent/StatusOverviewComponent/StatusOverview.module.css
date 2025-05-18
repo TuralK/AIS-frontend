@@ -46,3 +46,77 @@ i[icon="reject"] {
     height: 55px;
     background-color: #9A1220;
 }
+
+.statusOverview {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    color: #9A1220;
+}
+
+.statusDetail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1; /* Changed from flex-basis: 100% */
+}
+
+.detailText {
+    height: 50px;
+    padding-top: 20px;
+}
+
+.horizontalLine {
+    width: 130px;
+    height: 2px;
+    background-color: #9A1220;
+    flex-shrink: 0.2;
+}
+
+.verticalLineContainer {
+    width: 130px;
+    height: 55px;
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0.2;
+}
+
+.verticalLine {
+    width: 2px;
+    height: 55px;
+    background-color: #9A1220;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+    .horizontalLine {
+        width: 30px; /* Shorter lines on mobile */
+    }
+
+    .verticalLineContainer {
+        width: 30px; /* Narrower container for vertical line */
+    }
+
+    .statusDetail i {
+        font-size: 1.5rem; /* Smaller icons */
+    }
+
+    .detailText {
+        font-size: 0.7rem; /* Smaller text */
+        height: auto; /* Flexible height */
+        padding-top: 8px;
+        margin: 0 5px; /* Add some margin */
+    }
+
+    .verticalLine {
+        height: 40px; /* Shorter vertical line */
+    }
+
+    /* Optional: Adjust icon container padding */
+    .statusDetail {
+        padding: 0 5px;
+    }
+}

@@ -135,42 +135,35 @@ const CompanyApplication = () => {
   }
 
   const validateApplicationFields = () => {
-    /*
     const officialHolidays = [
-        '2024-01-01', // New Year's Day
-        '2024-04-23', // National Sovereignty and Children's Day
-        '2024-05-01', // Labor and Solidarity Day
-        '2024-04-09', // Eve of Ramadan Feast (half-day)
-        '2024-04-10', // First Day of Ramadan Feast
-        '2024-04-11', // Second Day of Ramadan Feast
-        '2024-04-12', // Third Day of Ramadan Feast
-        '2024-05-19', // Commemoration of Atatürk, Youth and Sports Day
-        '2024-07-15', // Democracy and National Unity Day
-        '2024-06-16', // Eve of Sacrifice Feast (half-day)
-        '2024-06-17', // First Day of Sacrifice Feast
-        '2024-06-18', // Second Day of Sacrifice Feast
-        '2024-06-19', // Third Day of Sacrifice Feast
-        '2024-06-20', // Fourth Day of Sacrifice Feast
-        '2024-08-30', // Victory Day
-        '2024-10-28', // Republic Day Eve (half-day)
-        '2024-10-29', // Republic Day
+      '01-01', // New Year's Day
+      '04-23', // National Sovereignty and Children's Day
+      '05-01', // Labor and Solidarity Day
+      '05-19', // Commemoration of Atatürk, Youth and Sports Day
+      '07-15', // Democracy and National Unity Day
+      '08-30', // Victory Day
+      '10-28', // Republic Day Eve (half-day)
+      '10-29', // Republic Day
+      // Religious festivals (dates shift yearly—update as needed):
+      '03-29', // Eve of Ramadan Feast (Ramazan Bayramı Arifesi)
+      '03-30', // First Day of Ramadan Feast (Ramazan Bayramı 1. Gün)
+      '03-31', // Second Day of Ramadan Feast (Ramazan Bayramı 2. Gün)
+      '04-01', // Third Day of Ramadan Feast (Ramazan Bayramı 3. Gün)
+      '06-05', // Eve of Sacrifice Feast (Kurban Bayramı Arifesi)
+      '06-06', // First Day of Sacrifice Feast (Kurban Bayramı 1. Gün)
+      '06-07', // Second Day of Sacrifice Feast (Kurban Bayramı 2. Gün)
+      '06-08', // Third Day of Sacrifice Feast (Kurban Bayramı 3. Gün)
+      '06-09', // Fourth Day of Sacrifice Feast (Kurban Bayramı 4. Gün)
     ];
-    */
+
     // Check that required fields are not null or empty.
-    if (
-      !id ||
-      !internshipStartDate ||
-      !internshipEndDate ||
-      !internshipDuration ||
-      !dutyNtitle ||
-      workOnSaturday === null ||
-      question2 === null ||
-      question3 === null ||
-      workDays === ""
-    ) {
+    if (!id || !internshipStartDate || !internshipEndDate || !internshipDuration ||
+        !dutyNtitle || workOnSaturday === null || question2 === null ||
+        question3 === null || workDays === "") {
       alert("Please fill out all required fields.");
       return false;
     }
+    
     // Validate internship duration (make sure it's a number and at least 20)
     const duration = parseInt(internshipDuration, 10);
     if (isNaN(duration) || duration < 20) {
@@ -178,25 +171,41 @@ const CompanyApplication = () => {
       return false;
     }
     // Convert start and end dates to Date objects and ensure proper order.
-    const startDate = new Date(internshipStartDate);
-    const endDate = new Date(internshipEndDate);
-    if (startDate > endDate) {
+    const start = new Date(internshipStartDate);
+    const end = new Date(internshipEndDate);
+    if (start > end) {
       alert("Internship start date must be before the end date.");
       return false;
     }
     // Calculate working days between the two dates.
     // Weekends: Sundays are off, Saturdays are off unless workOnSaturday is true.
-    let totalWorkingDays = 0;
-    for (let dt = new Date(startDate); dt <= endDate; dt.setDate(dt.getDate() + 1)) {
-      const dayOfWeek = dt.getDay(); // 0 = Sunday, 6 = Saturday
-      if (dayOfWeek === 0) continue; // Skip Sundays
-      if (dayOfWeek === 6 && !workOnSaturday) continue; // Skip Saturdays if not working
-      totalWorkingDays++;
+    let effectiveWorkingDays = 0;
+    for (let dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
+      const day = dt.getDay(); // 0 = Sun, 6 = Sat
+      if (day === 0) continue;
+      if (day === 6 && workOnSaturday === "no") continue;
+
+      // Check holiday
+      const mm = String(dt.getMonth() + 1).padStart(2, '0');
+      const dd = String(dt.getDate()).padStart(2, '0');
+      if (officialHolidays.includes(`${mm}-${dd}`)) continue;
+
+      effectiveWorkingDays++;
     }
-    if ((totalWorkingDays - parseInt(workDays, 10)) < 20) {
+
+    // Effective working days excluding holidays
+    // const effectiveWorkingDays = totalWorkingDays - numHolidays;
+    const makeUpDays = parseInt(workDays, 10);
+
+    if ((effectiveWorkingDays + makeUpDays) < 20) {
       alert(
-        `The total working days between the start and end date is ${totalWorkingDays- parseInt(workDays, 10)}, which is less than the required 20 days.`
+        `The total working days between the start and end date is ${effectiveWorkingDays + makeUpDays}, which is less than the required 20 days.`
       );
+      return false;
+    }
+
+    if (effectiveWorkingDays !== duration) {
+      alert ("Total working days doesn't match the internship duration you provided.")
       return false;
     }
 
@@ -311,7 +320,7 @@ const CompanyApplication = () => {
         </div>
         <div className={styles.endDateContainer}>
           <h3 className={styles.endDateName}>Grade</h3>
-          <p className={styles.endDate}>3</p>
+          <p className={styles.endDate}>{application.Student.year}</p>
         </div>
       </div>
 

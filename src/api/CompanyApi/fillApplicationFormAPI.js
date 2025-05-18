@@ -1,11 +1,11 @@
-import axios from 'axios';
+import { companyAPI } from '../../services/index'
 
 export const fillApplicationForm = async (applicationId,internshipStartDate,internshipEndDate, internshipDuration, 
                                         dutyNtitle, workOnSaturday, question2, question3, workDays) => {
     try {
         
-        const response = await axios.post(
-          `http://localhost:3005/applications/${applicationId}/fillApplicationForm`, 
+        const response = await companyAPI.post(
+          `/applications/${applicationId}/fillApplicationForm`, 
           {
             internStartDate: internshipStartDate,
             internEndDate: internshipEndDate,

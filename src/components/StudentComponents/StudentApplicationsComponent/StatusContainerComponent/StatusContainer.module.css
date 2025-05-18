@@ -6,6 +6,7 @@
   margin-top: 25px;
 }
 
+/* Desktop Styles */
 .statusKeyContainer {
   display: flex;
   flex-direction: row;
@@ -13,8 +14,6 @@
   border: 1px solid #E2E2E2;
   border-top-left-radius: 12px;
   border-top-right-radius: 12px;
-  width: 100%;
-  flex-basis: 100%;
 }
 
 .statusValueContainer {
@@ -22,8 +21,6 @@
   flex-direction: row;
   align-items: center;
   border: 1px solid #E2E2E2;
-  width: 100%;
-  flex-basis: 100%;
 }
 
 .statusValueContainer:last-child {
@@ -36,7 +33,6 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  width: 100%;
   border-bottom: 1px solid #E2E2E2;
   padding: 10px;
   height: 80px;
@@ -45,12 +41,10 @@
 .smallBox {
   flex-basis: 60%;
   max-width: 60%;
-  flex-grow: 0;
 }
 .mediumBox {
   flex-basis: 90%;
   max-width: 90%;
-  flex-grow: 0;
 }
 
 .value {
@@ -58,9 +52,7 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  width: 100%;
   padding: 10px;
-  flex-wrap: wrap;
 }
 
 img {
@@ -69,34 +61,110 @@ img {
 }
 
 .date {
-    color: rgba(0, 0, 0, 0.5);
+  color: rgba(0, 0, 0, 0.5);
 }
 
 .action {
-    color: #9A1220;
+  color: #9A1220;
 }
 
 .action:hover {
-    cursor: pointer;
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .statusDetail {
   color: white;
-  background-color: #9A1220;
   border-radius: 12px;
   padding: 10px 15px;
   width: 75%;
 }
 
-.evaluation {
-  background-color: #9A1220;
+.evaluation { background-color: #9A1220; }
+.accepted { background-color: #066a1e; }
+.rejected { background-color: #000000; }
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .statusKeyContainer {
+    display: none;
+  }
+
+  .statusValueContainer {
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 10px;
+    border-radius: 12px !important;
+    padding: 15px;
+  }
+
+  .value {
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+  }
+
+  .value:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .value::before {
+    content: attr(data-label);
+    font-weight: 600;
+    margin-right: 15px;
+    flex-shrink: 0;
+    width: 120px;
+    color: #666;
+  }
+
+  img {
+    width: 50px;
+    height: 50px;
+    margin-left: auto;
+  }
+
+  .statusDetail {
+    width: 100%;
+    text-align: center;
+    padding: 8px;
+    margin: 5px 0;
+  }
+
+  .smallBox, .mediumBox {
+    flex-basis: auto;
+    max-width: 100%;
+    justify-content: space-between;
+  }
+
+  .date {
+    justify-content: space-between;
+  }
+
+  .action {
+    margin-left: auto;
+  }
 }
 
-.accepted {
-  background-color: #066a1e;
-}
+@media (max-width: 480px) {
+  .value {
+    font-size: 14px;
+    padding: 10px 0;
+  }
 
-.rejected {
-  background-color: #000000;
+  .value::before {
+    font-size: 13px;
+    width: 110px;
+  }
+
+  img {
+    width: 45px;
+    height: 45px;
+  }
+
+  .statusDetail {
+    font-size: 13px;
+    padding: 6px;
+  }
 }

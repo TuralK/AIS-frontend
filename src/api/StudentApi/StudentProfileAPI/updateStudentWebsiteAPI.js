@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { studentAPI } from '../../../services/index'
 
 export const updateStudentWebsite = async (webSite) => {
     try {
-        const response = await axios.put('http://localhost:3004/profile/webSite', {webSite}, {
+        const response = await studentAPI.put('/profile/webSite', {webSite}, {
             withCredentials: true,
         });
         return response.data;

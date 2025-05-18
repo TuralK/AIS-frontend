@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useMatches } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Pencil, Trash2 } from 'lucide-react';
 import styles from "./StudentProfile.module.css";
 import StudentBackgound from "../../../assets/default_background.jpg";
@@ -30,6 +31,7 @@ import { deleteStudentLanguage } from '../../../api/StudentApi/StudentProfileAPI
 import { deleteStudentBannerImage } from '../../../api/StudentApi/StudentProfileAPI/deleteStudentBannerImageAPI';
 import { deleteStudentProfilePhoto } from '../../../api/StudentApi/StudentProfileAPI/deleteStudentProfilePhotoAPI';
 import StudentCreateProfile from '../StudentCreateProfileComponent/StudentCreateProfile';
+import { fetchStudentProfileById } from '../../../api/StudentApi/StudentProfileAPI/fetchStudentProfileByIdAPI';
 
 const baseUrl = 'http://localhost:3004';
 
@@ -77,7 +79,6 @@ const StarRating = ({ rating, isEditing, onRatingChange }) => {
   );
 };
 
-
 const NavigationTabs = ({ activeTab, setActiveTab }) => {
   const tabs = ["About", "Experiences", "Certificates", "Skills"];
   return (
@@ -97,7 +98,6 @@ const NavigationTabs = ({ activeTab, setActiveTab }) => {
   );
 };
   
-
 const BioField = ({ label, value, isClickable, isEditing, onChange }) => {
   const handleChange = (newValue) => {
     if (label === "Phone" && newValue && !/^\+?\d*$/.test(newValue)) {
@@ -175,7 +175,6 @@ const BioField = ({ label, value, isClickable, isEditing, onChange }) => {
   );
 };
 
-
 const ImageUpload = ({ isProfilePic, currentImage, onImageChange, isEditing, defaultImage }) => {
   const fileInputRef = React.useRef(null);
   
@@ -250,6 +249,9 @@ const ImageUpload = ({ isProfilePic, currentImage, onImageChange, isEditing, def
 };
 
 const StudentProfile = () => {
+  const { id } = useParams();
+
+  const navigate = useNavigate();
   const matches = useMatches();
   const { t } = useTranslation();
   const currentMatch = matches[matches.length - 1];
@@ -341,15 +343,21 @@ const StudentProfile = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
+        let profile;
         setLoading(true);
-        const [profile, skillsData, languagesData] = await Promise.all([
-          fetchStudentProfile(),
-          fetchAllSkills(),
-          fetchAllLanguages()
-        ]);
+        if (!id) {
+          const [fetchedProfile, skillsData, languagesData] = await Promise.all([
+            fetchStudentProfile(),
+            fetchAllSkills(),
+            fetchAllLanguages()
+          ]);
 
-        setAllSkills(skillsData);
-        setAllLanguages(languagesData);
+          profile = fetchedProfile;  
+          setAllSkills(skillsData);
+          setAllLanguages(languagesData);
+        } else {
+          profile = await fetchStudentProfileById(id);
+        }
 
         setStudentData(profile);
         // initialize all editing state from fetched data:
@@ -377,8 +385,6 @@ const StudentProfile = () => {
     };
     loadData();
   }, []);
-
-
 
   useEffect(() => {
     setBioFields(prevBioFields => 
@@ -652,13 +658,6 @@ const StudentProfile = () => {
             )
           );
 
-          // Refresh data
-          // const freshData = await fetchStudentProfile();
-          // setStudentData(freshData);
-          // setExperiences(freshData.experiences || []);
-          // setCertificates(freshData.certificates || []);
-          // setSkillsList(freshData.skills || []);
-
         } catch (error) {
           console.error('Save failed:', error);
           alert('Error saving changes. Please try again.');
@@ -727,7 +726,8 @@ const StudentProfile = () => {
 
   if (loading) return <Loading />;
 
-  if (!studentData) {return <StudentCreateProfile StarRating={StarRating}/>}
+  if(!studentData && id) { navigate(-1); alert("Student profile doesn't exist yet.") }
+  else if (!studentData) { return <StudentCreateProfile StarRating={StarRating}/> }
 
   const renderTabContent = () => {
     if (!studentData) return null;
@@ -1011,15 +1011,16 @@ const StudentProfile = () => {
 
           <h1 className={styles.studentProfileTitle}>{studentData.username || 'Student'}</h1>
           <p className={styles.studentProfileSubtitle}>{studentData.title || 'Computer Enginner'}</p>
-
-          {isEditing ? (
-            <div className="flex space-x-2 mb-5">
-              <button className="flex-1 py-2.5 bg-black text-white font-medium" onClick={handleEditToggle}>Save</button>
-              <button className="flex-1 py-2.5 bg-gray-200 text-gray-800 font-medium" onClick={handleCancelEdit}>Cancel</button>
-            </div>
-          ) : (
-            <button className="w-full py-2.5 bg-black text-white font-medium mb-5" onClick={handleEditToggle}>Edit Details</button>
-          )}
+          {!id ? (
+            isEditing ? (
+              <div className="flex space-x-2 mb-5">
+                <button className="flex-1 py-2.5 bg-black text-white font-medium" onClick={handleEditToggle}>Save</button>
+                <button className="flex-1 py-2.5 bg-gray-200 text-gray-800 font-medium" onClick={handleCancelEdit}>Cancel</button>
+              </div>
+            ) : (
+              <button className="w-full py-2.5 bg-black text-white font-medium mb-5" onClick={handleEditToggle}>Edit Details</button>
+            )
+          )  : null }
 
           <div className={styles.studentBioContainer}>
             {bioFields.map((field, idx) => (

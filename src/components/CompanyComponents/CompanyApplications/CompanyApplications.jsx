@@ -1,89 +1,81 @@
-import React, {useState, useEffect} from "react"
-import { useMatches } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useMatches, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import ListTable from "../../ListTableComponent/ListTable"
-import CompanyApplicationsCSS from "./CompanyApplications.module.css"
-import { fetchApplications } from "../../../api/CompanyApi/fetchApplicationsAPI"
-import Loading from "../../LoadingComponent/Loading"
+import ListTable from "../../ListTableComponent/ListTable";
+import CompanyApplicationsCSS from "./CompanyApplications.module.css";
+import { fetchApplications } from "../../../api/CompanyApi/fetchApplicationsAPI";
+import Loading from "../../LoadingComponent/Loading";
 
 const CompanyApplications = () => {
   const matches = useMatches();
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const currentMatch = matches[matches.length - 1];
   const titleKey = currentMatch?.handle?.titleKey;
 
-  React.useEffect(() => {
+  // Update document title
+  useEffect(() => {
     const baseTitle = 'AIS';
     document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
   }, [titleKey, t]);
 
-
-  const headers = ["Student Name", "Applied At", "Grade", "Announcement"]
-  const[applications, setApplications] = useState([]);
-  const[loading, setLoading] = useState(true);
+  const headers = ["Student Name", "Applied At", "Grade", "Announcement"];
+  const [applications, setApplications] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchApplications()
-      .then(applicationsData => {
-        const formattedData = applicationsData.applications.map(app => ({
-          application_id: app.id,
-          student_name: app.Student.username,
+      .then(data => {
+        const formatted = data.applications.map(app => ({
+          application_path: `/company/applications/${app.id}`,
+          // Replace student_name with a clickable component
+          student_name: (
+            <span
+              className="cursor-pointer text-blue-600 hover:underline"
+              onClick={e => {
+                e.stopPropagation();
+                navigate(`/company/student-profile/${app.studentId}`);
+              }}
+            >
+              {app.Student.username}
+            </span>
+          ),
           applied_at: new Date(app.applyDate).toLocaleDateString("en-US", {
             year: "numeric",
             month: "long",
             day: "numeric",
-          }), 
+          }),
           grade: app.Student.year,
-          announcement: `${app.Announcement.announcementName}`,
+          announcement: app.Announcement.announcementName,
         }));
-  
-        setApplications(formattedData);
+        setApplications(formatted);
       })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+      .finally(() => setLoading(false));
+  }, [navigate]);
 
-  // Example with more than 8 items to demonstrate pagination
-  //delete this
-  const content = [
-    {
-      student_name: "Tural Karimli dddddd dddddddddddddd",
-      applied_at: "May 12, 2023 Hello my name is Tural",
-      grade: 3,
-      announcement: "Applied to: Data Structures",
-    },
-    // ... first entry repeated 11 more times to demonstrate pagination
-    ...Array(1001).fill({
-      student_name: "Tural Karimli",
-      applied_at: "May 12, 2023",
-      grade: 3,
-      announcement: "Applied to: Data Structures",
-    }),
-  ]
+  if (loading) return <Loading />;
 
   const columnSizes = {
     "Student Name": "1fr",
     "Applied At": "1fr",
     "Grade": "0.5fr",
     "Announcement": "1fr",
-  }
-
-  if (loading) {
-    return (
-        <Loading />
-    )
-  }
+  };
 
   return (
     <div className={CompanyApplicationsCSS.card}>
       <div className="p-4">
-        <ListTable headers={headers} content={applications} columnSizes={columnSizes} defaultItemsPerPage={11} isClickable={true} redirectField={"application_id"}/>
+        <ListTable
+          headers={headers}
+          content={applications}
+          columnSizes={columnSizes}
+          defaultItemsPerPage={11}
+          isClickable={true}
+          redirectField={"application_path"}
+        />
       </div>
     </div>
-    
-  )
-}
+  );
+};
 
-export default CompanyApplications
-
+export default CompanyApplications;

@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { studentAPI } from '../../services/index'
 
 export const fetchAnnouncements = async () => {
     try {
-        const response = await axios.get('http://localhost:3004/opportunities', {
+        const response = await studentAPI.get('/opportunities', {
             withCredentials: true,
         });
         return response.data.announcements;

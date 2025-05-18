@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { studentAPI } from '../../../services/index'
 
 export const fetchStudentProfileById = async (studentID) => {
     try {
-        const response = await axios.get(`http://localhost:3004/profile/${studentID}`, {
+        const response = await studentAPI.get(`/profile/${studentID}`, {
             withCredentials: true,
         });
         return response.data;

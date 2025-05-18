@@ -35,6 +35,11 @@ export default function PublishAnnouncement() {
     const start = new Date(startDate);
     const end = new Date(endDate);
 
+    if (start > end) {
+      alert("Start date must be before the end date.");
+      return false;
+    }
+
     // new Date("YYYY-MM-DD") creates a valid date
     const isoStartDate = new Date(startDate).toISOString();
     const isoEndDate = new Date(endDate).toISOString();

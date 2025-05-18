@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { studentAPI } from '../../../services/index'
 
 export const deleteStudentBannerImage = async () => {
     try {
-        const response = await axios.delete(`http://localhost:3004/profile/bannerImage`, {
+        const response = await studentAPI.delete(`/profile/bannerImage`, {
             withCredentials: true,
         });
         return response.data;

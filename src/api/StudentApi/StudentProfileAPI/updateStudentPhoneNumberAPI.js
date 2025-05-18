@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { studentAPI } from '../../../services/index'
 
 export const updateStudentPhoneNumber = async (phoneNumber) => {
     try {
-        const response = await axios.put('http://localhost:3004/profile/phoneNumber', {phoneNumber}, {
+        const response = await studentAPI.put('/profile/phoneNumber', {phoneNumber}, {
             withCredentials: true,
         });
         return response.data;

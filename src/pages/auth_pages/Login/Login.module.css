@@ -1,190 +1,210 @@
-/* add root */
-/* change all page */
-*{
+/* Reset and box-sizing */
+* {
   box-sizing: border-box;
   margin: 0;
+  padding: 0;
 }
 
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-}
-
+/* Full-screen background */
 .background {
-    position: fixed;
-    overflow: auto;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /*background: url('../../../assets/iyte_background.jpg') no-repeat center center; */
-    background: url('https://ceng.iyte.edu.tr/wp-content/uploads/sites/124/2017/02/100_3495.jpg');
-    background-size: cover;
-    z-index: 0;
-    display: flex;
-    justify-content: flex-end; /* Aligns child items to the right */
-    align-items: center;       /* Aligns child items vertically in the center */
-    background-size: 100% 100%;
+  position: relative; /* Allow overlay to cover full content */
+  width: 100%;
+  min-height: 100vh; /* Extend with content */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url('https://ceng.iyte.edu.tr/wp-content/uploads/sites/124/2017/02/100_3495.jpg') no-repeat center center;
+  background-size: cover;
+  overflow: auto; /* Enable scrolling */
 }
 
+/* Dark overlay covers entire background container */
 .background::before {
   content: "";
-  position: fixed;
-  overflow: auto;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgb(15, 1, 30, 0.55); /* Adjust the last value for transparency */
-  z-index: -1;
+  background: rgba(15, 1, 30, 0.55);
+  z-index: 0;
 }
 
-
+/* Form container */
 .form-container {
-    top: 0px;
-    right: 0px;
-    bottom: 0px;
-    position: absolute;
-    margin-right: 10px;
-    display: flex;
-    width: 500px;
-    height: 850px;
-    background-color: white;
-    border-radius: 20px;
-    margin-top: 25px;
-    margin-right: 20px;
-    padding: 20px;
-    z-index: 10;
-    overflow-y: auto;
-    overflow-x: hidden;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 450px;
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  margin: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
 }
 
+/* Top section (logo + line) */
 .form-top {
-    background-color: white;
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    width: 100%;
-    height: 30%;
-    z-index: 10;
-    border-radius: 20px;
-}
-
-.form-top-middle {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
+  text-align: center;
+  margin-bottom: 4px;
 }
 
 .form-top-middle img {
-  width: 225px;
-  height: 225px;
-}
-
-.form-top-bottom {
-  width: 85%;
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
   margin: 0 auto;
 }
 
 .form-line {
-  border: 1px solid black;
-  border-color: black;
-  opacity: 0.15;
-  margin: 0;
+  border: none;
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.1);
+  margin: 16px 0;
 }
 
-.form-bottom {
-  position: absolute;
-  bottom: 0px;
-  right: 0px;
-  width: 100%;
-  height: 70%;
-  z-index: 10;
-  border-radius: 20px;
-}
-
+/* Bottom section (forms) */
 .page-name {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  margin-top: 5px;
-  margin-left: 35px;
-  font-weight: 500;
-  font-size: 11px;
+  font-size: 18px;
+  font-weight: 550;
+  color: #333;
+  text-align: center;
 }
 
 .header {
-  margin-left: 45px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 28px;
   font-weight: 400;
-  margin-top: 20px;
-  font-size: 35px;
+  text-align: center;
+  margin: 8px 0 8px;
 }
 
-.form-bottom input[type="text"], .form-bottom input[type="password"], .form-bottom input[type="email"] {
-  width: 82%;
-  height: 45px;
-  display: block;
-  box-sizing: border-box;
-  padding: 1px 10px;
-  margin: 13px auto;
-  border-width: 1px;
-  border-style: solid;
-  border-color: rgb(204, 204, 204);
-  border-image: initial;
+.form-content input[type="email"],
+.form-content input[type="password"],
+.forgot-password input[type="email"] {
+  width: 99%;
+  height: 44px;
+  margin: 8px 0;
+  padding: 0 12px;
   font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-.login-error {
-  width: 100%;
-  height: 40px;
-  margin-left: 50px;
+.login-error,
+.no-user-error {
   color: red;
+  font-size: 13px;
+  margin-top: 4px;
+  text-align: center;
 }
 
-input[type="checkbox"] {
-  appearance: auto;
-  margin-left: 50px;
-  box-sizing: border-box;
-  padding: initial;
-  border: initial;
+.loginLabel {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  margin: 12px 0;
+  cursor: pointer;
+}
+
+.loginLabel input[type="checkbox"] {
+  margin-right: 8px;
   accent-color: darkred;
 }
 
-.button {
-  background-color: darkred;
-  color: white;
+.loginLabel input[type="checkbox"]:hover {
   cursor: pointer;
-  width: 82%;
-  display: block;
-  padding: 14px 20px;
-  margin: 8px auto;
-  border-width: initial;
-  border-style: none;
-  border-color: initial;
-  border-image: initial;
-  margin: 8px auto;
+}
+
+.button {
+  width: 100%;
+  padding: 12px;
+  margin: 12px 0;
+  font-size: 16px;
+  background-color: darkred;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .button:hover {
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
-.no-user-error {
-  width: 100%;
-  height: 20px;
-  margin-left: 50px;
-  color: red;
-}
-
+/* Forgot password section (hidden by default) */
 .forgot-password {
-  height: 150px;
-  max-height: 0;
   overflow: hidden;
-  transition: max-height 0.35s ease-in-out; /* Transition for slide effect */
+  max-height: 0;
+  transition: max-height 0.3s ease;
 }
 
 .forgot-password.active {
-  max-height: 150px; /* Set to a large value to allow for sliding */
+  max-height: 200px;
+}
+
+/* Links */
+.forgotPasswordButton {
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.forgotPasswordButton:hover {
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .form-container {
+    padding: 16px;
+    margin: 12px;
+  }
+
+  .form-top-middle img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .header {
+    font-size: 24px;
+  }
+
+  .page-name {
+    font-size: 11px;
+  }
+
+  .button {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+.langSwitcher {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255,255,255,0.8);
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  padding: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.langSwitcher:hover {
+  background: #fff;
+  transform: scale(1.1);
+}
+
+.langSwitcher img {
+  width: 20px;
+  height: 20px;
+  display: block;
 }

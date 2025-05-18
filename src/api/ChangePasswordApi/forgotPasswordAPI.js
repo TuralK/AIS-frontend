@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { loginAPI } from '../../services/index'
 
 export const forgotPassword = async (forgotEmail) => {
     try {
-        const response = await axios.post('http://localhost/forgotPassword', {
+        const response = await loginAPI.post('/forgotPassword', {
             email: forgotEmail,
           }, {
             withCredentials: true,

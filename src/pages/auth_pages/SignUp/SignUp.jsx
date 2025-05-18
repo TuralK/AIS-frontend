@@ -8,10 +8,12 @@ import IYTElogo from '../../../assets/iyte_logo_eng.png'
 import StudentForm from '../../../components/SignUpComponents/StudentForm/StudentForm';
 import CompanyForm from '../../../components/SignUpComponents/CompanyForm/CompanyForm';
 import Loading from '../../../components/LoadingComponent/Loading';
+import TurkeyFlag from '../../../assets/turkey.png';
+import UKFlag from '../../../assets/united-kingdom.png';
 
 const SignUp = () => {
     const matches = useMatches();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const currentMatch = matches[matches.length - 1];
     const titleKey = currentMatch?.handle?.titleKey;
   
@@ -44,12 +46,20 @@ const SignUp = () => {
         } catch (error) {
           console.error("Failed to fetch user type:", error);
         } finally {
+          const pageLanguage = localStorage.getItem('pageLanguage');
+          if (i18n.language != pageLanguage) { switchLang() }
           setLoading(false);
         }
       };
     
       fetchUserTypeAndNavigate();
     }, [navigate]);
+
+    const switchLang = () => {
+      const next = i18n.language === 'tr' ? 'en' : 'tr';
+      localStorage.setItem('pageLanguage', next);
+      i18n.changeLanguage(next);
+    };
 
     if (loading) {
       return (
@@ -59,16 +69,22 @@ const SignUp = () => {
 
     return (
         <div className={SignUpCSS.background}>
-            <div className={SignUpCSS.right}>
+            <div className={`${SignUpCSS.right} ${studentForm ? SignUpCSS.student : SignUpCSS.company}`}>
                 <div className={SignUpCSS.top_right}>
                     <div className={SignUpCSS.top_right_middle}>
                         <a href="https://iyte.edu.tr/" target="_blank" rel='noopener noreferrer'>
                             <img src={IYTElogo} alt="IYTE" />
                         </a>
+                        <button className={SignUpCSS.langSwitcher} onClick={switchLang}>
+                          {i18n.language === 'tr'
+                            ? <img src={UKFlag} alt="English" />
+                            : <img src={TurkeyFlag} alt="Türkçe" />}
+                        </button>
                     </div>
                     <div className={SignUpCSS.form_top_bottom}>
                         <hr className={SignUpCSS.form_line}></hr>
                     </div>
+                    <p name="page-name" className={SignUpCSS.page_name}>Automated Internship System</p>
                 </div>
                 
                 <div className={SignUpCSS.bottom_right}>
@@ -84,23 +100,22 @@ const SignUp = () => {
                         <div className={` ${SignUpCSS.slider_tab} ${studentForm ? SignUpCSS.active : SignUpCSS.deactive}`}></div>
                     </div>
 
-                    <div className={SignUpCSS.form_container}>
-                        <div className={` ${SignUpCSS.title} ${SignUpCSS.student_form} 
-                                ${studentForm ? SignUpCSS.active : SignUpCSS.deactive}`}>
-                            <p name="page-name" className={SignUpCSS.page_name}>Automated Internship System</p>
-                            <h1 name="header" className={SignUpCSS.header}>Sign Up Student</h1>
-                            <div className={SignUpCSS.form_inner}>
-                                <StudentForm reset={resetKey} />
-                            </div>
+                    <div className={SignUpCSS.form_container}
+                        style={{ transform: `translateX(${studentForm ? '0%' : '-50%'})` }}>
+                      <div className={SignUpCSS.title}>
+                        <h1 name="header" className={SignUpCSS.header}>Sign Up Student</h1>
+                        <div className={SignUpCSS.form_inner}>
+                          <StudentForm reset={resetKey} />
                         </div>
-                        <div className={SignUpCSS.title}>
-                            <p name="page-name" className={SignUpCSS.page_name}>Automated Internship System</p>
-                            <h1 name="header" className={SignUpCSS.header}>Sign Up Company</h1>
-                            <div className={SignUpCSS.form_inner}>
-                                <CompanyForm reset={resetKey} />
-                            </div>
+                      </div>
+                      <div className={SignUpCSS.title}>
+                        <h1 name="header" className={SignUpCSS.header}>Sign Up Company</h1>
+                        <div className={SignUpCSS.form_inner}>
+                          <CompanyForm reset={resetKey} />
                         </div>
+                      </div>
                     </div>
+
                 </div>
             </div>
         </div>

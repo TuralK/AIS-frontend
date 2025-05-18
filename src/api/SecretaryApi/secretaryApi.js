@@ -1,9 +1,9 @@
-import axios from 'axios';
+import { secretaryAPI } from '../../services/index'
 
 export const downloadFile = async (id) => {
   try {
-    const response = await axios.get(
-      `http://localhost:3006/applications/download/${id}/Application Form`, 
+    const response = await secretaryAPI.get(
+      `/applications/download/${id}/Application Form`, 
       {
         responseType: 'blob',  
         withCredentials: true, 
@@ -36,8 +36,8 @@ export const submitApplication = async (applicationId, selectedFile) => {
     formData.append("studentFile", selectedFile);
 
     // API'ye POST isteği
-    const response = await axios.post(
-      `http://localhost:3006/applications/${applicationId}`,
+    const response = await secretaryAPI.post(
+      `/applications/${applicationId}`,
       formData,
       {
         withCredentials: true, 

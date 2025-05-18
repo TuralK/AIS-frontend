@@ -12,6 +12,7 @@ import { applyAnnouncement } from '../../../api/StudentApi/applyAnnouncementAPI.
 
 const StudentAnnouncementComponent = () => {    
   const matches = useMatches();
+  const { t, i18n } = useTranslation();
   const currentMatch = matches[matches.length - 1];
   const titleKey = currentMatch?.handle?.titleKey;
   
@@ -33,7 +34,6 @@ const StudentAnnouncementComponent = () => {
   const [studentPhoneNumber, setStudentPhoneNumber] = useState("05");
   const [relativePhoneNumber, setRelativePhoneNumber] = useState("05");
   let   [totalRemainingSeconds, setTotalRemainingSeconds] = useState();
-  const { t, i18n } = useTranslation();
   const { announcementId } = useParams();
   const [isStuck, setIsStuck] = useState(true);
   const navigate = useNavigate();
@@ -189,7 +189,7 @@ const StudentAnnouncementComponent = () => {
     // Initialize the timer
     const timer = setInterval(() => {
       setTotalRemainingSeconds(prevSeconds => {
-        if (prevSeconds > 1) {
+        if (prevSeconds >= 1) {
           const newRemainingSeconds = prevSeconds - 1;
           formatRemainingTime(newRemainingSeconds);
           return newRemainingSeconds;

@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { adminAPI } from '../../services/index'
 
 export const fetchAnnouncementById = async (id) => {
   try {
-    const response = await axios.get(`http://localhost:3003/announcement/${id}`, {
+    const response = await adminAPI.get(`/announcement/${id}`, {
       withCredentials: true,
     });
     return response.data.announcement;
@@ -13,7 +13,7 @@ export const fetchAnnouncementById = async (id) => {
 
 export const updateAnnouncementById = async (id, isApproved, feedback) => {
   try {
-    await axios.put(`http://localhost:3003/announcement/${id}`, {
+    await adminAPI.put(`/announcement/${id}`, {
       isApproved,
       feedback
     }, {

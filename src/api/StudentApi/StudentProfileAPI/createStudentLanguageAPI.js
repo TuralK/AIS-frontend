@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { studentAPI } from '../../../services/index'
 
 export const createStudentLanguage = async (languageData) => {
     try {
-        const response = await axios.post(`http://localhost:3004/profile/language`, languageData, {
+        const response = await studentAPI.post(`/profile/language`, languageData, {
             withCredentials: true,
         });
         return response.data;

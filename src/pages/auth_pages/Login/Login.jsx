@@ -8,10 +8,13 @@ import IYTElogo from '../../../assets/iyte_logo_eng.png';
 import { getUserType } from '../../../api/LoginApi/getUserTypeAPI';
 import { forgotPassword } from '../../../api/ChangePasswordApi/forgotPasswordAPI';
 import Loading from '../../../components/LoadingComponent/Loading';
+import { loginAPI } from '../../../services';
+import TurkeyFlag from '../../../assets/turkey.png';
+import UKFlag from '../../../assets/united-kingdom.png';
 
 const Login = () => {
   const matches = useMatches();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const currentMatch = matches[matches.length - 1];
   const titleKey = currentMatch?.handle?.titleKey;
 
@@ -42,6 +45,12 @@ const Login = () => {
     setForgotEmailError('');
   };
 
+  const switchLang = () => {
+    const next = i18n.language === 'tr' ? 'en' : 'tr';
+    localStorage.setItem('pageLanguage', next);
+    i18n.changeLanguage(next);
+  };
+
   useEffect(() => {
     const fetchUserTypeAndNavigate = async () => {
       try {
@@ -54,6 +63,8 @@ const Login = () => {
       } catch (error) {
         console.error("Failed to fetch user type:", error);
       } finally {
+        const pageLanguage = localStorage.getItem('pageLanguage');
+        if (i18n.language != pageLanguage) { switchLang() }
         setLoading(false);
       }
     };
@@ -71,7 +82,7 @@ const Login = () => {
   const handleLoginSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost/', {
+      const response = await loginAPI.post('/', {
         email,
         password,
       }, {
@@ -159,6 +170,11 @@ const Login = () => {
                 alt='IYTE'
               />
             </a>
+            <button className={LoginCSS.langSwitcher} onClick={switchLang}>
+                          {i18n.language === 'tr'
+                            ? <img src={UKFlag} alt="English" />
+                            : <img src={TurkeyFlag} alt="Türkçe" />}
+                        </button>
           </div>
           <div className={LoginCSS['form-top-bottom']}>
             <hr className={LoginCSS['form-line']}></hr>
@@ -191,16 +207,18 @@ const Login = () => {
               { 
               loginError.length > 0 && <div className={LoginCSS['login-error']}>{loginError}</div>
               }
-              <label>
-                <input
-                  type='checkbox'
-                  id='remember'
-                  name='remember'
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                />
-                <span> Remember your username</span>
-              </label>
+              <div className={LoginCSS.loginLabel}>
+                <label>
+                  <input
+                    type='checkbox'
+                    id='remember'
+                    name='remember'
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                  />
+                  <span> Remember your username</span>
+                </label>
+              </div>
               <button className={LoginCSS.button} type='submit'>Login</button>
             </div>
           </form>
@@ -224,7 +242,7 @@ const Login = () => {
             </form>
           </div>
           <center>
-            <a href='#' onClick={toggleForgotPassword}>
+            <a className={LoginCSS.forgotPasswordButton} href='#' onClick={toggleForgotPassword}>
               Forgot Password?
             </a>
           </center>

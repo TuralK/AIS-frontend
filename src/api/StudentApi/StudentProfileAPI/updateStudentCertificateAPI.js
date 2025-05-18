@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { studentAPI } from '../../../services/index'
 
 export const updateStudentCertificate = async (certificateId, certificateData) => {
     try {
-        const response = await axios.put(`http://localhost:3004/profile/certificate/${certificateId}`, certificateData, {
+        const response = await studentAPI.put(`/profile/certificate/${certificateId}`, certificateData, {
             withCredentials: true,
         });
         return response.data;

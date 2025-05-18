@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { studentAPI } from '../../../services/index'
 
 export const updateStudentEmail = async (email) => {
     try {
-        const response = await axios.put('http://localhost:3004/profile/email', {email}, {
+        const response = await studentAPI.put('/profile/email', {email}, {
             withCredentials: true,
         });
         return response.data;

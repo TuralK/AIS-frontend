@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { studentAPI } from '../../../services/index'
 
 export const deleteStudentLanguage = async (languageId) => {
     try {
-        const response = await axios.delete(`http://localhost:3004/profile/language/${languageId}`, {
+        const response = await studentAPI.delete(`/profile/language/${languageId}`, {
             withCredentials: true,
         });
         return response.data;

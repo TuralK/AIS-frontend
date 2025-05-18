@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { companyAPI } from '../../services/index'
 
 export const validateCompany = async () => {
     try {
-        const response = await axios.get(`http://localhost:3005/`, {
+        const response = await companyAPI.get(`/`, {
             withCredentials: true
         });
         return response.data.dataValues;

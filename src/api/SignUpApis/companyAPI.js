@@ -1,7 +1,7 @@
-import axios from 'axios';
+import { signupAPI } from '../../services/index'
 
 export const registerCompany = (companyData) => {
-  return axios.post('http://localhost:3002/company', companyData, {
+  return signupAPI.post('/company', companyData, {
     withCredentials: true,
   });
 };

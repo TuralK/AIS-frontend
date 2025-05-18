@@ -31,6 +31,7 @@ import StudentInternship from "./components/StudentComponents/StudentInternship/
 import StudentProfile from "./components/StudentComponents/StudentProfileComponent/StudentProfile.jsx";
 import NotFound from "./components/UtilComponents/NotFound.jsx";
 import AnnouncementRequest from "./components/DICcomponents/DICAnnouncementRequests/DICAnnouncementRequest.jsx";
+import CompanyProfile from "./components/CompanyComponents/CompanyProfileComponent/CompanyProfile.jsx";
 
 const initialVh = window.innerHeight;
 document.documentElement.style.setProperty('--initial-vh', `${initialVh}px`);
@@ -51,7 +52,7 @@ const App = () => {
       handle: { titleKey: 'changePassword' }
     },
     {
-      path: `/${t('signUpLink')}`, 
+      path: '/signup', 
       element: <SignUp />,
       handle: { titleKey: 'signUp' }
     },
@@ -67,6 +68,7 @@ const App = () => {
         { path: "internship", element: <StudentInternship />, handle: { titleKey: 'internship' } },
         { path: "settings", element: <Settings apiUrl={'http://localhost:3004'} />, handle: { titleKey: 'settings' } },
         { path: "profile", element: <StudentProfile />, handle: { titleKey: 'profile' }},
+        { path: "company-profile/:id", element: <CompanyProfile />, handle: {titleKey: 'profile'} }
       ]
     },
     {
@@ -79,6 +81,8 @@ const App = () => {
         { path: "publishAnnouncement", element: <PublishAnnouncement />, handle: { titleKey: 'publishAnnouncement' } },
         { path: "applications/:id", element: <CompanyApplication />, handle: { titleKey: 'application' } },
         { path: "settings", element: <Settings apiUrl={'http://localhost:3005'} />, handle: { titleKey: 'settings' } },
+        { path: "profile", element: <CompanyProfile />, handle: { titleKey: 'profile' } },
+        { path: "student-profile/:id", element: <StudentProfile />, handle: {titleKey: 'profile'} }
       ]
     },
     {

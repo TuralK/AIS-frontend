@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { studentAPI } from '../../../services/index'
 
 export const deleteStudentSkill = async (skillId) => {
     try {
-        const response = await axios.delete(`http://localhost:3004/profile/skill/${skillId}`, {
+        const response = await studentAPI.delete(`/profile/skill/${skillId}`, {
             withCredentials: true,
         });
         return response.data;

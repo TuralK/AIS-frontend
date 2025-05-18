@@ -1,0 +1,642 @@
+/* Global Box-Sizing */
+html {
+  box-sizing: border-box;
+  font-size: 100%;
+}
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+/* Container */
+.studentProfileContainer {
+  padding: 1rem;
+  max-width: 90%;
+  margin: 1.25rem auto;
+  overflow: visible;
+}
+
+/* Background */
+.studentProfileBackgroundContainer {
+  width: 100%;
+  overflow: hidden;
+}
+.studentProfileBackgroundContainer img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Content Layout */
+.studentProfileContent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 0 2rem;
+}
+
+/* Info Box */
+.studentProfileInfoBox {
+  flex: 0 0 23rem;
+  background-color: #fff;
+  padding: 1.25rem;
+  margin-top: -5rem;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.1);
+  min-width: 280px;
+  height: max-content;
+}
+
+/* Profile Image */
+.studentProfileImageContainer {
+  width: 7.5rem;
+  height: 7.5rem;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 0.9375rem;
+  border: 0.25rem solid #fff;
+  box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.1);
+}
+.studentProfileImageContainer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Titles */
+.studentProfileTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 0.3125rem;
+}
+.studentProfileSubtitle {
+  font-size: 0.875rem;
+  color: #666;
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+/* Edit Button */
+.studentInfoEditButton {
+  width: 100%;
+  padding: 0.625rem;
+  background-color: #000;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  margin-bottom: 1.25rem;
+}
+
+/* Bio Fields */
+.studentBioField {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0.625rem 0;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.studentBioFieldLabel {
+  color: #666;
+  flex: 1 1 auto;
+  min-width: 120px;
+}
+.studentBioFieldClickable {
+  cursor: pointer;
+  color: #000;
+  flex: 0 0 auto;
+  text-align: right;
+}
+.studentBioFieldClickable:hover {
+  text-decoration: underline;
+}
+
+/* Languages */
+.languagesContainer {
+  margin: 0.625rem 0;
+}
+.languageField {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.languageField input {
+  border-bottom: 1px solid #ccc;
+  width: 100%;
+  max-width: 200px;
+}
+
+/* Nav Tabs */
+.navTabsContainer {
+  width: 100%;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 0;
+}
+.navTabsList {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0;
+  margin: 0;
+}
+.navTabItem {
+  position: relative;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.navTabItem::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 0.125rem;
+  background-color: #000;
+  transition: width 0.3s ease;
+}
+.navTabItem:hover::after,
+.activeTab::after {
+  width: 100%;
+}
+.navTabLabel {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #555;
+}
+.navTabItem:hover .navTabLabel,
+.activeTab .navTabLabel {
+  color: #000;
+}
+
+/* Tab Content */
+.studentProfileNavTabsContainer {
+  flex: 2 1 30rem;
+  min-width: 20rem;
+}
+.tabContent {
+  background-color: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.05);
+  padding: 1.5rem 2rem;
+  margin-top: 1.25rem;
+}
+.tabContent h2 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  position: relative;
+}
+.tabContent h2::after {
+  content: '';
+  display: block;
+  width: 3.75rem;
+  height: 0.1875rem;
+  background-color: #000;
+  margin-top: 0.5rem;
+  border-radius: 0.125rem;
+}
+.tabContent ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.tabContent ul li {
+  background-color: #f9f9f9;
+  padding: 1rem;
+  border-radius: 0.375rem;
+  margin-bottom: 0.75rem;
+  transition: background-color 0.3s ease;
+}
+.tabContent ul li:hover {
+  background-color: #f1f1f1;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 1024px) {
+  .studentProfileContent {
+    flex-direction: column;
+    padding: 0 1rem;
+  }
+
+  .studentProfileInfoBox,
+  .studentProfileNavTabsContainer {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .studentProfileInfoBox {
+    margin-top: -9rem;
+  }
+}
+
+@media (max-width: 600px) {
+  html {
+    font-size: 90%;
+  }
+
+  .studentProfileContainer {
+    padding: 1rem 0.5rem;
+  }
+
+  .studentBioField {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .studentBioFieldClickable {
+    text-align: left;
+    width: 100%;
+  }
+
+  .tabContent {
+    padding: 1rem;
+  }
+
+  .languageField input {
+    max-width: 100%;
+  }
+}
+
+
+/* Bio Fields */
+.studentBioField {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1px;
+  width: 100%;
+}
+
+.studentBioFieldLabel {
+  color: #666;
+  flex: 1;
+  min-width: 0;
+}
+
+.studentBioFieldValue {
+  flex: 3;
+  min-width: 0;
+  text-align: right;
+  word-break: break-word;
+}
+
+.studentBioFieldClickable {
+  cursor: pointer;
+  color: #000;
+}
+.studentBioFieldClickable:hover {
+  text-decoration: underline;
+}
+
+/* Languages */
+.languageField {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+.languageField input {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+.aboutText {
+  white-space: pre-line;
+  line-height: 1.6;
+}
+
+.aboutText p {
+  margin-bottom: 1em;
+}
+
+.addButton {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px dashed #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  background: #f8f8f8;
+}
+
+.addIcon {
+  color: #666;
+  width: 20px;
+  height: 20px;
+}
+
+.dropdownIcon {
+  width: 24px;
+  height: 24px;
+  color: #666;
+}
+
+.platformDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  z-index: 1;
+  display: none;
+  flex-direction: column;
+}
+
+.platformOption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.platformOption:hover {
+  background: #f0f0f0;
+}
+
+.platformSelector {
+  position: relative;
+  min-width: 40px;
+}
+
+.removeButton {
+  color: #ff4444;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+}
+
+.selectedPlatform {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0.5rem;
+  gap: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  background: #f8f8f8;
+}
+
+.selectedPlatform:hover + .platformDropdown,
+.platformSelector:hover .platformDropdown {
+  display: flex;
+}
+
+.socialMediaContainer {
+  margin: 1rem 0;
+}
+
+.socialMediaEdit {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.socialMediaField {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.socialMediaIcon {
+  width: 24px;
+  height: 24px;
+  color: #666;
+}
+
+.socialMediaInput {
+  padding: 0.5rem;
+  text-align: left;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.socialMediaItem {
+  position: relative;
+}
+
+.socialMediaLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.socialMediaLink:hover {
+  background: #e0e0e0;
+}
+
+.socialMediaLinks {
+  margin-top: 15px;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.socialMediaSelect {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-width: 140px;
+}
+/* Editable input style that matches subtitle dimensions */
+.editableIndustryInput {
+  font-size: 0.875rem !important; /* Match existing subtitle size */
+  color: #666;
+  text-align: center;
+  width: 100%; /* Let content determine width */
+  display: inline-block; /* Maintain inline flow */
+  margin-bottom: 1.25rem;
+  background: transparent;
+  font-family: inherit; /* Match surrounding text */
+  border-bottom: 1px solid #ddd;
+}
+
+.editableIndustryInput:focus {
+  outline: none;
+}
+
+
+
+/* remove redundant ones */
+
+
+/* Announcements Tab Styles */
+.announcementsContainer {
+  padding: 0.1rem;
+}
+
+.announcementsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 0.4rem;
+  margin-top: 1.5rem;
+}
+
+.noAnnouncements {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+/* Announcement Expansion Styles */
+.announcementDetailContainer {
+  margin: 2rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.announcementDetailImage {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.backButton:hover {
+  color: #333;
+}
+
+.readMore {
+  color: #0066cc;
+  cursor: pointer;
+  display: inline-block;
+  margin-top: 0.5rem;
+}
+
+.readMore:hover {
+  text-decoration: underline;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* Update existing styles */
+.announcementCard {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  min-height: 400px; /* Set minimum card height */
+}
+
+.announcementContent {
+  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.announcementDescription {
+  white-space: pre-line;
+  word-break: break-word;
+  flex-grow: 1;
+  margin-bottom: 1rem;
+  color: #555;
+  line-height: 1.6;
+}
+
+.announcementDates {
+  display: flex;
+  justify-content: space-between;
+  color: #666;
+  font-size: 0.9rem;
+  padding-top: 1rem;
+  margin-top: auto; /* Push dates to bottom */
+  border-top: 1px solid #eee;
+}
+
+.announcementTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #333;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.announcementImage {
+  width: 100%;
+  border-bottom: 1px solid #eee;
+  height: 200px;
+  object-fit: cover;
+  background: #f5f5f5; /* Fallback color */
+}
+
+/* Add hover effect */
+.announcementCard:hover {
+  transform: translateY(-4px);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Add to your CSS module */
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px; /* Adjust based on your layout */
+  width: 100%;
+}
+
+.announcementsContainer {
+  position: relative;
+  min-height: 300px; /* Ensure container has enough height */
+}

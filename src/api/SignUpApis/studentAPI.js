@@ -1,7 +1,7 @@
-import axios from 'axios';
+import { signupAPI } from '../../services/index'
 
 export const registerStudent = (studentData) => {
-  return axios.post('http://localhost:3002/student', studentData, {
+  return signupAPI.post('/student', studentData, {
     withCredentials: true,
   });
 };

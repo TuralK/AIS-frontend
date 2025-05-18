@@ -80,8 +80,8 @@ nav {
 }
 
 .profilePhoto {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   margin-right: 0.5rem;
 }
@@ -211,4 +211,88 @@ nav {
 
 .layoutContainerContent {
   flex: 1 0 auto;
+}
+
+/* base state: pointing down */
+.chevron {
+  display: inline-block;       /* so transform works predictably */
+  transition: transform 0.3s ease-in-out;
+}
+
+/* when open: rotate 180° to point up */
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+/* 1. Hide desktop menu on mobile */
+@media (max-width: 1000px) {
+  .desktopMenu {
+    display: none;
+  }
+  .mobileMenuButton {
+    display: flex;
+  }
+}
+
+/* 2. Constrain mobile menu and enable scrolling */
+.mobileMenu {
+  padding: 0.5rem 1rem 1rem;
+  max-height: calc(100vh - 100px); /* full screen minus nav bar height */
+  overflow-y: auto;
+}
+
+/* 3. Prevent horizontal overflow */
+.nav {
+  background-color: #9a1220;
+}
+
+/* 4. Stack logo & title more compactly on very small screens */
+@media (max-width: 355px) {
+  .flexBetween {
+    flex-direction: column;
+    height: auto;
+    padding: 0.5rem 0;
+  }
+  .logo {
+    height: 50px;
+    margin-bottom: 0.25rem;
+  }
+  .title {
+    font-size: 1.25rem;
+  }
+  .subtitle {
+    font-size: 1rem;
+  }
+}
+
+/* 5. Ensure main content can scroll under a fixed nav */
+.layoutWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+.layoutContent {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* 6. Tweak mobile menu items for full-width tappable areas */
+.mobileMenu .menuItem {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 0rem;
+  box-sizing: border-box;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.dropdownMenuMobile {
+  position: absolute;
+  right: 1rem;
+  margin-top: 0.5rem;
+  width: 12rem;
+  background-color: white;
+  border-radius: 0.375rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 20;
 }

@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { studentAPI } from '../../../services/index'
 
 export const createStudentExperience = async (experienceData) => {
     try {
-        const response = await axios.post(`http://localhost:3004/profile/experience`, experienceData, {
+        const response = await studentAPI.post(`/profile/experience`, experienceData, {
             withCredentials: true,
         });
         return response.data;

@@ -2,9 +2,11 @@ import React, { useState, useEffect, } from 'react'
 import StudentFormCSS from './StudentForm.module.css'
 import { registerStudent } from '../../../api/SignUpApis/studentAPI';
 import { validateSignUpForm } from '../../../utils/validation';
-import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 const StudentForm = ({ reset }) => {
+  const { t, i18n } = useTranslation();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');

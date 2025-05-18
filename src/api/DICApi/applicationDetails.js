@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { adminAPI } from '../../services/index'
 
 const fetchApplicationDetails = async (applicationId) => {
     try {
-        const response = await axios.get(`http://localhost:3003/applications/${applicationId}`, {
+        const response = await adminAPI.get(`/applications/${applicationId}`, {
             withCredentials: true,
         });
         return response.data; 
@@ -14,7 +14,7 @@ const fetchApplicationDetails = async (applicationId) => {
 
 const updateApplicationDetail = async (applicationId, formData) => {
     try {
-        const response =await axios.put(`http://localhost:3003/applications/${applicationId}`, formData, {
+        const response =await adminAPI.put(`/applications/${applicationId}`, formData, {
             withCredentials: true,
         });
         return response.data; 
@@ -26,7 +26,7 @@ const updateApplicationDetail = async (applicationId, formData) => {
 
 const downloadFile = async (id) => {
     try {
-        const response = await axios.get(`http://localhost:3003/applications/download/${id}/Application Form`, {
+        const response = await adminAPI.get(`/applications/download/${id}/Application Form`, {
             
             withCredentials: true,
             responseType: 'blob'

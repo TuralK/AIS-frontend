@@ -3,8 +3,11 @@ import axios from 'axios'
 import CompanyFormCSS from './CompanyForm.module.css'
 import { validateSignUpForm } from '../../../utils/validation';
 import { registerCompany } from '../../../api/SignUpApis/companyAPI';
+import { useTranslation } from 'react-i18next';
 
 const CompanyForm = (reset) => {
+  const { t, i18n } = useTranslation();
+  
   const[companyName, setCompanyName] = useState('');
   const[representativeName, setRepresentativeName] = useState('');
   const[companyEmail, setCompanyEmail] = useState('');

@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { studentAPI } from '../../../services/index'
 
 export const deleteStudentProfilePhoto = async () => {
     try {
-        const response = await axios.delete(`http://localhost:3004/profile/photo`, {
+        const response = await studentAPI.delete(`/profile/photo`, {
             withCredentials: true,
         });
         return response.data;

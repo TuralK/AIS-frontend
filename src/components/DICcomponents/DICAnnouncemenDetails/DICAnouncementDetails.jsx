@@ -73,18 +73,19 @@ const DICAnouncementDetails = () => {
 
   return (
     <div className="flex flex-col md:flex-row max-w-4xl mx-auto my-10 p-6 border border-gray-300 rounded-lg shadow-lg bg-white">
-      <div className="announcementImage mb-6 md:mr-6 rounded-l-lg overflow-hidden shadow-md flex-shrink-0 md:w-1/2">
+      <div className="announcementImage mb-6 md:mr-6 rounded-l-lg overflow-hidden shadow-md flex-shrink-0 md:w-1/2 h-64">
         <img 
           className="w-full h-full object-cover transition-transform duration-300 transform hover:scale-105" 
           src={announcement.image || office} 
           alt={announcement.announcementName} 
         />
       </div>
+
       <div className="content flex-grow mb-4 md:ml-6 flex flex-col justify-between">
         <div>
           <h1 className="text-2xl font-semibold text-gray-800">{announcement.Company.name}</h1>
           <h3 className="text-xl font-bold text-gray-700 mt-2">{announcement.announcementName}</h3>
-          <p className="text-gray-600 mt-2">{announcement.description}</p>
+          <p className="text-gray-600 mt-2 whitespace-pre-line">{announcement.description}</p>
           <div className="flex justify-between text-gray-600 mt-2">
             <p>
               {t('startDate')}: <span className="font-semibold">{announcement.formattedStartDate}</span>

@@ -1,8 +1,8 @@
-import axios from 'axios';
+import { companyAPI } from '../../services/index'
 
 export const downloadApplicationForm = async (applicationId, fileType) => {
     try {
-        const response = await axios.get(`http://localhost:3005/applications/download/${applicationId}/${fileType}`, {
+        const response = await companyAPI.get(`/applications/download/${applicationId}/${fileType}`, {
             withCredentials: true,
             responseType: 'blob',
         });
