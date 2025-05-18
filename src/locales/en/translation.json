@@ -252,6 +252,14 @@
   "companyNameEmailRequired": "Company name and email are required",
   "invalidEmailFormat": "Invalid email format",
   "requestLinkFailed": "Failed to request link",
-  "submissionSuccess": "File submission successful"
+  "submissionSuccess": "File submission successful",
+  "Pending": "Pending",
+  "Accepted": "Accepted",
+  "Form uploaded, awaiting approval": "Form uploaded, awaiting approval",
+  "Company gave a feedback to student": "Company gave a feedback to student",
+  "Finished": "Finished",
+  "Approved": "Approved",
+  "Rejected": "Rejected",
+  "feedbackToStudentLabel": "Feedback to Student"
 
 }

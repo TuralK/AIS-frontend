@@ -195,7 +195,7 @@
   "companySupervisorStatus": "Şirket Onay Durumu",
   "coordinatorStatus": "Koordinatör Onay Durumu",
   "feedback": "Geri Bildirim",
-  "score": "Puan",
+  "score": "Not",
   "submitAll": "Tümünü Gönder",
   "internshipName": "Staj Adı",
   "questionnaire": "Yaz Stajı Öğrenci Anketi",
@@ -244,6 +244,13 @@
   "companyNameEmailRequired": "Şirket adı ve emaili gereklidir",
   "invalidEmailFormat": "Geçersiz email formatı",
   "requestLinkFailed": "Link talebi başarısız oldu. Lütfen tekrar deneyin.",
-  "submissionSuccess": "Dosya başarıyla gönderildi"
-
+  "submissionSuccess": "Dosya başarıyla gönderildi",
+  "Pending": "Beklemede",
+  "Accepted": "Onaylandı",
+  "Form uploaded, awaiting approval": "Form yüklendi, onay bekleniyor",
+  "Company gave a feedback to student": "Şirket öğrenciye geri bildirim verdi",
+  "Finished": "Tamamlandı",
+  "Approved": "Onaylandı",
+  "Rejected": "Reddedildi",
+  "feedbackToStudentLabel": "Öğrenciye Geri Bildirim"
 }

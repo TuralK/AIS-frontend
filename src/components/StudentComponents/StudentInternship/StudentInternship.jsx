@@ -141,13 +141,10 @@ const StudentInternship = () => {
               manualApplicationId={internshipData.manualApplicationId}
             />
           </div>
-          {internshipData.status === 1 && internshipData.studentStatus === 3 && (
+          {internshipData.status === 1 && internshipData.studentStatus !== 2 && (
             <div className="w-1/2">
               <FeedbackSection
-                feedback="Örnek geri bildirim..."
-                companyStatus={internshipData.isApprovedByCompany}
-                coordinatorStatus={internshipData.isApprovedByDIC}
-                score={internshipData.score}
+                internshipData={internshipData}
               />
             </div>
           )}
