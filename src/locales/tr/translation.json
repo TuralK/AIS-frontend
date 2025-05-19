@@ -21,7 +21,7 @@
   "reject": "Reddet",
   "representativeName": "Şirket Temsilcisi",
   "address": "Adres",
-  "email": "Email",
+  "email": "E-posta",
   "announcementHeader": "Staj İlanı Talepleri",
   "announcementErrorDIC": "Talep edilen ilan bulunamadı",
   "placeholderAnnounceDetail": "Geri bildiriminizi girebilirsiniz...",
@@ -259,5 +259,12 @@
   "AdminFeedbackBoth_StudOnlySurvey": "Koordinatör her ikisi içinde bildirim verdi, yalnızca anketi güncellediniz.",
   "AdminFeedbackBoth": "Koordinatör hem rapor hem de anket için geri bildirim verdi.",
   "AdminFeedbackReport_StudUpdated": "Koordinatör rapor için geri bildirim verdi, güncelleme yapıldı.",
-  "AdminFeedbackSurvey_StudUpdated": "Koordinatör anket için geri bildirim verdi, güncelleme yapıldı."
+  "AdminFeedbackSurvey_StudUpdated": "Koordinatör anket için geri bildirim verdi, güncelleme yapıldı.",
+  "feedbackFromCompanySupervisor": "Şirket temsilcisinden geri bildirim",
+  "system_name": "Otomatik Staj Sistemi",
+  "password": "Şifre",
+  "remember_username": "Kullanıcı adınızı hatırla",
+  "send_reset_link": "Şifre yenileme bağlantısı gönder",
+  "forgot_password": "Şifrenizi mi unuttunuz?",
+  "no_account_signup": "Hesabınız yok mu? Kayıt ol."
 }

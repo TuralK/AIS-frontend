@@ -52,8 +52,8 @@
 }
 
 .top_right_middle img {
-  width: 120px;
-  height: 120px;
+  width: 150px;
+  height: 150px;
   object-fit: contain;
   margin: 0 auto;
 }
@@ -127,6 +127,7 @@
   width: 200%;
   display: flex;
   transition: transform 0.3s ease;
+  gap: 5px
 }
 
 .title {
@@ -138,6 +139,7 @@
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 18px;
   font-weight: 550;
+  color: #333;
   text-align: center;
 }
 
@@ -214,11 +216,11 @@
 }
 
 .right.student {
-  height: 660px;
+  height: 670px;
 }
 
 .right.company {
-  height: 830px;
+  height: 850px;
 }
 
 /* Position the language button absolutely */

@@ -15,7 +15,7 @@ const CompanyApplications = () => {
 
   // Update document title
   useEffect(() => {
-    const baseTitle = 'AIS';
+    const baseTitle = 'IMS';
     document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
   }, [titleKey, t]);
 
@@ -65,14 +65,20 @@ const CompanyApplications = () => {
   return (
     <div className={CompanyApplicationsCSS.card}>
       <div className="p-4">
-        <ListTable
-          headers={headers}
-          content={applications}
-          columnSizes={columnSizes}
-          defaultItemsPerPage={11}
-          isClickable={true}
-          redirectField={"application_path"}
-        />
+        {applications.length === 0 ? (
+          <div className={CompanyApplicationsCSS.noResults}>
+            No applications found
+          </div>
+        ) : (
+          <ListTable
+            headers={headers}
+            content={applications}
+            columnSizes={columnSizes}
+            defaultItemsPerPage={11}
+            isClickable={true}
+            redirectField={"application_path"}
+          />
+        )}
       </div>
     </div>
   );

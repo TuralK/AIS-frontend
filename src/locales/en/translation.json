@@ -267,6 +267,13 @@
   "AdminFeedbackBoth_StudOnlySurvey": "Coordinator gave feedback for both documents, you only updated the survey..",
   "AdminFeedbackBoth": "Coordinator gave feedback for both documents.",
   "AdminFeedbackReport_StudUpdated": "Coordinator gave feedback for report,and you updated the report.",
-  "AdminFeedbackSurvey_StudUpdated": "Coordinator gave feedback for survey,and you updated the survey."
+  "AdminFeedbackSurvey_StudUpdated": "Coordinator gave feedback for survey,and you updated the survey.",
+  "feedbackFromCompanySupervisor": "Feedback from Company supervisor",
+  "system_name": "Internship Management System",
+  "password": "Password",
+  "remember_username": "Remember your username",
+  "send_reset_link": "Send Reset Link",
+  "forgot_password": "Forgot Password?",
+  "no_account_signup": "Don't have an account? Sign up."
 
 }

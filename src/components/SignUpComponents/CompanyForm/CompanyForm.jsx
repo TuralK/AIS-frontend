@@ -161,7 +161,7 @@ const CompanyForm = (reset) => {
             className={CompanyFormCSS.input}
           />
           <div className={`${CompanyFormCSS.confirm} ${CompanyFormCSS.error}`}>{errors.confirmPassword}</div>
-
+          </div>
           <button type="submit" className={CompanyFormCSS.button}>Sign Up</button>
           <center>
             <li>
@@ -169,7 +169,6 @@ const CompanyForm = (reset) => {
             </li>
           </center>
         </div>
-      </div>
     </form>
   );
 };

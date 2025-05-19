@@ -14,7 +14,7 @@ const ChangePassword = () => {
     const titleKey = currentMatch?.handle?.titleKey;
     
     React.useEffect(() => {
-      const baseTitle = 'AIS';
+      const baseTitle = 'IMS';
       document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
     }, [titleKey, t]);
     

@@ -26,7 +26,7 @@ const updateApplicationDetail = async (applicationId, formData) => {
 
 const downloadFile = async (id) => {
     try {
-        const response = await adminAPI.get(`/applications/download/${id}/Application Form`, {
+        const response = await adminAPI.get(`/applications/download/${id}/ApplicationForm`, {
             
             withCredentials: true,
             responseType: 'blob'

@@ -16,7 +16,7 @@ const StudentInternship = () => {
   const titleKey = currentMatch?.handle?.titleKey;
 
   React.useEffect(() => {
-    const baseTitle = 'AIS';
+    const baseTitle = 'IMS';
     document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
   }, [titleKey, t]);
 
@@ -157,7 +157,7 @@ const StudentInternship = () => {
             />
           </div>
           {/* FeedbackSection */}
-          {internshipData.studentStatus !== 2 && internshipData.studentStatus !== 0 || internshipData.companyStatus === 2 && (
+          {(internshipData.studentStatus !== 2 && internshipData.studentStatus !== 0 )  && (
             <div className="flex-1">
               <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
                 <FeedbackSection internshipData={internshipData} />

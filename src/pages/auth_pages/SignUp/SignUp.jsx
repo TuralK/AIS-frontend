@@ -18,7 +18,7 @@ const SignUp = () => {
     const titleKey = currentMatch?.handle?.titleKey;
   
     React.useEffect(() => {
-      const baseTitle = 'AIS';
+      const baseTitle = 'IMS';
       document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
     }, [titleKey, t]);
 
@@ -84,7 +84,7 @@ const SignUp = () => {
                     <div className={SignUpCSS.form_top_bottom}>
                         <hr className={SignUpCSS.form_line}></hr>
                     </div>
-                    <p name="page-name" className={SignUpCSS.page_name}>Automated Internship System</p>
+                    <p name="page-name" className={SignUpCSS.page_name}>Internship Management System</p>
                 </div>
                 
                 <div className={SignUpCSS.bottom_right}>

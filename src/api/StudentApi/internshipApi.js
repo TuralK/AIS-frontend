@@ -33,7 +33,7 @@ export const finishInternship = async () => {
   
   export const getInternship = async () => {
     try {
-      const response = await studentAPI.get("/internship", {
+      const response = await studentAPI.get("/internship/info", {
         withCredentials: true,
       });
       return response.data;

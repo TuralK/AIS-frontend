@@ -19,7 +19,7 @@ const Login = () => {
   const titleKey = currentMatch?.handle?.titleKey;
 
   React.useEffect(() => {
-    const baseTitle = 'AIS';
+    const baseTitle = 'IMS';
     document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
   }, [titleKey, t]);
 
@@ -183,12 +183,12 @@ const Login = () => {
 
         <div className={LoginCSS['form-bottom']}>
           <form onSubmit={handleLoginSubmit} className={LoginCSS['signin']}>
-            <p className={LoginCSS['page-name']}>Automated Internship System</p>
-            <h1 className={LoginCSS.header}>Login</h1>
+            <p className={LoginCSS['page-name']}>{t('system_name')}</p>
+            <h1 className={LoginCSS.header}>{t('login')}</h1>
             <div className={LoginCSS['form-content']}>
               <input
                 type='email'
-                placeholder='Email'
+                placeholder={t('email')}
                 id='email'
                 name='email'
                 value={email}
@@ -197,7 +197,7 @@ const Login = () => {
               />
               <input
                 type='password'
-                placeholder='Password'
+                placeholder={t('password')}
                 id='password'
                 name='password'
                 value={password}
@@ -216,10 +216,10 @@ const Login = () => {
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
                   />
-                  <span> Remember your username</span>
+                  <span>{t('remember_username')}</span>
                 </label>
               </div>
-              <button className={LoginCSS.button} type='submit'>Login</button>
+              <button className={LoginCSS.button} type='submit'>{t('login')}</button>
             </div>
           </form>
           <div className={`${LoginCSS['forgot-password']} ${isForgotPasswordActive ? LoginCSS.active : ''}`}>
@@ -227,7 +227,7 @@ const Login = () => {
               <div className={LoginCSS['forgotPassword']}>
                 <input
                   type='email'
-                  placeholder='Email'
+                  placeholder={t('email')}
                   id='forgot-email'
                   name='forgot-email'
                   value={forgotEmail}
@@ -237,18 +237,18 @@ const Login = () => {
                 {
                   forgotEmailError.length > 0 && <div className={LoginCSS['no-user-error']}>{forgotEmailError}</div>
                 }
-                <button className={LoginCSS.button} type='submit'>Send Reset Link</button>
+                <button className={LoginCSS.button} type='submit'>{t('send_reset_link')}</button>
               </div>
             </form>
           </div>
           <center>
             <a className={LoginCSS.forgotPasswordButton} href='#' onClick={toggleForgotPassword}>
-              Forgot Password?
+              {t('forgot_password')}
             </a>
           </center>
           <br />
           <center>
-            <Link to='/signup'>Don't have an account? Sign up.</Link>
+            <Link to='/signup'>{t('no_account_signup')}</Link>
           </center>
           <br />
         </div>

@@ -18,7 +18,7 @@ import DICAnouncementDetails from "./components/DICcomponents/DICAnnouncemenDeta
 import DICApplications from "./components/DICcomponents/DICApplications/DICApplications.jsx";
 import DICInnerApplication from "./components/DICcomponents/DICApplications/InnerApplication/DICInnerApplication.jsx";
 import DICInternships from "./components/DICcomponents/DICInternships/DICInternships.jsx";
-import DICInnerInternships from "./components/DICcomponents/DICInternships/InnerInternship/DICInnerInternships.jsx";
+import DICInnerInternships from "./components/DICcomponents/DICInternships/InnerApplication/DICInnerInternships.jsx";
 import SecretaryLayout from "./layouts/SecretaryLayout/SecretaryLayout.jsx";
 import PendingApplicationList from "./components/SecretaryComponents/PendingApplicationList.jsx";
 import CompanyLayout from "./layouts/CompanyLayout/CompanyLayout.jsx";
@@ -32,6 +32,8 @@ import StudentProfile from "./components/StudentComponents/StudentProfileCompone
 import NotFound from "./components/UtilComponents/NotFound.jsx";
 import AnnouncementRequest from "./components/DICcomponents/DICAnnouncementRequests/DICAnnouncementRequest.jsx";
 import CompanyProfile from "./components/CompanyComponents/CompanyProfileComponent/CompanyProfile.jsx";
+import CompanyInternships from "./components/CompanyComponents/CompanyInternships/CompanyInternships.jsx";
+import CompanyInternship from "./components/CompanyComponents/CompanyInternship/CompanyInternship.jsx";
 
 const initialVh = window.innerHeight;
 document.documentElement.style.setProperty('--initial-vh', `${initialVh}px`);
@@ -82,7 +84,9 @@ const App = () => {
         { path: "applications/:id", element: <CompanyApplication />, handle: { titleKey: 'application' } },
         { path: "settings", element: <Settings apiUrl={'http://localhost:3005'} />, handle: { titleKey: 'settings' } },
         { path: "profile", element: <CompanyProfile />, handle: { titleKey: 'profile' } },
-        { path: "student-profile/:id", element: <StudentProfile />, handle: {titleKey: 'profile'} }
+        { path: "student-profile/:id", element: <StudentProfile />, handle: {titleKey: 'profile'} },
+        { path: "internships", element: <CompanyInternships />, handle: { titleKey: 'internships' } },
+        { path: "internships/:id", element: <CompanyInternship />, handle: { titleKey: 'internship' } },
       ]
     },
     {

@@ -44,7 +44,6 @@ export const submitApplication = async (applicationId, selectedFile) => {
       }
     );
     return response;
-    return response;
   } catch (error) {
     if (error.response) {
       throw new Error(error.response.data.message || "An error occurred while submitting the application.");

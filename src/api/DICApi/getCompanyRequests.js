@@ -5,6 +5,7 @@ export const fetchCompanyRequests = async () => {
         const response = await adminAPI.get('/companyRequests', {
             withCredentials: true,
         });
+        console.log(response.data)
         return response.data.companies;
     } catch (error) {
         throw new Error(error);

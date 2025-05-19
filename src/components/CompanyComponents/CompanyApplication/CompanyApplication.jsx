@@ -14,6 +14,9 @@ import { downloadApplicationForm } from "../../../api/CompanyApi/downloadApplica
 import { FaDownload, FaUpload, FaFile, FaTrash, FaFilePdf, FaRegFilePdf } from "react-icons/fa";
 import { acceptApplication } from "../../../api/CompanyApi/acceptApplicationAPI";
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import DefaultProfilePicture from '../../../assets/default_profile_icon.png'
+
+const baseUrl = 'http://localhost:3004';
 
 const CompanyApplication = () => {
   const matches = useMatches();
@@ -22,13 +25,14 @@ const CompanyApplication = () => {
   const titleKey = currentMatch?.handle?.titleKey;
 
   React.useEffect(() => {
-    const baseTitle = 'AIS';
+    const baseTitle = 'IMS';
     document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
   }, [titleKey, t]);
 
   const [application, setApplication] = useState(null);
   const [documentUrl, setDocumentUrl] = useState("");
   const [documentId, setDocumentId] = useState(-1);
+  const [profilePicture, setProfilePicture] = useState(DefaultProfilePicture);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
@@ -81,6 +85,8 @@ const CompanyApplication = () => {
         const data = await fetchApplication(id);
         setApplication(data.application);
         setDocumentId(data.documentId);
+        const profilePictureLocation = data.application.Student?.StudentProfile?.profilePicture;
+        setProfilePicture(profilePictureLocation ? `${baseUrl}/${profilePictureLocation}`: DefaultProfilePicture );
         setDocumentUrl(`http://localhost:3005/serveFile/${data.documentId}`);
         setLoading(false);
       } catch (error) {
@@ -284,7 +290,7 @@ const CompanyApplication = () => {
       <div className={styles.header}>
         <div className={styles.headerContent}>
           <div className={styles.profileSection}>
-            <div className={styles.profileImage}>{/* Placeholder for profile image */}</div>
+            <img className={styles.profileImage} src={profilePicture}/>
             <div className={styles.profileInfo}>
               <h2>{application.Student.username}</h2>
               {/* <p className={styles.announcementTitle}>{application.Announcement.announcementName}</p> */}

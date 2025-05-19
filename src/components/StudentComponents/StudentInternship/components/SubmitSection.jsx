@@ -40,7 +40,7 @@ const SubmitSection = ({
               }
             )
             .then((res) => {
-              if (res.status !== 200) throw new Error("Bad status: " + res.status);
+              if (res.status < 200 || res.status >= 300) throw new Error("Bad status: " + res.status);
               return res;
             })
         );
@@ -49,6 +49,7 @@ const SubmitSection = ({
       if (uploadedFileSPR) {
         const form = new FormData();
         form.append("internshipFile", uploadedFileSPR);
+        form.append("fileType", "Report");
 
         requests.push(
           axios
@@ -84,7 +85,7 @@ const SubmitSection = ({
               }
             )
             .then((res) => {
-              if (res.status !== 200) throw new Error("Bad status: " + res.status);
+              if (res.status < 200 || res.status >= 300) throw new Error("Bad status: " + res.status);
               return res;
             })
         );
