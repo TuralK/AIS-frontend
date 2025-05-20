@@ -10,6 +10,8 @@ import Loading from '../../LoadingComponent/Loading.jsx';
 import RenderPropSticky from 'react-sticky-el';
 import { applyAnnouncement } from '../../../api/StudentApi/applyAnnouncementAPI.js';
 
+const baseUrl = 'http://localhost:3005';
+
 const StudentAnnouncementComponent = () => {    
   const matches = useMatches();
   const { t, i18n } = useTranslation();
@@ -251,7 +253,7 @@ const StudentAnnouncementComponent = () => {
                 
                 <div className={StudentAnnouncementCSS.content}>
                     <div className={StudentAnnouncementCSS.announcementImage}>
-                      <img src={announcement.image ? announcement.image : AnnouncementImage} alt="Announcement Image" />
+                      <img src={announcement.image ? `${baseUrl}/${announcement.image}` : AnnouncementImage} alt="Announcement Image" />
                     </div>
                     <RenderPropSticky 
                       stickyClassName={StudentAnnouncementCSS.stuck} 

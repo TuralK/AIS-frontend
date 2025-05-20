@@ -6,6 +6,8 @@ import Loading from '../../LoadingComponent/Loading';
 import { fetchAnnouncementById, updateAnnouncementById } from '../../../api/DICApi/announcementDetailApi.js';
 import office from '../../../assets/office.jpg';
 
+const baseUrl = 'http://localhost:3005';
+
 const DICAnouncementDetails = () => {
   const matches = useMatches();
   const { t } = useTranslation();
@@ -25,12 +27,14 @@ const DICAnouncementDetails = () => {
   const [showPopup, setShowPopup] = useState(false); // State for popup visibility
   const navigate = useNavigate(); 
   const { id } = useParams(); 
+  const [imageSrc, setImageSrc] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await fetchAnnouncementById(id); 
         setAnnouncement(data);
+        setImageSrc(data.image ? `${baseUrl}/${data.image}` : office)
       } catch (err) {
         setError(err.message);
       } finally {
@@ -76,7 +80,7 @@ const DICAnouncementDetails = () => {
       <div className="announcementImage mb-6 md:mr-6 rounded-l-lg overflow-hidden shadow-md flex-shrink-0 md:w-1/2 h-64">
         <img 
           className="w-full h-full object-cover transition-transform duration-300 transform hover:scale-105" 
-          src={announcement.image || office} 
+          src={imageSrc} 
           alt={announcement.announcementName} 
         />
       </div>

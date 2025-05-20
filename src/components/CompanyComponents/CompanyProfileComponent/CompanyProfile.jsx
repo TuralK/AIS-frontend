@@ -360,17 +360,6 @@ const SocialMediaField = ({ links, isEditing, onChange }) => {
   );
 };
 
-const arrayBufferToBase64 = (buffer) => {
-  if (!buffer?.data) return '';
-  try {
-    const bytes = new Uint8Array(buffer.data);
-    return btoa(bytes.reduce((data, byte) => data + String.fromCharCode(byte), ''));
-  } catch (error) {
-    console.error('Error converting image:', error);
-    return '';
-  }
-};
-
 const truncateText = (text, maxLength = 100) => {
   if (!text) return '';
   if (text.length <= maxLength) return text;
@@ -378,10 +367,8 @@ const truncateText = (text, maxLength = 100) => {
 };
 
 const AnnouncementCard = ({ announcement, onClick }) => {
-  const imageSrc = announcement?.image 
-    ? `data:image/jpeg;base64,${arrayBufferToBase64(announcement.image)}`
-    : CompanyBackground;
-
+  const imageSrc = announcement.image ? `${baseUrl}/${announcement.image}` : CompanyBackground;
+    
   return (
     <div className={styles.announcementCard} onClick={() => onClick(announcement)}>
       <img 
@@ -713,9 +700,7 @@ const CompanyProfile = () => {
             Back to All Announcements
           </button>
           <img
-            src={selectedAnnouncement.image 
-              ? `data:image/jpeg;base64,${arrayBufferToBase64(selectedAnnouncement.image)}`
-              : CompanyBackground}
+            src={selectedAnnouncement.image ? `${baseUrl}/${selectedAnnouncement.image}` : CompanyBackground}
             alt={selectedAnnouncement.announcementName}
             className={styles.announcementDetailImage}
           />

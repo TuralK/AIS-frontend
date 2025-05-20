@@ -229,7 +229,7 @@ const CompanyApplication = () => {
                                           workOnSaturday, question2, question3, workDays);
     alert(response.message)
     try {
-      await downloadFile("Application Form", "ApplicationForm");
+      await downloadFile("Application Form", "UpdatedApplicationForm");
     } catch (error) {
       console.error('Download failed:', error);
     }

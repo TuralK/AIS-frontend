@@ -4,6 +4,8 @@ import styles from './AnnouncementCard.module.css'; // Custom CSS module
 import { useTranslation } from 'react-i18next';
 import office from '../../../assets/office.jpg';
 
+const baseUrl = 'http://localhost:3005';
+
 const AnnouncementCard = ({ announcement }) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -12,11 +14,13 @@ const AnnouncementCard = ({ announcement }) => {
     navigate(`/admin/announcement/${announcement.id}`);
   };
 
+  const imageSrc = announcement.image ? `${baseUrl}/${announcement.image}` : office;
+
   return (
     <div className={styles.cardContainer} onClick={handleClick}>
       <div className={styles.imageContainer}>
         <img
-          src={announcement.image || office}
+          src={imageSrc}
           alt={announcement.announcementName}
           className={styles.image}
         />

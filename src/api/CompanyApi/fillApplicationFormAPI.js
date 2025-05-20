@@ -5,7 +5,7 @@ export const fillApplicationForm = async (applicationId,internshipStartDate,inte
     try {
         
         const response = await companyAPI.post(
-          `/applications/${applicationId}/fillApplicationForm`, 
+          `/application/applications/${applicationId}/fillApplicationForm`, 
           {
             internStartDate: internshipStartDate,
             internEndDate: internshipEndDate,

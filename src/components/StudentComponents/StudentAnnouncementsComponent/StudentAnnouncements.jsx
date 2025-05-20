@@ -8,6 +8,8 @@ import { useMatches } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import Loading from '../../LoadingComponent/Loading.jsx';
 
+const baseUrl = 'http://localhost:3005';
+
 const StudentAnnouncements = () => {
   const matches = useMatches();
   const { t } = useTranslation();
@@ -48,7 +50,7 @@ const StudentAnnouncements = () => {
                     <Link to={`/student/announcements/${announcement.id}`} key={index} className={StudentAnnouncementsCSS["card"]}>
                         <div>
                             {announcement.image ? (
-                                <img src={announcement.image} alt="Announcement" />
+                                <img src={`${baseUrl}/${announcement.image}`} alt="Announcement" />
                             ) : (
                                 <img src={AnnouncementImage} alt="Announcement" />
                             )}

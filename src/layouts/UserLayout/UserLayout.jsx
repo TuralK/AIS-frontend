@@ -184,21 +184,17 @@ export const UserLayout = ({
                         <NavLink
                           key={route}
                           to={route !== 'logout' ? `/${basePath}/${route}` : '#'}
+                          className={styles.dropdownItem}
+                          onClick={(e) => {
+                            if (route === 'logout') {
+                              e.preventDefault();
+                              logout();
+                            } else {
+                              handleDropdownItemClick(item.toLowerCase());
+                            }
+                          }}
                         >
-                          <a
-                            href="#"
-                            className={styles.dropdownItem}
-                            onClick={(e) => {
-                              if (route === 'logout') {
-                                e.preventDefault();
-                                logout();
-                              } else {
-                                handleDropdownItemClick(item.toLowerCase());
-                              }
-                            }}
-                          >
-                            {item}
-                          </a>
+                          {item}
                         </NavLink>
                       ))}
                     </div>
