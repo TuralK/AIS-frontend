@@ -7,6 +7,7 @@ import { getInternship } from '../../../api/CompanyApi/getInternshipAPI';
 import Loading from '../../LoadingComponent/Loading';
 import FileUploadSection from '../../StudentComponents/StudentInternship/components/FileUploadSection';
 
+import MockReport from '../../../assets/CENG418_2025_HW2.pdf'
 const CompanyInternship = () => {
   const { id } = useParams();
 
@@ -30,10 +31,10 @@ const CompanyInternship = () => {
 
     return {
       student: {
-      name: "Elif Yılmaz",
+      name: "Ahmet Said Barkahan",
       internshipTitle: "Software Engineering Intern",
-      endDate: "12.07.2024",
-      reportPreview: "/placeholder.svg?height=150&width=150",
+      endDate: "20.05.2024",
+      reportPreview: MockReport,
       },
       status: {
       completion: 72,
@@ -97,12 +98,8 @@ const CompanyInternship = () => {
           </button>
         </div>
 
-        <div className={styles.previewContainer}>
-          <img
-            src={internship.student.reportPreview || "/placeholder.svg"}
-            alt="Report preview"
-            className={styles.previewImage}
-          />
+        <div className={styles.documentPreview}>
+          <iframe src={MockReport} className={styles.pdfViewer}></iframe>
           <span className={styles.previewLabel}>Preview Only</span>
         </div>
 
@@ -120,38 +117,38 @@ const CompanyInternship = () => {
         </div>
       </div>
 
-      <div className={styles.card}>
-        <div className={styles.statusSection}>
-          <h3>Status</h3>
-          <div className={styles.progressBar}>
-            <div className={styles.progressFill} style={{ width: `${internship.status.completion}%` }}></div>
-            <span className={styles.progressText}>{internship.status.completion}%</span>
+        <div className={styles.card1}>
+          <div className={styles.statusSection}>
+            {/* <h3>Status</h3>
+            <div className={styles.progressBar}>
+              <div className={styles.progressFill} style={{ width: `${internship.status.completion}%` }}></div>
+              <span className={styles.progressText}>{internship.status.completion}%</span>
+            </div> */}
+
+            <div className={styles.coordinatorStatus}>
+              <User className={styles.icon} />
+              <span className={styles.label}>Coordinator Status:</span>
+              <span className={styles.statusValue}>{internship.status.coordinatorStatus}</span>
+            </div>
           </div>
 
-          <div className={styles.coordinatorStatus}>
-            <User className={styles.icon} />
-            <span className={styles.label}>Coordinator Status:</span>
-            <span className={styles.statusValue}>{internship.status.coordinatorStatus}</span>
+          <div className={styles.uploadSection}>
+            <h3>Company Form</h3> {/*CompanyForm*/}
+            <FileUploadSection 
+              // label={t("uploadSPR")}
+              // uploadedFile={fileSPES}
+              // onFileChange={setFileSPES}
+              // onRemove={() => setFileSPES(null)}
+              showQuestionMark={false}
+              disabled={true}
+            />
+
+            <button className={styles.approveBtn} onClick={handleApprove}>
+              Approve
+            </button>
           </div>
-        </div>
-
-        <div className={styles.uploadSection}>
-          <h3>Staj Değerlendirme Anketini Yükle</h3> {/*CompanyForm*/}
-          <FileUploadSection 
-            label={t("uploadSPR")}
-            // uploadedFile={fileSPES}
-            // onFileChange={setFileSPES}
-            // onRemove={() => setFileSPES(null)}
-            showQuestionMark={true}
-            disabled={true}
-          />
-
-          <button className={styles.approveBtn} onClick={handleApprove}>
-            Approve
-          </button>
         </div>
       </div>
-    </div>
   )
 }
 

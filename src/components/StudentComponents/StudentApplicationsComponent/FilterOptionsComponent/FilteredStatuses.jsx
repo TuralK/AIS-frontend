@@ -16,14 +16,18 @@ const FilterOptions = ({applicationsStatuses}) => {
   
   
   useEffect(() => {
-    setFilteredApplicationsStatuses(applicationsStatuses);
+    setFilteredApplicationsStatuses(applicationsStatuses.filter(application => 
+      application.status != 5
+    ));
   },[applicationsStatuses]);
 
   const handleClick = (option) => {
     setActiveOption(option);
     switch(option) {
       case filterOptions[0].key:
-        setFilteredApplicationsStatuses(applicationsStatuses);
+        setFilteredApplicationsStatuses(applicationsStatuses.filter(application => 
+          application.status != 5
+        ));
         break;
       case filterOptions[1].key:
         setFilteredApplicationsStatuses(applicationsStatuses.filter(application => 

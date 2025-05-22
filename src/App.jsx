@@ -34,6 +34,7 @@ import AnnouncementRequest from "./components/DICcomponents/DICAnnouncementReque
 import CompanyProfile from "./components/CompanyComponents/CompanyProfileComponent/CompanyProfile.jsx";
 import CompanyInternships from "./components/CompanyComponents/CompanyInternships/CompanyInternships.jsx";
 import CompanyInternship from "./components/CompanyComponents/CompanyInternship/CompanyInternship.jsx";
+import StudentSettings from "./components/StudentComponents/StudentSettings/StudentSettings.jsx";
 
 const initialVh = window.innerHeight;
 document.documentElement.style.setProperty('--initial-vh', `${initialVh}px`);
@@ -68,7 +69,7 @@ const App = () => {
         { path: 'announcements/:announcementId', element: <StudentAnnouncement />, handle: { titleKey: 'announcementDetails' } },
         { path: "applications", element: <StudentApplications />, handle: { titleKey: 'applications' } },
         { path: "internship", element: <StudentInternship />, handle: { titleKey: 'internship' } },
-        { path: "settings", element: <Settings apiUrl={'http://localhost:3004'} />, handle: { titleKey: 'settings' } },
+        { path: "settings", element: <StudentSettings />, handle: { titleKey: 'settings' } },
         { path: "profile", element: <StudentProfile />, handle: { titleKey: 'profile' }},
         { path: "company-profile/:id", element: <CompanyProfile />, handle: {titleKey: 'profile'} }
       ]

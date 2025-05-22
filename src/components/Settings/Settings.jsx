@@ -11,12 +11,16 @@ import { resetState as resetSuccessState } from "../../slices/settingsSlice"
 import { fetchInfo, updateUserInfo } from "../../thunks/settingsThunk"
 import CustomAlertDialog from "../ui/custom_alert"
 import PasswordField from "./PasswordField"
+import { isEmail } from "validator";
 
 const settingsSchema = z
   .object({
     firstName: z.string().min(2, { message: "firstNameMinLength" }).optional(),
     lastName: z.string().min(2, { message: "lastNameMinLength" }).optional(),
     email: z.string().email({ message: "validEmail" }).optional(),
+    // email: z.string().refine(
+    //     (val) => isEmail(val, { allow_display_name: false }),
+    //     { message: "validEmail" }).optional(),
     currentPassword: z
       .preprocess(val => (val === "" ? undefined : val), z.string().optional()),
     newPassword: z

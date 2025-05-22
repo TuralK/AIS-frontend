@@ -5,7 +5,6 @@ export const getInternship = async (internshipId) => {
         const response = await companyAPI.get(`/internship/internships/${internshipId}`, {
             withCredentials: true,
         });
-        console.log(response.data)
         return response.data;
     } catch (error) {
         console.log(error)

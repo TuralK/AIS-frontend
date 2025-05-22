@@ -266,7 +266,7 @@ nav {
 }
 
 /* 5. Ensure main content can scroll under a fixed nav */
-.layoutWrapper {
+/* .layoutWrapper {
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -275,7 +275,7 @@ nav {
 .layoutContent {
   flex: 1;
   overflow-y: auto;
-}
+} */
 
 /* 6. Tweak mobile menu items for full-width tappable areas */
 .mobileMenu .menuItem {

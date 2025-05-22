@@ -490,7 +490,7 @@ const CompanyApplication = () => {
                 </>
               ) : (
                 <>
-                  <FontAwesomeIcon icon={faFilePdf} /> Upload Application Form <FaUpload /> 
+                  <FontAwesomeIcon icon={faFilePdf} /> {'Upload Application Form'} <FaUpload /> 
                 </>
               )}
             </div>

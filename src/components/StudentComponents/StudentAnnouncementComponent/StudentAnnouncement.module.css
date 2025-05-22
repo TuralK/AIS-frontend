@@ -316,7 +316,7 @@ html, body {
   margin: 13px auto;
 }
 
-.studentAnnouncement input[type="text"], .studentAnnouncement input[type="password"], .studentAnnouncement input[type="email"] {
+.studentAnnouncementInputs {
   width: 82%;
   height: 45px;
   display: block;
@@ -328,4 +328,49 @@ html, body {
   border-color: rgb(204, 204, 204);
   border-image: initial;
   font-size: 14px;
+}
+
+.errorMessage {
+  display: block;
+  width: 82%;
+  color: red;
+  margin: 13px auto;
+}
+
+.fileContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.fileErrorMessage {
+  display: block;
+  width: 82%;
+  color: red;
+  margin: 0 auto;
+}
+
+
+.spinnerContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loadingSpinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 3px solid #ffffff;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.saveButton {
+  position: relative;
+  min-height: 40px;
 }

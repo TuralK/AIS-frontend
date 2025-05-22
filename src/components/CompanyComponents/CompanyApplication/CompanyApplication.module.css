@@ -171,7 +171,6 @@
   display: inline-flex;
   flex-direction: column;
   width: 50%;
-  height: 90px;
   border-radius: 8px;
   background-color: #F7F7F7;
 }
@@ -185,12 +184,15 @@
 }
 
 .endDate {
+  display: flex;
+  word-break: break-all;
   margin-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 12px;
   font-family: "Lexend Deca";
   font-weight: 400;
   font-size: 16px;
 }
-
 
 /* New styles for the extra fields section */
 .extraFields {
