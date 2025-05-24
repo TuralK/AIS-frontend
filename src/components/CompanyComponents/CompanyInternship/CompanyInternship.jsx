@@ -7,7 +7,6 @@ import { getInternship } from '../../../api/CompanyApi/getInternshipAPI';
 import Loading from '../../LoadingComponent/Loading';
 import FileUploadSection from '../../StudentComponents/StudentInternship/components/FileUploadSection';
 
-import MockReport from '../../../assets/CENG418_2025_HW2.pdf'
 const CompanyInternship = () => {
   const { id } = useParams();
 
