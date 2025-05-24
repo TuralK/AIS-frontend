@@ -36,9 +36,21 @@ const updateApplicationDetail = async (applicationId, formData) => {
     }
 };
 
-const downloadFile = async (id) => {
+const updateManualApplicationDetail = async (applicationId, formData) => {
     try {
-        const response = await adminAPI.get(`/applications/download/${id}/ApplicationForm`, {
+        const response =await adminAPI.put(`/manualApplications/${applicationId}`, formData, {
+            withCredentials: true,
+        });
+        return response.data; 
+    } catch (error) {
+        console.error('Error fetching application details:', error);
+        throw error; 
+    }
+};
+
+const downloadFile = async (id, fileType) => {
+    try {
+        const response = await adminAPI.get(`/applications/download/${id}/${fileType}`, {
             
             withCredentials: true,
             responseType: 'blob'
@@ -50,4 +62,4 @@ const downloadFile = async (id) => {
     }
 };
 
-export {fetchManualApplicationDetails, fetchApplicationDetails, updateApplicationDetail, downloadFile};
+export {updateManualApplicationDetail, fetchManualApplicationDetails, fetchApplicationDetails, updateApplicationDetail, downloadFile};

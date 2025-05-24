@@ -1,8 +1,8 @@
-import { downloadFile, submitApplication } from '../api/SecretaryApi/secretaryApi';
+import { downloadFile, submitApplication, submitManualApplication } from '../api/SecretaryApi/secretaryApi';
 
 
-export const handleDownload = (applicationId) => {
-    return downloadFile(applicationId);
+export const handleDownload = (applicationId, fileType) => {
+    return downloadFile(applicationId, fileType);
 };
 
 export const handleSubmit = async (applicationId, selectedFile) => {
@@ -20,7 +20,6 @@ export const handleSubmit = async (applicationId, selectedFile) => {
 export const handleFileChange = (event, setSelectedFile, setSelectedFileName) => {
     const file = event.target.files?.[0];
     if (file) {
-        // Dosya uzantısını kontrol et
         const fileExtension = file.name.split('.').pop().toLowerCase();
         if (fileExtension === 'pdf') {
             setSelectedFile(file);
@@ -31,6 +30,15 @@ export const handleFileChange = (event, setSelectedFile, setSelectedFileName) =>
     }
 };
 
+export const submitApplicationByType = async (application, selectedFile) => {
+  const isManualApplication = application.isManual || 
+                              application.type === 'manual' || 
+                              !application.Announcement?.id ||
+                              application.source === 'manual'; 
 
-
-
+  if (isManualApplication) {
+    return await submitManualApplication(application.id, selectedFile);
+  } else {
+    return await submitApplication(application.id, selectedFile);
+  }
+};

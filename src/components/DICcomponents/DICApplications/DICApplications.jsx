@@ -28,7 +28,7 @@ const DICApplications = () => {
       setLoading(true);
       const data = await fetchApplicationRequests();
       if (data) {
-        console.log("Application data:", data);
+
         // Combine both arrays into one
         const allApplications = [
           ...(data.applications || []),

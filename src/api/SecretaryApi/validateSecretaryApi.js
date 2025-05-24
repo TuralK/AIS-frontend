@@ -5,7 +5,8 @@ export const validateSecretary = async () => {
         const response = await secretaryAPI.get(`/`, {
             withCredentials: true
         });
-        return [response.data.dataValues,response.data.applications];
+        
+        return [response.data.dataValues, response.data.applications, response.data.manualApplications];
     } catch (error) {
         if (error.response) {
             throw new Error(error.response.data || "An error occurred");

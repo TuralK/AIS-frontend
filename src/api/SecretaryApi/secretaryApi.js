@@ -1,9 +1,9 @@
 import { secretaryAPI } from '../../services/index'
 
-export const downloadFile = async (id) => {
+export const downloadFile = async (id, fileType) => {
   try {
     const response = await secretaryAPI.get(
-      `/applications/download/${id}/Application Form`, 
+      `/applications/download/${id}/${fileType}`, 
       {
         responseType: 'blob',  
         withCredentials: true, 
@@ -35,7 +35,6 @@ export const submitApplication = async (applicationId, selectedFile) => {
     const formData = new FormData();
     formData.append("studentFile", selectedFile);
 
-    // API'ye POST isteği
     const response = await secretaryAPI.post(
       `/applications/${applicationId}`,
       formData,
@@ -55,3 +54,26 @@ export const submitApplication = async (applicationId, selectedFile) => {
   }
 };
 
+export const submitManualApplication = async (applicationId, selectedFile) => {
+  try {
+    const formData = new FormData();
+    formData.append("EmploymentCertificate", selectedFile); 
+
+    const response = await secretaryAPI.post(
+      `/manualApplications/${applicationId}`,
+      formData,
+      {
+        withCredentials: true, 
+      }
+    );
+    return response;
+  } catch (error) {
+    if (error.response) {
+      throw new Error(error.response.data.message || "An error occurred while submitting the manual application.");
+    } else if (error.request) {
+      throw new Error("No response from the server. Please try again.");
+    } else {
+      throw new Error(error.message || "An unexpected error occurred.");
+    }
+  }
+};

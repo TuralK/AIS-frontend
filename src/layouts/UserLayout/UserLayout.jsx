@@ -34,6 +34,7 @@ export const UserLayout = ({
   const [email, setUserMail] = useState('');
   const [userId, setUserId] = useState();
   const [applications, setApplications] = useState();
+  const [manualApplications, setManualApplications] = useState(); // Yeni eklenen
   const [sendValue, setSendValue] = useState(false)
 
   const { t, i18n } = useTranslation();
@@ -51,16 +52,23 @@ export const UserLayout = ({
   useEffect(() => {
     validateFunction()
       .then((result) => {
-        let userData, apps;
+        let userData, apps, manualApps;
         if (Array.isArray(result)) {
-          [userData, apps] = result;
+          if (result.length === 3) {
+            [userData, apps, manualApps] = result;
+          } else {
+            [userData, apps] = result;
+            manualApps = null;
+          }
           setSendValue(true)
         } else {
           userData = result;
           apps = null;
+          manualApps = null;
         }
         setUserName(userData.username);
         setApplications(apps);
+        setManualApplications(manualApps); 
         setUserMail(userData.email);
         setUserId(userData.id);
         if(!baseUrl) {setProfilePicture(IYTElogo)}
@@ -211,8 +219,6 @@ export const UserLayout = ({
                 }}
                 className={styles.mobileMenuButton}
               >
-                {/* <span className="sr-only">Open main menu</span>
-                {isMenuOpen ? <X style={{ width: '32px', height: '32px' }} /> : <Menu style={{ width: '32px', height: '32px' }} />} */}
                 {isMenuOpen ? <X size={32}/> : <Menu size={32}/>}
               </button>
             )}
@@ -232,17 +238,14 @@ export const UserLayout = ({
               </NavLink>
             ))}
 
-            {/* Language switcher */}
             <button
               className={styles.menuItem}
               style={{ display: 'block', width: '100%' }}
               onClick={() => { changeLanguage(i18n.language === 'tr' ? 'en' : 'tr'); }}
             >
               {i18n.language === 'tr' ? 'EN' : 'TR'}
-              {/* {i18n.language === 'tr' ? <img className={styles.flagImage} src={UKFlag}/> : <img className={styles.flagImage} src={TurkeyFlag}/>} */}
             </button>
 
-            {/* Notifications in middle */}
             <button
               className={styles.menuItem}
               style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}
@@ -252,7 +255,6 @@ export const UserLayout = ({
               <span style={{ marginLeft: '0.5rem' }}>{t('notifications')}</span>
             </button>
             
-            {/* User menu toggle */}
             <div style={{ position: 'relative' }} ref={userMenuRef}>
               <button
                 onClick={() => {
@@ -275,8 +277,8 @@ export const UserLayout = ({
                   {userName}
                 </div>
                 <ChevronDown
-      className={`${styles.chevron} ${isUserMenuOpen ? styles.chevronOpen : ''}`}
-    />
+                  className={`${styles.chevron} ${isUserMenuOpen ? styles.chevronOpen : ''}`}
+                />
               </button>
               {isUserMenuOpen && (
                 <div style={{ marginTop: '0.5rem', textAlign: 'center'}}>
@@ -306,10 +308,18 @@ export const UserLayout = ({
         )}
       </nav>
 
-      <main  className={`${styles.layoutContent} ${isMenuOpen ? styles.hiddenOverflow : ""}`}>
+      <main className={`${styles.layoutContent} ${isMenuOpen ? styles.hiddenOverflow : ""}`}>
         <div className={styles.layoutContainerContent}>
           {sendValue ? (
-            <Outlet context={{ userId, email, firstName: userName, applications, setApplications }} />
+            <Outlet context={{ 
+              userId, 
+              email, 
+              firstName: userName, 
+              applications, 
+              manualApplications, // Yeni eklenen
+              setApplications,
+              setManualApplications // İsteğe bağlı: manuel başvuruları güncellemek için
+            }} />
           ) : (
             <Outlet />
           )}

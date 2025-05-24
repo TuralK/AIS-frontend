@@ -16,7 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { toast } from '../../../ui/use-toast';
 import { Skeleton } from '../../../ui/skeleton';
 import { Download, Upload, Send, X } from 'lucide-react';
-import { fetchApplicationDetails, fetchManualApplicationDetails, updateApplicationDetail, downloadFile } from '../../../../api/DICApi/applicationDetails';
+import { fetchApplicationDetails, fetchManualApplicationDetails, updateApplicationDetail, updateManualApplicationDetail, downloadFile } from '../../../../api/DICApi/applicationDetails';
 import office from '../../../../assets/office.jpg'
 import CustomAlertDialog from '../../../ui/custom_alert';
 
@@ -60,7 +60,6 @@ const DICInnerApplication = () => {
           res = await fetchApplicationDetails(id);
         }
         
-        console.log("Application details:", res);
         setApplication(res.application);
       } catch (error) {
         toast({
@@ -100,7 +99,7 @@ const DICInnerApplication = () => {
     const formData = new FormData();
 
     if (file) {
-      formData.append('studentFile', file);
+      formData.append('ApplicationForm', file);
     }
 
     formData.append('isApproved', isApproved);
@@ -109,7 +108,13 @@ const DICInnerApplication = () => {
     }
 
     try {
-      await updateApplicationDetail(id, formData);
+      // Use different endpoint based on application type
+      if (isManualApplication) {
+        await updateManualApplicationDetail(id, formData);
+      } else {
+        await updateApplicationDetail(id, formData);
+      }
+      
       const alertMessage = isApproved ? t('applicationApprovedByAdmin') : t('applicationDisapprovedByAdmin');
       setAlertMessage(alertMessage);
       setIsAlertOpen(true);
@@ -274,7 +279,7 @@ const DICInnerApplication = () => {
           <CardFooter className="flex flex-col gap-4 mt-4">
             <div className="grid grid-cols-2 gap-4 w-full">
               <Button
-                onClick={() => downloadButton('UpdatedApplicationForm')}
+                onClick={() => isManualApplication ? downloadButton('ManualApplicationForm') : downloadButton('ApplicationForm')}
                 className="w-full bg-blue-100 hover:border-blue-500 hover:bg-blue-300"
                 variant="outline"
               >

@@ -19,16 +19,38 @@ export default function PendingApplicationList() {
   }, [titleKey, t]);
 
   const [searchTerm, setSearchTerm] = useState('');
-  const { applications } = useOutletContext();
+  const { applications, manualApplications } = useOutletContext();
   const [showScrollToTop, setShowScrollToTop] = useState(false);
 
+  const allApplications = useMemo(() => {
+    const regularApps = applications || [];
+    const manualApps = manualApplications || [];
+
+    const formattedManualApps = manualApps.map(app => ({
+      ...app,
+      isManual: true,
+      Student: app.Student,
+      Announcement: app.Announcement || {
+        Company: { name: app.Student.companyName },
+        announcementName: t('manualApplication'),
+        startDate: "-"
+      }
+    }));
+
+    return [...regularApps, ...formattedManualApps];
+  }, [applications, manualApplications, t]);
+
   const filteredApplications = useMemo(() => {
-    return applications.filter(app =>
-      (app.Student.username?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-      (app.Announcement.Company.name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-      (app.Announcement.announcementName?.toLowerCase() || '').includes(searchTerm.toLowerCase())
+    return allApplications.filter(app =>
+      (app.Student?.username?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (app.Announcement?.Company?.name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+      (app.Announcement?.announcementName?.toLowerCase() || '').includes(searchTerm.toLowerCase())
     );
-  }, [applications, searchTerm]);
+  }, [allApplications, searchTerm]);
+
+  const handleSubmitSuccess = () => {
+    window.location.reload();
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -72,7 +94,7 @@ export default function PendingApplicationList() {
         </div>
       ) : (
         filteredApplications.map((application) => (
-          <PendingApplicationCard key={application.id} application={application} />
+          <PendingApplicationCard key={application.id} application={application} onSubmitSuccess={handleSubmitSuccess} />
         ))
       )}
       {showScrollToTop && (
