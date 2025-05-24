@@ -32,12 +32,23 @@ DialogContent.displayName = DialogPrimitive.Content.displayName;
 
 const DialogHeader = ({
   className,
+  errorMessage,
   ...props
 }) => (
   <div
     className={`flex flex-col space-y-2 text-center sm:text-left ${className}`}
     {...props}
-  />
+  >
+    {props.children}
+    {/* Hata mesajı için rezerve alan - kaymayı önlemek için */}
+    <div className="min-h-[20px]">
+      {errorMessage && (
+        <p className="text-red-600 text-sm mt-1">
+          {errorMessage}
+        </p>
+      )}
+    </div>
+  </div>
 );
 DialogHeader.displayName = "DialogHeader";
 

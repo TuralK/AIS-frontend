@@ -289,5 +289,7 @@
   "samePhonesError": "Student and relative phone numbers must be different",
   "countryCodeRequired": "Must start with country code (e.g. +90)",
   "announcementDetails": "Announcement",
-  "student's_email": "Student's email"
+  "student's_email": "Student's email",
+  "enterCompanyEmail": "Enter company email",
+  "enterCompanyName": "Enter company name"
 }

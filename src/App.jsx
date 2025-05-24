@@ -18,7 +18,7 @@ import DICAnouncementDetails from "./components/DICcomponents/DICAnnouncemenDeta
 import DICApplications from "./components/DICcomponents/DICApplications/DICApplications.jsx";
 import DICInnerApplication from "./components/DICcomponents/DICApplications/InnerApplication/DICInnerApplication.jsx";
 import DICInternships from "./components/DICcomponents/DICInternships/DICInternships.jsx";
-import DICInnerInternships from "./components/DICcomponents/DICInternships/InnerApplication/DICInnerInternships.jsx";
+import DICInnerInternships from "./components/DICcomponents/DICInternships/InnerInternship/DICInnerInternships.jsx";
 import SecretaryLayout from "./layouts/SecretaryLayout/SecretaryLayout.jsx";
 import PendingApplicationList from "./components/SecretaryComponents/PendingApplicationList.jsx";
 import CompanyLayout from "./layouts/CompanyLayout/CompanyLayout.jsx";

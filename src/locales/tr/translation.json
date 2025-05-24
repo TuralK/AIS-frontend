@@ -281,5 +281,7 @@
   "samePhonesError": "Öğrenci ve yakın telefon numaraları farklı olmalıdır",
   "countryCodeRequired": "Ülke kodu ile başlamalıdır (ör. +90)",
   "announcementDetails": "Duyuru",
-  "student's_email": "Öğrencinin e-postası"
+  "student's_email": "Öğrencinin e-postası",
+  "enterCompanyEmail": "Şirket epostasını giriniz",
+  "enterCompanyName": "Şirket adını giriniz"
 }

@@ -2,11 +2,13 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import StudentAnnouncementsCSS from "./StudentAnnouncements.module.css";
 import { fetchAnnouncements } from '../../../api/StudentApi/fetchAnnouncementsAPI';
+import { getInternship } from '../../../api/StudentApi/internshipApi.js'; 
 import AnnouncementImage from '../../../assets/office.jpg';
 import { useTranslation } from 'react-i18next';
 import { useMatches } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import Loading from '../../LoadingComponent/Loading.jsx';
+import FileUploadButton from './FileUploadButton'; 
 
 const baseUrl = 'http://localhost:3005';
 
@@ -21,19 +23,48 @@ const StudentAnnouncements = () => {
     document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
   }, [titleKey, t]);
 
-  
   const[announcements, setAnnouncements] = useState([]);
   const[loading, setLoading] = useState(true);
+  const[showUploadButton, setShowUploadButton] = useState(true); 
 
   useEffect(() => {
-    fetchAnnouncements()
-        .then(announcementsData => {
-            setAnnouncements(announcementsData);
-        })
-        .finally(() => {
-            setLoading(false);
-        });
+    Promise.all([
+      fetchAnnouncements(),
+      checkInternshipStatus()
+    ])
+    .then(([announcementsData]) => {
+      setAnnouncements(announcementsData);
+    })
+    .finally(() => {
+      setLoading(false);
+    });
   }, []);
+
+  const checkInternshipStatus = async () => {
+    try {
+      const internshipData = await getInternship();
+      
+      if (internshipData && (internshipData.manualApplicationId || internshipData.applicationId)) {
+        setShowUploadButton(false);
+      } else {
+        setShowUploadButton(true);
+      }
+    } catch (error) {      
+      if (error.response?.status === 404) {
+        setShowUploadButton(true);
+      } else if (error.response?.data?.message === "You already have an internship") {
+        setShowUploadButton(false);
+      } else {
+        setShowUploadButton(true);
+      }
+    }
+  };
+
+  const handleUploadSuccess = () => {
+    setShowUploadButton(false);
+    checkInternshipStatus();
+    console.log('File uploaded successfully');
+  };
 
   if (loading) {
     return (
@@ -43,7 +74,6 @@ const StudentAnnouncements = () => {
   
   return (
     <div className={StudentAnnouncementsCSS["content-container"]}>
-        {}
         {announcements.length > 0 ?
             (<div className={StudentAnnouncementsCSS["content-2"]} id="content">
                 {announcements.map((announcement, index) => (
@@ -64,6 +94,12 @@ const StudentAnnouncements = () => {
             </div>)
             :  <h2>{t('noAnnouncement')}</h2>
         }
+        
+        
+        <FileUploadButton 
+          onUploadSuccess={handleUploadSuccess} 
+          isVisible={showUploadButton} 
+        />
     </div>
   )
 }
