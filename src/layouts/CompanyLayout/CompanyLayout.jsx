@@ -2,6 +2,7 @@ import React from 'react'
 import { UserLayout } from '../UserLayout/UserLayout';
 import { validateCompany } from '../../api/CompanyApi/validateCompanyAPI';
 import { useTranslation } from 'react-i18next';
+import { companyAPI, loginAPI } from '../../services';
 
 const CompanyLayout = () => {
     const { t, i18n } = useTranslation();
@@ -20,9 +21,9 @@ const CompanyLayout = () => {
             { item: t('logout'), route: 'logout' }
           ]}
           basePath="company"
-          baseUrl='http://localhost:3005'
+          baseUrl={companyAPI.defaults.baseURL}
           apiUrls={{ 
-            logout: 'http://localhost:3001'
+            logout: `${loginAPI.defaults.baseURL}`
           }}
           // outletContext={{ userId, email, firstName, applications, setApplications }}
       />

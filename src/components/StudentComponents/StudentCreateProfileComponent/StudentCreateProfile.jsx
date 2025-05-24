@@ -6,6 +6,7 @@ import { fetchAllSkills } from '../../../api/StudentApi/StudentProfileAPI/fetchA
 import { createStudentProfile } from '../../../api/StudentApi/StudentProfileAPI/createStudentProfileAPI';
 import ProfilePic from '../../../assets/default_profile_icon.png'
 import StudentBackgound from "../../../assets/default_background.jpg";
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
 const steps = [
   'Personal Info',
@@ -156,7 +157,7 @@ const StudentCreateProfile = ({StarRating}) => {
       //   break;
       case 1:
         if (state.email && !/^\S+@\S+\.\S+$/.test(state.email)) newErrors.email = 'Invalid email format';
-        if (state.phoneNumber && !/^\+\d{1,3}\d{6,}$/.test(state.phoneNumber)) 
+        if (state.phoneNumber && !parsePhoneNumberFromString(state.phoneNumber)?.isValid()) 
           newErrors.phoneNumber = 'Invalid phone format (e.g. +1234567890)';
         break;
       case 3:

@@ -5,6 +5,7 @@ import styles from './CompanyCreateProfile.module.css';
 import { createCompanyProfile } from '../../../api/CompanyApi/CompanyProfileApi/createCompanyProfileAPI'
 import ProfilePic from '../../../assets/default_profile_icon.png'
 import CompanyBackgound from "../../../assets/default_background.jpg";
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
 const steps = [
   'Personal Info',
@@ -76,7 +77,7 @@ const CompanyCreateProfile = () => {
       //   break;
       case 1:
         if (state.contactEmail && !/^\S+@\S+\.\S+$/.test(state.contactEmail)) newErrors.contactEmail = 'Invalid email format';
-        if (state.contactPhone && !/^\+\d{1,3}\d{6,}$/.test(state.contactPhone)) 
+        if (state.contactPhone && !parsePhoneNumberFromString(state.contactPhone)?.isValid())
           newErrors.contactPhone = 'Invalid phone format (e.g. +1234567890)';
         break;
     }

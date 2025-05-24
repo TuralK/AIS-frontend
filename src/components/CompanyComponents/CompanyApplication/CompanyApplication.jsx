@@ -15,8 +15,29 @@ import { FaDownload, FaUpload, FaFile, FaTrash, FaFilePdf, FaRegFilePdf } from "
 import { acceptApplication } from "../../../api/CompanyApi/acceptApplicationAPI";
 import { faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import DefaultProfilePicture from '../../../assets/default_profile_icon.png'
+import { companyAPI } from "../../../services";
 
 const baseUrl = 'http://localhost:3004';
+
+const officialHolidays = [
+  '01-01', // New Year's Day
+  '04-23', // National Sovereignty and Children's Day
+  '05-01', // Labor and Solidarity Day
+  '05-19', // Commemoration of Atatürk, Youth and Sports Day
+  '07-15', // Democracy and National Unity Day
+  '08-30', // Victory Day
+  '10-28', // Republic Day Eve (half-day)
+  '10-29', // Republic Day
+  '03-29', // Eve of Ramadan Feast (Ramazan Bayramı Arifesi)
+  '03-30', // First Day of Ramadan Feast (Ramazan Bayramı 1. Gün)
+  '03-31', // Second Day of Ramadan Feast (Ramazan Bayramı 2. Gün)
+  '04-01', // Third Day of Ramadan Feast (Ramazan Bayramı 3. Gün)
+  '06-05', // Eve of Sacrifice Feast (Kurban Bayramı Arifesi)
+  '06-06', // First Day of Sacrifice Feast (Kurban Bayramı 1. Gün)
+  '06-07', // Second Day of Sacrifice Feast (Kurban Bayramı 2. Gün)
+  '06-08', // Third Day of Sacrifice Feast (Kurban Bayramı 3. Gün)
+  '06-09', // Fourth Day of Sacrifice Feast (Kurban Bayramı 4. Gün)
+];
 
 const CompanyApplication = () => {
   const matches = useMatches();
@@ -38,6 +59,7 @@ const CompanyApplication = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const [isDownloading, setIsDownloading] = useState(false);
   const [showExtraFields, setShowExtraFields] = useState(false);
   const [internshipDuration, setInternshipDuration] = useState("");
   const [dutyNtitle, setDuty] = useState("");
@@ -48,6 +70,7 @@ const CompanyApplication = () => {
   const [internshipStartDate, setInternshipStartDate] = useState("");
   const [internshipEndDate, setInternshipEndDate] = useState("");
 
+  const [holidayDays, setHolidayDays] = useState(0);
   // New state for "Enter number of work days:" input
   const [workDays, setWorkDays] = useState("0");
 
@@ -56,6 +79,10 @@ const CompanyApplication = () => {
   const [selectedFileName, setSelectedFileName] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
 
+  const [isAccepting, setIsAccepting] = useState(false);
+
+  const [effectiveWorkingDays, setEffectiveWorkingDays] = useState(null);
+  
   const handleFileClick = () => {
     document.getElementById("fileInput").click();
   };
@@ -87,7 +114,8 @@ const CompanyApplication = () => {
         setDocumentId(data.documentId);
         const profilePictureLocation = data.application.Student?.StudentProfile?.profilePicture;
         setProfilePicture(profilePictureLocation ? `${baseUrl}/${profilePictureLocation}`: DefaultProfilePicture );
-        setDocumentUrl(`http://localhost:3005/serveFile/${data.documentId}`);
+        // setDocumentUrl(`http://localhost:3005/serveFile/${data.documentId}`);
+        setDocumentUrl(`${companyAPI.defaults.baseURL}/serveFile/${data.documentId}`);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching application:", error);
@@ -133,107 +161,156 @@ const CompanyApplication = () => {
       alert("Please upload 'Application Form' before accepting the application.");
       return;
     }
-    setLoading(true);
-    const response = await acceptApplication(id, true, selectedFile);
-    setLoading(false)
-    alert(response.message);
-    navigate("/company/applications")
+    try {
+      setIsAccepting(true);  // Start spinner
+      const response = await acceptApplication(id, true, selectedFile);
+      alert(response.message);
+      navigate("/company/applications");
+    } catch (error) {
+      console.error("Error accepting application:", error);
+      alert("Failed to accept application. Please try again.");
+    } finally {
+      setIsAccepting(false);  // Stop spinner regardless of outcome
+    }
   }
 
-  const validateApplicationFields = () => {
-    const officialHolidays = [
-      '01-01', // New Year's Day
-      '04-23', // National Sovereignty and Children's Day
-      '05-01', // Labor and Solidarity Day
-      '05-19', // Commemoration of Atatürk, Youth and Sports Day
-      '07-15', // Democracy and National Unity Day
-      '08-30', // Victory Day
-      '10-28', // Republic Day Eve (half-day)
-      '10-29', // Republic Day
-      // Religious festivals (dates shift yearly—update as needed):
-      '03-29', // Eve of Ramadan Feast (Ramazan Bayramı Arifesi)
-      '03-30', // First Day of Ramadan Feast (Ramazan Bayramı 1. Gün)
-      '03-31', // Second Day of Ramadan Feast (Ramazan Bayramı 2. Gün)
-      '04-01', // Third Day of Ramadan Feast (Ramazan Bayramı 3. Gün)
-      '06-05', // Eve of Sacrifice Feast (Kurban Bayramı Arifesi)
-      '06-06', // First Day of Sacrifice Feast (Kurban Bayramı 1. Gün)
-      '06-07', // Second Day of Sacrifice Feast (Kurban Bayramı 2. Gün)
-      '06-08', // Third Day of Sacrifice Feast (Kurban Bayramı 3. Gün)
-      '06-09', // Fourth Day of Sacrifice Feast (Kurban Bayramı 4. Gün)
-    ];
+  useEffect(() => {
+    const calculateEffectiveDays = () => {
+      if (!internshipStartDate || !internshipEndDate) {
+        setEffectiveWorkingDays(null);
+        setHolidayDays(0);
+        return;
+      }
 
-    // Check that required fields are not null or empty.
+      const start = new Date(internshipStartDate);
+      const end = new Date(internshipEndDate);
+
+      if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+        setEffectiveWorkingDays(null);
+        setHolidayDays(0);
+        return;
+      }
+
+      let effectiveDays = 0;
+      let holidays = 0;
+      const current = new Date(start);
+
+      while (current <= end) {
+        const day = current.getDay();
+        const mm = String(current.getMonth() + 1).padStart(2, '0');
+        const dd = String(current.getDate()).padStart(2, '0');
+        const dateStr = `${mm}-${dd}`;
+
+        if (officialHolidays.includes(dateStr)) {
+          holidays++;
+        } else {
+          if (day !== 0) { // Not Sunday
+            if (day !== 6 || workOnSaturday === 'yes') { // Not Saturday or allowed
+              effectiveDays++;
+            }
+          }
+        }
+        current.setDate(current.getDate() + 1);
+      }
+
+      setHolidayDays(holidays);
+      setEffectiveWorkingDays(effectiveDays);
+    };
+
+    calculateEffectiveDays();
+  }, [internshipStartDate, internshipEndDate, workOnSaturday]);
+
+  const handleWorkDaysChange = (e) => {
+    const value = Math.max(0, Math.min(holidayDays, parseInt(e.target.value) || 0));
+    setWorkDays(value.toString());
+  };
+
+  useEffect(() => {
+    const currentWorkDays = parseInt(workDays, 10) || 0;
+    
+    if (currentWorkDays > holidayDays) {
+      const newValue = Math.min(currentWorkDays, holidayDays);
+      setWorkDays(newValue.toString());
+    }
+    
+    // If question2 is "no", force workDays to 0
+    if (question2 === "no") {
+      setWorkDays("0");
+    }
+  }, [holidayDays, question2, workDays]);
+
+  const validateApplicationFields = () => {
     if (!id || !internshipStartDate || !internshipEndDate || !internshipDuration ||
         !dutyNtitle || workOnSaturday === null || question2 === null ||
         question3 === null || workDays === "") {
       alert("Please fill out all required fields.");
       return false;
     }
-    
-    // Validate internship duration (make sure it's a number and at least 20)
+
+    if (effectiveWorkingDays === null) {
+      alert("Invalid dates provided.");
+      return false;
+    }
+
+    if (parseInt(workDays) > holidayDays) {
+      alert(`Cannot work more holiday days (${holidayDays}) than available`);
+      return false;
+    }
+
     const duration = parseInt(internshipDuration, 10);
     if (isNaN(duration) || duration < 20) {
       alert("Internship duration must be at least 20 days.");
       return false;
     }
-    // Convert start and end dates to Date objects and ensure proper order.
+
     const start = new Date(internshipStartDate);
     const end = new Date(internshipEndDate);
     if (start > end) {
       alert("Internship start date must be before the end date.");
       return false;
     }
-    // Calculate working days between the two dates.
-    // Weekends: Sundays are off, Saturdays are off unless workOnSaturday is true.
-    let effectiveWorkingDays = 0;
-    for (let dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
-      const day = dt.getDay(); // 0 = Sun, 6 = Sat
-      if (day === 0) continue;
-      if (day === 6 && workOnSaturday === "no") continue;
 
-      // Check holiday
-      const mm = String(dt.getMonth() + 1).padStart(2, '0');
-      const dd = String(dt.getDate()).padStart(2, '0');
-      if (officialHolidays.includes(`${mm}-${dd}`)) continue;
-
-      effectiveWorkingDays++;
-    }
-
-    // Effective working days excluding holidays
-    // const effectiveWorkingDays = totalWorkingDays - numHolidays;
-    const makeUpDays = parseInt(workDays, 10);
-
-    if ((effectiveWorkingDays + makeUpDays) < 20) {
-      alert(
-        `The total working days between the start and end date is ${effectiveWorkingDays + makeUpDays}, which is less than the required 20 days.`
-      );
+    const totalDays = effectiveWorkingDays + parseInt(workDays);
+    if (totalDays  < 20) {
+      alert(`Total working days (${totalDays}) are less than 20.`);
       return false;
     }
 
-    if (effectiveWorkingDays !== duration) {
-      alert ("Total working days doesn't match the internship duration you provided.")
+    if ((effectiveWorkingDays + parseInt(workDays))!== duration) {
+      alert("Internship duration doesn't match calculated working days.");
       return false;
     }
 
-    // All validations passed
     return true;
   };
   
   const handleApplicationDownload = async () => {
+  if (!validateApplicationFields()) {
+    return;
+  }
 
-    if (!validateApplicationFields()) {
-      return;
-    }
-
-    const response = await fillApplicationForm(id ,internshipStartDate,internshipEndDate, internshipDuration, dutyNtitle, 
-                                          workOnSaturday, question2, question3, workDays);
-    alert(response.message)
-    try {
-      await downloadFile("Application Form", "UpdatedApplicationForm");
-    } catch (error) {
-      console.error('Download failed:', error);
-    }
-  };
+  try {
+    setIsDownloading(true);
+    const response = await fillApplicationForm(
+      id,
+      internshipStartDate,
+      internshipEndDate,
+      internshipDuration,
+      dutyNtitle,
+      workOnSaturday,
+      question2,
+      question3,
+      workDays
+    );
+    alert(response.message);
+    await downloadFile("Application Form", "UpdatedApplicationForm");
+  } catch (error) {
+    console.error('Download failed:', error);
+    alert("Failed to download application form");
+  } finally {
+    setIsDownloading(false);
+  }
+};
 
   const toggleFullscreen = () => {
     const docPreview = document.getElementById("pdfPreview");
@@ -266,9 +343,6 @@ const CompanyApplication = () => {
       extraFieldsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [showExtraFields]);
-
-  // Handler for the new Accept and Download button.
- 
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -369,7 +443,13 @@ const CompanyApplication = () => {
               />
             </label>
           </div>
-
+          {effectiveWorkingDays !== null && (
+            <div className={styles.effectiveDays}>
+              Total Working Days: <strong>{effectiveWorkingDays + parseInt(workDays)}</strong>
+              <br />
+              (Regular: {effectiveWorkingDays} + Holidays: {workDays})
+            </div>
+          )}
           <label>
             Internship Duration:
             <input
@@ -443,14 +523,25 @@ const CompanyApplication = () => {
 
           {/* Conditionally show input for number of work days if answer is yes */}
           {question2 === "yes" && (
-            <label>
-              Enter number of work days:
-              <input
-                type="text"
-                value={workDays}
-                onChange={(e) => setWorkDays(e.target.value)}
-              />
-            </label>
+            <div className={styles.inputContainer}>
+              <label className={styles.inputLabel}>
+                Enter number of work days on holidays:
+              </label>
+              <div className={styles.inputField}>
+                <input
+                  type="number"
+                  min="0"
+                  max={holidayDays}
+                  value={workDays}
+                  onChange={handleWorkDaysChange}
+                  disabled={question2 !== "yes"}
+                  className={styles.numberInput}
+                />
+                <span className={styles.holidayNote}>
+                  (Available holiday days: {holidayDays})
+                </span>
+              </div>
+            </div>
           )}
 
           <div className={styles.radioGroup}>
@@ -478,8 +569,36 @@ const CompanyApplication = () => {
           </div>
 
           <div className={styles.files}>
-            <button onClick={handleApplicationDownload} className={styles.downloadFile}>
-            <FontAwesomeIcon icon={faFilePdf} /> Fill and Download Application Form <FaDownload />
+            <button 
+              onClick={handleApplicationDownload} 
+              className={styles.downloadFile}
+              disabled={isDownloading}
+            >
+              {isDownloading ? (
+                <div className={styles.spinnerContainer}>
+                  <svg className={styles.spinner} viewBox="0 0 24 24">
+                    <circle
+                      className={styles.spinnerCircle}
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className={styles.spinnerPath}
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  Filling and Downloading...
+                </div>
+              ) : (
+                <>
+                  <FontAwesomeIcon icon={faFilePdf} /> Fill and Download Application Form <FaDownload />
+                </>
+              )}
             </button>
             
             <div className={styles.uploadFile} onClick={handleFileClick}>
@@ -505,7 +624,33 @@ const CompanyApplication = () => {
           </div>
 
           <div className={styles.acceptContainer}>
-            <button className={styles.acceptButton} onClick={handleAcceptApplication}>Accept</button>
+            <button 
+              className={styles.acceptButton} 
+              onClick={handleAcceptApplication}
+              disabled={isAccepting}
+            >
+              {isAccepting ? (
+                <div className={styles.spinnerContainer}>
+                  <svg className={styles.spinner} viewBox="0 0 24 24">
+                    <circle
+                      className={styles.spinnerCircle}
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className={styles.spinnerPath}
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  Accepting...
+                </div>
+              ) : "Accept"}
+            </button>
           </div>
         </div>
       )}

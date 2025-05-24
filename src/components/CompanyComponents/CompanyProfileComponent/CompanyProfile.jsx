@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+
 import { useMatches } from 'react-router-dom';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -15,6 +16,9 @@ import { updateCompanyProfilePhoto } from '../../../api/CompanyApi/CompanyProfil
 import { updateCompanyProfile } from '../../../api/CompanyApi/CompanyProfileApi/updateCompanyProfileAPI';
 import { getCompanyAnnouncements } from '../../../api/CompanyApi/CompanyProfileApi/getCompanyAnnouncementsAPI';
 import { getCompanyProfileById } from '../../../api/CompanyApi/CompanyProfileApi/getCompanyProfileByIdAPI';
+import EmptyState from '../../UtilComponents/EmptyState';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
+
 
 const baseUrl = 'http://localhost:3005';
 
@@ -333,8 +337,12 @@ const SocialMediaField = ({ links, isEditing, onChange }) => {
                   </button>
                 </div>
               ) : platformData ? (
-                <a
-                  href={link.link}
+                 <a
+                  href={
+                    link.link.startsWith('http') 
+                      ? link.link 
+                      : `https://${link.link}`
+                  }
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.socialMediaLink}
@@ -448,8 +456,8 @@ const CompanyProfile = () => {
   ]);
 
   const isValidPhone = (phone) => {
-    const regex = /^\+\d{1,3}\d{6,}$/;
-    return regex.test(phone);
+    const phoneNumber = parsePhoneNumberFromString(phone);
+    return phoneNumber?.isValid() === true;
   };
   
   const isValidEmail = (email) => {
@@ -683,7 +691,17 @@ const CompanyProfile = () => {
 
   if (loading) return <Loading />;
 
-  if (!companyData && id) { navigate(-1);  alert("Company profile doesn't exist yet.")  }
+  if (!companyData && id) {
+    return (
+      <EmptyState
+        // icon="briefcase-off"
+        title="No Company Here"
+        description="Looks like this profile hasn’t been created yet."
+        actionText="Go Back"
+        actionTo={() => navigate(-1)}
+      />
+    );
+  }
   else if (!companyData) { return <CompanyCreateProfile /> }
 
   const renderTabContent = () => {
