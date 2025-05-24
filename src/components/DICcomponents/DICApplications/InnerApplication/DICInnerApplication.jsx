@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import {
@@ -16,7 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { toast } from '../../../ui/use-toast';
 import { Skeleton } from '../../../ui/skeleton';
 import { Download, Upload, Send, X } from 'lucide-react';
-import { fetchApplicationDetails, updateApplicationDetail, downloadFile } from '../../../../api/DICApi/applicationDetails';
+import { fetchApplicationDetails, fetchManualApplicationDetails, updateApplicationDetail, downloadFile } from '../../../../api/DICApi/applicationDetails';
 import office from '../../../../assets/office.jpg'
 import CustomAlertDialog from '../../../ui/custom_alert';
 
@@ -29,6 +29,7 @@ function bufferToBase64(bufferData) {
 
 const DICInnerApplication = () => {
   const { id } = useParams();
+  const location = useLocation();
   const [application, setApplication] = useState(null);
   const [feedback, setFeedback] = useState('');
   const [file, setFile] = useState(null);
@@ -44,11 +45,22 @@ const DICInnerApplication = () => {
   const [isTypeAlertOpen, setIsTypeAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
 
+  // Check if this is a manual application based on the URL
+  const isManualApplication = location.pathname.includes('/manualApplication/');
+
   useEffect(() => {
     const loadApplicationDetails = async () => {
       try {
         setIsLoading(true);
-        const res = await fetchApplicationDetails(id);
+        let res;
+        
+        if (isManualApplication) {
+          res = await fetchManualApplicationDetails(id);
+        } else {
+          res = await fetchApplicationDetails(id);
+        }
+        
+        console.log("Application details:", res);
         setApplication(res.application);
       } catch (error) {
         toast({
@@ -62,7 +74,7 @@ const DICInnerApplication = () => {
     };
 
     loadApplicationDetails();
-  }, [id, t]);
+  }, [id, t, isManualApplication]);
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -149,11 +161,33 @@ const DICInnerApplication = () => {
     return null;
   }
 
+  // Handle different data structures for manual vs regular applications
   let imageSrc = office;
-  const imgData = application.Announcement.image?.data;
-  if (imgData) {
-    const base64String = bufferToBase64(imgData);
-    imageSrc = `data:image/jpeg;base64,${base64String}`;
+  let announcementName = '';
+  let companyName = '';
+  let startDate = '';
+  let endDate = '';
+  let description = '';
+
+  if (isManualApplication) {
+    // Manual application structure
+    announcementName = t('manualApplication');
+    companyName = application.companyName;
+    startDate = '-';
+    endDate = '-';
+    description = application.companyEmail ? `${t('companyEmail')}: ${application.companyEmail}` : '';
+  } else {
+    // Regular application structure
+    const imgData = application.Announcement.image?.data;
+    if (imgData) {
+      const base64String = bufferToBase64(imgData);
+      imageSrc = `data:image/jpeg;base64,${base64String}`;
+    }
+    announcementName = application.Announcement.announcementName;
+    companyName = application.Announcement.Company.name;
+    startDate = application.Announcement.startDate;
+    endDate = application.Announcement.endDate;
+    description = application.Announcement.description;
   }
 
   return (
@@ -173,21 +207,23 @@ const DICInnerApplication = () => {
         />
         <Card className="w-full max-w-6xl mx-auto p-4 mt-5">
           <CardHeader>
-            <CardTitle className='mx-auto'>{application.Announcement.announcementName}</CardTitle>
+            <CardTitle className='mx-auto'>{announcementName}</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col lg:flex-row gap-8">
             <div className="w-full lg:w-2/5 flex-shrink-0 aspect-video">
               <img
                 src={imageSrc}
-                alt={application.Announcement.announcementName}
+                alt={announcementName}
                 className="w-full h-full object-cover rounded-lg max-h-64"
               />
 
-              <div className="mt-4 space-y-2 lg:hidden">
-                <h3 className="text-lg font-semibold">{t('internshipPeriod')}</h3>
-                <p><strong>{t('startDate')}:</strong> {new Date(application.Announcement.startDate).toLocaleDateString()}</p>
-                <p><strong>{t('endDate')}:</strong> {new Date(application.Announcement.endDate).toLocaleDateString()}</p>
-              </div>
+              {!isManualApplication && (
+                <div className="mt-4 space-y-2 lg:hidden">
+                  <h3 className="text-lg font-semibold">{t('internshipPeriod')}</h3>
+                  <p><strong>{t('startDate')}:</strong> {new Date(startDate).toLocaleDateString()}</p>
+                  <p><strong>{t('endDate')}:</strong> {new Date(endDate).toLocaleDateString()}</p>
+                </div>
+              )}
             </div>
 
             <div className="w-full lg:w-3/5">
@@ -208,22 +244,26 @@ const DICInnerApplication = () => {
                     <h3 className="text-lg font-semibold mb-2">{t('companyInfo')}</h3>
                     <p className="break-words">
                       <strong>{t('company')}:</strong>{" "}
-                      <span className="break-all">{application.Announcement.Company.name}</span>
+                      <span className="break-all">{companyName}</span>
                     </p>
                   </div>
 
-                  <div className="hidden lg:block">
-                    <h3 className="text-lg font-semibold mb-2">{t('internshipPeriod')}</h3>
-                    <p><strong>{t('startDate')}:</strong> {new Date(application.Announcement.startDate).toLocaleDateString()}</p>
-                    <p><strong>{t('endDate')}:</strong> {new Date(application.Announcement.endDate).toLocaleDateString()}</p>
-                  </div>
+                  {!isManualApplication && (
+                    <div className="hidden lg:block">
+                      <h3 className="text-lg font-semibold mb-2">{t('internshipPeriod')}</h3>
+                      <p><strong>{t('startDate')}:</strong> {new Date(startDate).toLocaleDateString()}</p>
+                      <p><strong>{t('endDate')}:</strong> {new Date(endDate).toLocaleDateString()}</p>
+                    </div>
+                  )}
                 </div>
 
                 <div className="md:col-span-2 w-full">
                   <div className="break-words w-full space-y-2">
-                    <strong className="block text-lg font-semibold">{t('description')}:</strong>
+                    <strong className="block text-lg font-semibold">
+                      {isManualApplication ? t('additionalInfo') : t('description')}:
+                    </strong>
                     <div className="whitespace-pre-line bg-gray-50 p-4 rounded-lg border border-gray-200 max-h-[400px] overflow-y-auto">
-                      {application.Announcement.description || 'N/A'}
+                      {description || 'N/A'}
                     </div>
                   </div>
                 </div>

@@ -101,6 +101,7 @@ const App = () => {
         { path: 'announcement/:id', element: <DICAnouncementDetails />, handle: { titleKey: 'announcement' } },
         { path: 'applicationRequests', element: <DICApplications />, handle: { titleKey: 'applicationRequests' } },
         { path: 'application/:id', element: <DICInnerApplication />, handle: { titleKey: 'application' } },
+        { path: 'manualApplication/:id', element: <DICInnerApplication />, handle: { titleKey: 'manualApplication' } },
         { path: 'internships', element: <DICInternships />, handle: { titleKey: 'internships' } },
         { path: 'internship/:id', element: <DICInnerInternships />, handle: { titleKey: 'internship' } }
       ]

@@ -283,5 +283,8 @@
   "announcementDetails": "Duyuru",
   "student's_email": "Öğrencinin e-postası",
   "enterCompanyEmail": "Şirket epostasını giriniz",
-  "enterCompanyName": "Şirket adını giriniz"
+  "enterCompanyName": "Şirket adını giriniz",
+  "manualApplication": "Sistem dışı staj başvurusu",
+  "unknownAnnouncement": "Bilinmeyen duyuru",
+  "additionalInfo": "Ek Bilgiler"
 }

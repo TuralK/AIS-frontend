@@ -28,14 +28,13 @@ const FilterOptions = ({applicationsStatuses}) => {
   const handleClick = (option) => {
     setActiveOption(option);
     
-    // Eğer applicationsStatuses boş ise, boş array döndür
     if (!applicationsStatuses || applicationsStatuses.length === 0) {
       setFilteredApplicationsStatuses([]);
       return;
     }
     
     switch(option) {
-      case filterOptions[0].key: // all
+      case filterOptions[0].key: 
         setFilteredApplicationsStatuses(applicationsStatuses.filter(application => 
           application.status !== 5
         ));

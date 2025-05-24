@@ -40,15 +40,15 @@ const StatusContainer = ({ applicationsStatuses }) => {
     };
   };
 
-  // Announcement name'i güvenli bir şekilde al
+  
   const getAnnouncementName = (application) => {
     if (isManualApplication(application)) {
-      return application.companyName ? `${application.companyName} - Manual Application` : 'Manual Application';
+      return application.companyName ? `${application.companyName} - ${t("manualApplication")}` : `${t("manualApplication")}`;
     }
-    return application.Announcement?.announcementName || 'Unknown Announcement';
+    return application.Announcement?.announcementName || `${t("unknownAnnouncement")}`;
   };
 
-  // Announcement ID'yi güvenli bir şekilde al
+  
   const getAnnouncementId = (application) => {
     return application.announcementId || application.Announcement?.id || null;
   };

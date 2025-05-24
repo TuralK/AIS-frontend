@@ -6,15 +6,7 @@ import { ArrowRight } from "lucide-react";
 import fetchApplicationRequests from "../../../api/DICApi/applicationsApi.js";
 import Loading from "../../LoadingComponent/Loading";
 import AnnouncementImage from "../../../assets/office.jpg";
-
-// Buffer → Base64 çeviren yardımcı fonksiyon
-function bufferToBase64(bufferData) {
-  let binary = "";
-  // Eğer doğrudan Uint8Array değilse dönüştür
-  const bytes = bufferData instanceof Uint8Array ? bufferData : new Uint8Array(bufferData);
-  bytes.forEach((b) => (binary += String.fromCharCode(b)));
-  return window.btoa(binary);
-}
+import { bufferToAutoDataURL } from "../../../utils/bufferTo64Utils.js";
 
 const DICApplications = () => {
   const matches = useMatches();
@@ -36,8 +28,13 @@ const DICApplications = () => {
       setLoading(true);
       const data = await fetchApplicationRequests();
       if (data) {
-        console.log("Application data:", data.applications);
-        setApplications(data.applications);
+        console.log("Application data:", data);
+        // Combine both arrays into one
+        const allApplications = [
+          ...(data.applications || []),
+          ...(data.manualApplications || [])
+        ];
+        setApplications(allApplications);
       }
       setLoading(false);
     };
@@ -46,10 +43,13 @@ const DICApplications = () => {
   }, []);
 
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return `${date.getDate().toString().padStart(2, "0")}.${(date.getMonth() + 1)
-      .toString()
-      .padStart(2, "0")}.${date.getFullYear()}`;
+    if (dateString !== "-") {
+      const date = new Date(dateString);
+      return `${date.getDate().toString().padStart(2, "0")}.${(date.getMonth() + 1)
+        .toString()
+        .padStart(2, "0")}.${date.getFullYear()}`;
+    }
+    return "-";
   };
 
   if (loading) return <Loading />;
@@ -61,28 +61,42 @@ const DICApplications = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {applications.length > 0 ? (
             applications.map((application) => {
-              // Eğer application.Announcement.image.data varsa Base64'e çevir
+              const isManualApplication = !application.Announcement;
+
               let imageSrc = AnnouncementImage;
-              const imgBuffer = application.Announcement.image?.data;
-              if (imgBuffer) {
-                const base64 = bufferToBase64(imgBuffer);
-                // Burada JPEG olduğunu varsayıyoruz; gerekirse image/png olarak değiştirin
-                imageSrc = `data:image/jpeg;base64,${base64}`;
+              let announcementName = "";
+              let companyName = "";
+              let startDate = "";
+
+              if (isManualApplication) {
+                // For manual applications
+                announcementName = `${t("manualApplication")}`;
+                companyName = application.companyName;
+                startDate = "-";
+              } else {
+                // For regular applications
+                const imgBuffer = application.Announcement.image?.data;
+                if (imgBuffer) {
+                  imageSrc = bufferToAutoDataURL(imgBuffer);
+                }
+                announcementName = application.Announcement.announcementName;
+                companyName = application.Announcement.Company.name;
+                startDate = application.Announcement.startDate;
               }
 
               return (
                 <div
-                  key={application.id}
+                  key={`${isManualApplication ? 'manual' : 'regular'}-${application.id}`}
                   className="bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
                 >
                   <div className="relative w-full h-48 overflow-hidden group">
                     <img
                       src={imageSrc}
-                      alt={application.Announcement.announcementName}
+                      alt={announcementName}
                       className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
                     />
                     <span className="absolute top-3 left-3 bg-black/75 text-white px-3 py-1 text-sm rounded">
-                      {application.Announcement.announcementName}
+                      {announcementName}
                     </span>
                   </div>
                   <div className="p-6">
@@ -94,15 +108,20 @@ const DICApplications = () => {
                         {t("id")}: {application.Student.id}
                       </p>
                       <p className="text-gray-700 font-bold text-md">
-                        {t("company")}: {application.Announcement.Company.name}
+                        {t("company")}: {companyName}
                       </p>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-md font-bold text-gray-700">
-                        {t("startDate")} {formatDate(application.Announcement.startDate)}
+                        {t("startDate")} {formatDate(startDate)}
                       </span>
                       <button
-                        onClick={() => navigate(`/admin/application/${application.id}`)}
+                        onClick={() => {
+                          const route = isManualApplication
+                            ? `/admin/manualApplication/${application.id}`
+                            : `/admin/application/${application.id}`;
+                          navigate(route);
+                        }}
                         className="inline-flex items-center text-emerald-600 hover:text-emerald-700 hover:underline transition-colors group"
                       >
                         {t("moreDetails")}

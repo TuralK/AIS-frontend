@@ -291,5 +291,8 @@
   "announcementDetails": "Announcement",
   "student's_email": "Student's email",
   "enterCompanyEmail": "Enter company email",
-  "enterCompanyName": "Enter company name"
+  "enterCompanyName": "Enter company name",
+  "manualApplication": "Manual Application",
+  "unknownAnnouncement": "Unknown Announcement",
+  "additionalInfo": "Additional Information"
 }

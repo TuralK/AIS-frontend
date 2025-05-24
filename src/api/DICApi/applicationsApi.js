@@ -6,7 +6,6 @@ const fetchApplicationRequests = async () => {
       withCredentials: true
     });
 
-    // Check if the response is OK and return the data
     if (response.status === 200) {
       return response.data;
     } else {

@@ -12,6 +12,18 @@ const fetchApplicationDetails = async (applicationId) => {
     }
 };
 
+const fetchManualApplicationDetails = async (applicationId) => {
+    try {
+        const response = await adminAPI.get(`/manualApplications/${applicationId}`, {
+            withCredentials: true,
+        });
+        return response.data; 
+    } catch (error) {
+        console.error('Error fetching application details:', error);
+        throw error; 
+    }
+};
+
 const updateApplicationDetail = async (applicationId, formData) => {
     try {
         const response =await adminAPI.put(`/applications/${applicationId}`, formData, {
@@ -38,4 +50,4 @@ const downloadFile = async (id) => {
     }
 };
 
-export {fetchApplicationDetails, updateApplicationDetail, downloadFile};
+export {fetchManualApplicationDetails, fetchApplicationDetails, updateApplicationDetail, downloadFile};
