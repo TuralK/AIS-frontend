@@ -1,6 +1,6 @@
 // components/FileUploadSection.jsx
 import { useRef } from "react";
-import { Upload, FileText, X, CheckCircle } from "lucide-react";
+import { Upload, FileText, X, CheckCircle, Download } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Tooltip } from "@mui/material";
 
@@ -11,6 +11,9 @@ const FileUploadSection = ({
   onRemove,
   showQuestionMark = false,
   disabled = false,
+  showDownloadButton = false,
+  downloadTooltip = "",
+  onDownload = null,
 }) => {
   const { t } = useTranslation();
   const inputRef = useRef(null);
@@ -33,19 +36,37 @@ const FileUploadSection = ({
     inputRef.current?.click();
   };
 
+  const handleDownloadClick = (e) => {
+    e.stopPropagation();
+    if (onDownload) onDownload();
+  };
+
   return (
     <div className="space-y-4 mt-5">
       <div className="flex items-center justify-between">
-        <h3 className="text-base font-bold text-gray-800 mt-0 flex items-center gap-1">
-          {label}
-          {showQuestionMark && (
-            <Tooltip title={t("questionMarkTooltip")}>
-              <span className="w-5 h-5 flex items-center justify-center rounded-full bg-gray-200 text-yellow-600 text-xs font-bold">
-                ?
-              </span>
+        <div className="flex items-center gap-2">
+          <h3 className="text-base font-bold text-gray-800 mt-0 flex items-center gap-1">
+            {label}
+            {showQuestionMark && (
+              <Tooltip title={t("questionMarkTooltip")}>
+                <span className="w-5 h-5 flex items-center justify-center rounded-full bg-gray-200 text-yellow-600 text-xs font-bold">
+                  ?
+                </span>
+              </Tooltip>
+            )}
+          </h3>
+          {showDownloadButton && downloadTooltip && onDownload && (
+            <Tooltip title={downloadTooltip}>
+              <button
+                onClick={handleDownloadClick}
+                className="w-6 h-6 flex items-center justify-center rounded bg-[#a51c30] text-white hover:bg-white hover:text-[#a51c30] hover:border hover:border-[#a51c30] transition-colors"
+                aria-label="Download template"
+              >
+                <Download className="h-3 w-3" />
+              </button>
             </Tooltip>
           )}
-        </h3>
+        </div>
         {uploadedFile && (
           <div className="flex items-center gap-2 rounded-lg bg-green-50 px-3 py-1.5 text-sm font-bold text-green-600">
             <CheckCircle className="h-4 w-4" />

@@ -29,6 +29,7 @@ const StudentInternship = () => {
     const fetchInternship = async () => {
       try {
         const res = await getInternship();
+        console.log("Internship data:", res);
         setInternshipData(res);
       } catch (err) {
         console.error("Get internship error:", err);
@@ -73,7 +74,7 @@ const StudentInternship = () => {
   }
 
   const companyName =
-    (internshipData.Application && internshipData.Application.Announcement.Company.name) || "-";
+    (internshipData.Application && internshipData.Application.Announcement.Company.name) || (internshipData.ManualApplication.companyName);
   const internshipTitle =
     (internshipData.Application && internshipData.Application.Announcement.announcementName) || "-";
   const internshipStatus = internshipData.status === 0 ? t("ongoing") : t("finished");

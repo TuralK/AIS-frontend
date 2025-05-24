@@ -236,7 +236,7 @@
   "haveAnInternship": "Halihazırda stajınız var, başka bir staj başvurusu yapamazsınız",
   "noInternshipFound": "Aktif stajınız bulunamadı",
   "requestLink": "Link talep et",
-  "requestLinkTooltip": "Staj başvuru formu için koordinatörden link talep et",
+  "requestLinkTooltip": "Şirket formu için koordinatörden link talep et",
   "uploadFailed": "Yükleme başarısız oldu. Lütfen tekrar deneyin.",
   "companyName": "Şirket Adı",
   "companyEmail": "Şirket Emaili",
@@ -255,7 +255,7 @@
   "feedbackFromCoordinator": "Koordinatörden geri bildirim",
   "feedbackFromCompanySupervisor": "Şirket temsilcisinden geri bildirim",
   "questionMarkTooltip": "Dosyanızı güncellemek için tekrar yükleyebilirsiniz",
-    "AdminFeedbackBoth_StudOnlyReport": "Koordinatör her ikisi içinde bildirim verdi, yalnızca raporu güncellediniz.",
+  "AdminFeedbackBoth_StudOnlyReport": "Koordinatör her ikisi içinde bildirim verdi, yalnızca raporu güncellediniz.",
   "AdminFeedbackBoth_StudOnlySurvey": "Koordinatör her ikisi içinde bildirim verdi, yalnızca anketi güncellediniz.",
   "AdminFeedbackBoth": "Koordinatör hem rapor hem de anket için geri bildirim verdi.",
   "AdminFeedbackReport_StudUpdated": "Koordinatör rapor için geri bildirim verdi, güncelleme yapıldı.",
@@ -286,5 +286,8 @@
   "enterCompanyName": "Şirket adını giriniz",
   "manualApplication": "Sistem dışı staj başvurusu",
   "unknownAnnouncement": "Bilinmeyen duyuru",
-  "additionalInfo": "Ek Bilgiler"
+  "additionalInfo": "Ek Bilgiler",
+  "downloadSPESTemplate": "Staj Değerlendirme Anketi Şablonunu İndir",
+  "downloadSPRTemplate": "Staj Raporu Şablonunu İndir",
+  "templateDownloadFailed": "Şablon indirme başarısız oldu. Tekrar deneyin."
 }

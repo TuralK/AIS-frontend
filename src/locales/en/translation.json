@@ -294,5 +294,8 @@
   "enterCompanyName": "Enter company name",
   "manualApplication": "Manual Application",
   "unknownAnnouncement": "Unknown Announcement",
-  "additionalInfo": "Additional Information"
+  "additionalInfo": "Additional Information",
+  "downloadSPESTemplate": "Download Summer Practice Evaluation Survey Template",
+  "downloadSPRTemplate": "Download Summer Practice Report Template",
+  "templateDownloadFailed": "Template download failed. Please try again."
 }

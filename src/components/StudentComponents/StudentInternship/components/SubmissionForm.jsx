@@ -6,12 +6,12 @@ import CustomAlertDialog from "../../../ui/custom_alert";
 import { useTranslation } from "react-i18next";
 import { requestLink } from "../../../../api/StudentApi/internshipApi";
 import { Tooltip } from "@mui/material";
+import { studentAPI } from "../../../../services";
+import downloadTemplateFile from "../../../../api/downloadApi";
 
 const SubmissionForm = ({ status, manualApplicationId, onRequestLink, studentStatus, companyStatus }) => {
   const [fileSPR, setFileSPR] = useState(null);
   const [fileSPES, setFileSPES] = useState(null);
-  const [companyName, setCompanyName] = useState("");
-  const [companyEmail, setCompanyEmail] = useState("");
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const { t } = useTranslation();
@@ -24,23 +24,30 @@ const SubmissionForm = ({ status, manualApplicationId, onRequestLink, studentSta
   const onlySPES = manualApplicationId !== null;
 
   const handleRequestLink = async () => {
-    // validation for company fields
-    if (!companyName.trim() || !companyEmail.trim()) {
-      showAlert(t("companyNameEmailRequired"));
-      return;
-    }
-    // email format validation
-    if (!companyEmail.includes('@')) {
-      showAlert(t("invalidEmailFormat"));
-      return;
-    }
-
     try {
-      await requestLink(companyName, companyEmail);
+      await requestLink();
       showAlert(t("linkRequestedSuccessfully"));
       onRequestLink && onRequestLink();
     } catch (err) {
       showAlert(err.response?.data?.message || t("requestLinkFailed"));
+    }
+  };
+
+  const handleDownload = async (fileName) => {
+    try {
+      const result = await downloadTemplateFile(studentAPI.defaults.baseURL, fileName);
+
+      if (result.success) {
+        console.log(result.message);
+        // İsteğe bağlı: Başarı mesajı göster
+        // showAlert(t("templateDownloadSuccess"));
+      } else {
+        showAlert(result.message || t("templateDownloadFailed"));
+        console.error(result.message);
+      }
+    } catch (error) {
+      showAlert(t("templateDownloadFailed"));
+      console.error('Download error:', error);
     }
   };
 
@@ -62,6 +69,9 @@ const SubmissionForm = ({ status, manualApplicationId, onRequestLink, studentSta
           onRemove={() => setFileSPR(null)}
           showQuestionMark={studentStatus > 1 && studentStatus !== 2 && status !== 0 && status !== 2}
           disabled={status === 2 || companyStatus === 2}
+          showDownloadButton={true}
+          downloadTooltip={t("downloadSPRTemplate")}
+          onDownload={() => handleDownload('SummerPracticeReportTemplate.docx')}
         />
       )}
       <FileUploadSection
@@ -71,30 +81,10 @@ const SubmissionForm = ({ status, manualApplicationId, onRequestLink, studentSta
         onRemove={() => setFileSPES(null)}
         showQuestionMark={studentStatus > 2 && status !== 0 && status !== 2}
         disabled={status === 2}
+        showDownloadButton={true}
+        downloadTooltip={t("downloadSPESTemplate")}
+        onDownload={() => handleDownload('SummerPracticeSurveyTemplate.docx')}
       />
-
-      {onlySPES && (
-        <div className="mt-4 space-y-3">
-          <div className="flex flex-col">
-            <label className="text-sm font-medium text-gray-700">{t("companyName")}</label>
-            <input
-              type="text"
-              value={companyName}
-              onChange={(e) => setCompanyName(e.target.value)}
-              className="mt-1 p-2 border rounded-lg"
-            />
-          </div>
-          <div className="flex flex-col">
-            <label className="text-sm font-medium text-gray-700">{t("companyEmail")}</label>
-            <input
-              type="email"
-              value={companyEmail}
-              onChange={(e) => setCompanyEmail(e.target.value)}
-              className="mt-1 p-2 border rounded-lg"
-            />
-          </div>
-        </div>
-      )}
 
       <div className="mt-6 justify-end flex flex-col items-end gap-4">
         <SubmitSection

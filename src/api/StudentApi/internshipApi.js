@@ -51,13 +51,10 @@ export const getInternship = async () => {
 };
 
 
-export const requestLink = async (companyName, companyEmail) => {
+export const requestLink = async () => {
   return studentAPI.post(
     `/internship/requestLink`,
-    {
-      companyName,
-      companyEmail
-    },
+    {},
     { withCredentials: true }
   );
 };
