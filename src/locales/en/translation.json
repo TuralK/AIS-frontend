@@ -224,7 +224,7 @@
   "requestError": "An error occurred while creating the request",
   "noFileSelected": "No File Selected",
   "pleaseSelectFile": "Please select a PDF file to upload",
-  "clickToSelectFile": "Click to upload Summer Internship Application Form",
+  "clickToSelectFile": "Click to upload Summer Internship Application Form for a company is not in system",
   "clickToSendFile": "Summer Internship Application Form",
   "clearFile": "Clear file",
   "sendFile": "Send file",

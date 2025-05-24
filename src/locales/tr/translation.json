@@ -217,7 +217,7 @@
   "requestError": "İstek oluşturulurken bir hata oluştu",
   "noFileSelected": "Dosya Seçilmedi",
   "pleaseSelectFile": "Lütfen yüklemek için bir PDF dosyası seçin",
-  "clickToSelectFile": "Staj başvuru formu yüklemek için tıklayın",
+  "clickToSelectFile": "Sistem dışı staj başvurusu formu yüklemek için tıklayın",
   "clickToSendFile": "Staj başvuru formu",
   "clearFile": "Dosyayı temizle",
   "sendFile": "Dosyayı gönder",
