@@ -29,7 +29,7 @@ const StudentInternship = () => {
     const fetchInternship = async () => {
       try {
         const res = await getInternship();
-        console.log("Internship data:", res);
+        
         setInternshipData(res);
       } catch (err) {
         console.error("Get internship error:", err);

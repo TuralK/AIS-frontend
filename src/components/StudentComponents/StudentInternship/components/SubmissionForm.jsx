@@ -38,9 +38,7 @@ const SubmissionForm = ({ status, manualApplicationId, onRequestLink, studentSta
       const result = await downloadTemplateFile(studentAPI.defaults.baseURL, fileName);
 
       if (result.success) {
-        console.log(result.message);
-        // İsteğe bağlı: Başarı mesajı göster
-        // showAlert(t("templateDownloadSuccess"));
+        
       } else {
         showAlert(result.message || t("templateDownloadFailed"));
         console.error(result.message);

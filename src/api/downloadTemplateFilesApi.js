@@ -33,17 +33,17 @@ const downloadTemplateFile = async (urlPath, fileName) => {
 
         window.URL.revokeObjectURL(url);
 
-        return { success: true, message: 'Dosya başarıyla indirildi' };
+        return { success: true, message: 'File downloaded succesfully' };
 
     } catch (error) {
         console.error('Dosya indirme hatası:', error);
 
         if (error.response?.status === 404) {
-            return { success: false, message: 'Dosya bulunamadı' };
+            return { success: false, message: 'File not found' };
         } else if (error.response?.status === 500) {
-            return { success: false, message: 'Sunucu hatası' };
+            return { success: false, message: 'Server Error' };
         } else {
-            return { success: false, message: 'Dosya indirilemedi' };
+            return { success: false, message: 'File did not download' };
         }
     }
 };
