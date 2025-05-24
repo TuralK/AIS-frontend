@@ -14,34 +14,51 @@ const FilterOptions = ({applicationsStatuses}) => {
   const [filteredApplicationsStatuses, setFilteredApplicationsStatuses] = useState([]);
   const [activeOption, setActiveOption] = useState(filterOptions[0].key);
   
-  
   useEffect(() => {
+    if (!applicationsStatuses || applicationsStatuses.length === 0) {
+      setFilteredApplicationsStatuses([]);
+      return;
+    }
+    
     setFilteredApplicationsStatuses(applicationsStatuses.filter(application => 
-      application.status != 5
+      application.status !== 5
     ));
-  },[applicationsStatuses]);
+  }, [applicationsStatuses]);
 
   const handleClick = (option) => {
     setActiveOption(option);
+    
+    // Eğer applicationsStatuses boş ise, boş array döndür
+    if (!applicationsStatuses || applicationsStatuses.length === 0) {
+      setFilteredApplicationsStatuses([]);
+      return;
+    }
+    
     switch(option) {
-      case filterOptions[0].key:
+      case filterOptions[0].key: // all
         setFilteredApplicationsStatuses(applicationsStatuses.filter(application => 
-          application.status != 5
+          application.status !== 5
         ));
         break;
-      case filterOptions[1].key:
+      case filterOptions[1].key: // evaluation_phase
         setFilteredApplicationsStatuses(applicationsStatuses.filter(application => 
-          application.status == 0 || application.status == 1 || application.status == 2
+          application.status === 0 || application.status === 1 || application.status === 2
         ));
         break;
-      case filterOptions[3].key:
-        setFilteredApplicationsStatuses(applicationsStatuses.filter(application => application.status == 4));
+      case filterOptions[3].key: // rejected
+        setFilteredApplicationsStatuses(applicationsStatuses.filter(application => 
+          application.status === 4
+        ));
         break;
-      case filterOptions[2].key:
-        setFilteredApplicationsStatuses(applicationsStatuses.filter(application => application.status == 3));
+      case filterOptions[2].key: // accepted
+        setFilteredApplicationsStatuses(applicationsStatuses.filter(application => 
+          application.status === 3
+        ));
         break;
       default:
-        setFilteredApplicationsStatuses(applicationsStatuses);
+        setFilteredApplicationsStatuses(applicationsStatuses.filter(application => 
+          application.status !== 5
+        ));
         break;
     }
   }

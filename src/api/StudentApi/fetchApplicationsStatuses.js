@@ -5,7 +5,8 @@ export const fetchApplicationsStatuses = async () => {
         const response = await studentAPI.get('/application/applications', {
             withCredentials: true,
         });
-        return response.data.applications;
+
+        return response.data;
     } catch (error) {
         throw new Error(error);
     }

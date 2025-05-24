@@ -24,7 +24,35 @@ const StudentApplications = () => {
   useEffect(() => {
     fetchApplicationsStatuses()
       .then(applicationsStatusesData => {
-        setApplicationsStatuses(applicationsStatusesData);
+        // Eski veri yapısını kontrol et (doğrudan array ise)
+        if (Array.isArray(applicationsStatusesData)) {
+          setApplicationsStatuses(applicationsStatusesData);
+        } 
+        // Yeni veri yapısını kontrol et (object ise ve applications/manualApplications içeriyorsa)
+        else if (applicationsStatusesData && typeof applicationsStatusesData === 'object') {
+          const applications = applicationsStatusesData.applications || [];
+          const manualApplications = applicationsStatusesData.manualApplications || [];
+          
+          // Her manual application için type field'ı ekle ayırt edebilmek için
+          const processedManualApplications = manualApplications.map(app => ({
+            ...app,
+            type: 'manual'
+          }));
+          
+          // Her normal application için type field'ı ekle
+          const processedApplications = applications.map(app => ({
+            ...app,
+            type: 'normal'
+          }));
+          
+          // İki diziyi birleştir
+          const combinedApplications = [...processedApplications, ...processedManualApplications];
+          setApplicationsStatuses(combinedApplications);
+        }
+        // Fallback - boş array
+        else {
+          setApplicationsStatuses([]);
+        }
       })
       .finally(() => {
         setLoading(false);

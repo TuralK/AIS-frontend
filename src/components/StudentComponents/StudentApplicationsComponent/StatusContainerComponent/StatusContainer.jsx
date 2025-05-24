@@ -2,7 +2,7 @@ import React from 'react';
 import StatusContainerCSS from './StatusContainer.module.css';
 import DefaultCompanyIcon from "../../../../assets/default_profile_icon.png";
 import { Link } from 'react-router-dom';
-import { Link2 } from 'lucide-react';
+import { Link2, Building2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 const baseUrl = 'http://localhost:3005';
@@ -17,6 +17,42 @@ const StatusContainer = ({ applicationsStatuses }) => {
     return [StatusContainerCSS.evaluation, StatusContainerCSS.accepted, StatusContainerCSS.rejected][status >= 3 ? status - 2 : 0];
   };
 
+  // Manual application olup olmadığını kontrol et
+  const isManualApplication = (application) => {
+    return application.type === 'manual' || !application.Announcement;
+  };
+
+  // Company bilgilerini güvenli bir şekilde al
+  const getCompanyInfo = (application) => {
+    if (isManualApplication(application)) {
+      return {
+        name: application.companyName || 'Unknown Company',
+        logo: null,
+        id: null
+      };
+    }
+    
+    const company = application.Announcement?.Company;
+    return {
+      name: company?.CompanyProfile?.companyName || company?.name || 'Unknown Company',
+      logo: company?.CompanyProfile?.companyLogo ? `${baseUrl}/${company.CompanyProfile.companyLogo}` : null,
+      id: company?.id || null
+    };
+  };
+
+  // Announcement name'i güvenli bir şekilde al
+  const getAnnouncementName = (application) => {
+    if (isManualApplication(application)) {
+      return application.companyName ? `${application.companyName} - Manual Application` : 'Manual Application';
+    }
+    return application.Announcement?.announcementName || 'Unknown Announcement';
+  };
+
+  // Announcement ID'yi güvenli bir şekilde al
+  const getAnnouncementId = (application) => {
+    return application.announcementId || application.Announcement?.id || null;
+  };
+
   return (
     <div className={StatusContainerCSS.container}>
       {/* Desktop Table Header */}
@@ -29,9 +65,10 @@ const StatusContainer = ({ applicationsStatuses }) => {
       </div>
 
       {applicationsStatuses.map((applicationStatus, index) => {
-        const logoPath = applicationStatus.Announcement.Company.CompanyProfile.companyLogo;
-        const companyLogo = logoPath ? `${baseUrl}/${logoPath}` : DefaultCompanyIcon;
-        const companyId = applicationStatus.Announcement.Company.id;
+        const companyInfo = getCompanyInfo(applicationStatus);
+        const announcementName = getAnnouncementName(applicationStatus);
+        const announcementId = getAnnouncementId(applicationStatus);
+        const isManual = isManualApplication(applicationStatus);
 
         return (
           <div className={StatusContainerCSS.statusValueContainer} key={index}>
@@ -40,9 +77,21 @@ const StatusContainer = ({ applicationsStatuses }) => {
               className={`${StatusContainerCSS.value} ${StatusContainerCSS.smallBox}`}
               data-label={t('company')}
             >
-              <Link to={`/student/company-profile/${companyId}`}>
-                <img src={companyLogo} alt="Company Logo" />
-              </Link>
+              {companyInfo.id && !isManual ? (
+                <Link to={`/student/company-profile/${companyInfo.id}`}>
+                  <img src={companyInfo.logo || DefaultCompanyIcon} alt="Company Logo" />
+                </Link>
+              ) : (
+                <div className={StatusContainerCSS.manualCompanyIcon}>
+                  {companyInfo.logo ? (
+                    <img src={companyInfo.logo} alt="Company Logo" />
+                  ) : (
+                    <div className={StatusContainerCSS.defaultCompanyCircle}>
+                      <Building2 size={24} />
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* Announcement Name */}
@@ -50,7 +99,7 @@ const StatusContainer = ({ applicationsStatuses }) => {
               className={`${StatusContainerCSS.value} ${StatusContainerCSS.mediumBox}`}
               data-label={t('announcement_name')}
             >
-              {applicationStatus.Announcement.announcementName}
+              {announcementName}
             </div>
 
             {/* Status */}
@@ -84,17 +133,21 @@ const StatusContainer = ({ applicationsStatuses }) => {
               className={`${StatusContainerCSS.value} ${StatusContainerCSS.smallBox}`}
               data-label={t('details')}
             >
-              <Link 
-                to={`/student/announcements/${applicationStatus.announcementId}`} 
-                title={applicationStatus.Announcement.announcementName} 
-                className={StatusContainerCSS.action}
-              >
-                <Link2 size={20}/>
-              </Link>
+              {announcementId && !isManual ? (
+                <Link 
+                  to={`/student/announcements/${announcementId}`} 
+                  title={announcementName} 
+                  className={StatusContainerCSS.action}
+                >
+                  <Link2 size={20}/>
+                </Link>
+              ) : (
+                <></>
+              )}
             </div>
           </div>
-        )}
-      )}
+        );
+      })}
     </div>
   );
 };
