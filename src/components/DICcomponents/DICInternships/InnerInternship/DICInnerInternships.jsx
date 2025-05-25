@@ -1,249 +1,518 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useMatches } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter
-} from '../../../ui/card';
-import { Button } from '../../../ui/button';
-import { Input } from '../../../ui/input';
-import { Textarea } from '../../../ui/text_area';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../../../ui/dialog';
-import { toast } from '../../../ui/use-toast';
-import { Skeleton } from '../../../ui/skeleton';
-import { Download, Upload, Send, X } from 'lucide-react';
-import { updateApplicationDetail, downloadFile } from '../../../../api/DICApi/applicationDetails';
-import { fetchInternshipDetails } from '../../../../api/DICApi/internshipDetailApi';
+"use client"
+
+import React, { useEffect, useState } from "react"
+import { useParams, useNavigate, useSearchParams } from "react-router-dom"
+import { useMatches } from "react-router-dom"
+import { useTranslation } from "react-i18next"
+import { motion } from "framer-motion"
+import { Button } from "../../../ui/button"
+import { Card, CardContent, CardFooter, CardHeader } from "../../../ui/card"
+import { Textarea } from "../../../ui/text_area"
+import { toast } from "../../../ui/use-toast"
+import { Skeleton } from "../../../ui/skeleton"
+import { FileText, Building, User, X, AlertCircle, Link, CheckCircle } from "lucide-react"
+import { updateApplicationDetail } from "../../../../api/DICApi/applicationDetails"
+import { fetchInternshipDetails } from "../../../../api/DICApi/internshipDetailApi"
+import adminAPI from "../../../../services/adminAPI"
+import DocumentPreview from "./DocumentPreview" 
+import { downloadDocument } from "../../../../api/DICApi/internshipDetailApi" 
 
 const DICInnerInternships = () => {
-  const matches = useMatches();
-  const { t } = useTranslation();
-  const currentMatch = matches[matches.length - 1];
-  const titleKey = currentMatch?.handle?.titleKey;
+  const matches = useMatches()
+  const { t } = useTranslation()
+  const currentMatch = matches[matches.length - 1]
+  const titleKey = currentMatch?.handle?.titleKey
+  const [searchParams] = useSearchParams()
 
   React.useEffect(() => {
-    const baseTitle = 'IMS';
-    document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
-  }, [titleKey, t]); 
+    const baseTitle = "IMS"
+    document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle
+  }, [titleKey, t])
 
-  const { id } = useParams();
-  const [application, setApplication] = useState(null);
-  const [feedback, setFeedback] = useState('');
-  const [file, setFile] = useState(null);
-  const [fileName, setFileName] = useState('');
-  const navigate = useNavigate();
-  const [isFeedbackModalOpen, setFeedbackModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { id } = useParams()
+  const [application, setApplication] = useState(null)
+  const [linkRequests, setLinkRequests] = useState(null)
+  const [studentFeedbackVisible, setStudentFeedbackVisible] = useState(false)
+  const [companyFeedbackVisible, setCompanyFeedbackVisible] = useState(false)
+  const [studentFeedback, setStudentFeedback] = useState("")
+  const [companyFeedback, setCompanyFeedback] = useState("")
+  const [grade, setGrade] = useState("S")
+  const [documents, setDocuments] = useState([])
+  const [applicationId, setApplicationId] = useState()
+  const navigate = useNavigate()
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [latestStudentFeedbacks, setLatestStudentFeedbacks] = useState([])
+  const [latestCompanyFeedbacks, setLatestCompanyFeedbacks] = useState([])
+
+  const isManualApplication = searchParams.get("manual") === "true"
+
+  // Get document data from the documents array
+  const getDocumentById = (fileType) => {
+    if (!documents || documents.length === 0) return { isAvailable: false, id: null }
+    
+    const document = documents.find(doc => doc.fileType === fileType)
+    return {
+      isAvailable: !!document,
+      id: document?.id || null
+    }
+  }
+
+  const studentReportData = getDocumentById('Report')
+  const evaluationFormData = getDocumentById('Survey')  
+  const companyFormData = getDocumentById('CompanyForm')
+
+  // Helper function to get the latest feedback with highest cycleId
+  const getLatestFeedback = (feedbackArray) => {
+    if (!feedbackArray || feedbackArray.length === 0) return null
+    
+    return feedbackArray.reduce((latest, current) => {
+      return (current.cycleId > latest.cycleId) ? current : latest
+    }, feedbackArray[0])
+  }
+
+  const latestStudentFeedback = getLatestFeedback(latestStudentFeedbacks)
+  const latestCompanyFeedback = getLatestFeedback(latestCompanyFeedbacks)
+  
 
   useEffect(() => {
     const loadApplicationDetails = async () => {
       try {
-        setIsLoading(true);
-        const res = await fetchInternshipDetails(id);
-        setApplication(res.application);
+        setIsLoading(true)
+
+        const res = await fetchInternshipDetails(id)
+        console.log("Fetched application details:", res)
+        
+        setDocuments(res.documents)
+
+        let applicationData = null
+        if (res.internship.application) {
+          applicationData = res.internship.application
+          setApplicationId(res.internship.applicationId)
+        } else if (res.id) {
+          applicationData = res.internship
+          setApplicationId(applicationData.manualApplicationId)
+        } else {
+          applicationData = res.internship
+          setApplicationId(applicationData.manualApplicationId)
+        }
+
+        setApplication(applicationData)
+
+        if (res.latestStudentFeedbacks) {
+          setLatestStudentFeedbacks(res.latestStudentFeedbacks)
+        }
+        if (res.latestCompanyFeedbacks) {
+          setLatestCompanyFeedbacks(res.latestCompanyFeedbacks)
+        }
+
       } catch (error) {
+        console.error("Error in loadApplicationDetails:", error)
         toast({
-          title: t('error'),
-          description: t('failedToFetchDetails'),
-          variant: 'destructive',
-        });
+          title: t("error"),
+          description: t("failedToFetchDetails"),
+          variant: "destructive",
+        })
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
+    }
 
-    loadApplicationDetails();
-  }, [id]);
+    loadApplicationDetails()
+  }, [id, isManualApplication])
 
-  const handleFileChange = (event) => {
-    const selectedFile = event.target.files[0];
-    if (selectedFile) {
-      const extension = selectedFile.name.split('.').pop().toLowerCase();
-      if (extension !== 'pdf' && extension !== 'docx') {
+  const toggleStudentFeedback = () => {
+    setStudentFeedbackVisible(!studentFeedbackVisible)
+  }
+
+  const toggleCompanyFeedback = () => {
+    setCompanyFeedbackVisible(!companyFeedbackVisible)
+  }
+
+  const handleStudentFeedbackSubmit = () => {
+    alert(`Student feedback submitted: ${studentFeedback}`)
+    setStudentFeedbackVisible(false)
+    setStudentFeedback("")
+  }
+
+  const handleCompanyFeedbackSubmit = () => {
+    alert(`Company feedback submitted: ${companyFeedback}`)
+    setCompanyFeedbackVisible(false)
+    setCompanyFeedback("")
+  }
+
+  const handleDocumentDownload = async (documentType) => {
+    try {
+      let documentData = null
+      let fileName = null
+      switch(documentType) {
+        case 'studentReport':
+          fileName = 'Report';
+          documentData = studentReportData
+          break
+        case 'evaluationForm':
+          fileName = 'Survey';
+          documentData = evaluationFormData
+          break
+        case 'companyForm':
+          fileName = 'CompanyForm';
+          documentData = companyFormData
+          break
+        default:
+          documentData = { isAvailable: false }
+      }
+
+      if (!documentData.isAvailable || !documentData.id) {
         toast({
-          title: t('invalidFile'),
-          description: t('pleaseUploadPdfOrDocx'),
-          variant: 'destructive',
-        });
-        setFile(null);
-        setFileName('');
-      } else {
-        setFile(selectedFile);
-        setFileName(selectedFile.name);
+          title: t("error"),
+          description: t("documentNotAvailable"),
+          variant: "destructive",
+        })
+        return
       }
-    }
-  };
 
-  const handleUploadClick = () => {
-    document.getElementById('studentFileInput').click();
-  };
-
-  const updateApplication = async (isApproved) => {
-    if ((isApproved && !file) || (!isApproved && !feedback)) {
+      const applicationype = isManualApplication ? "Manual" : "Application"
+      console.log(`ID: ${applicationId}, Type: ${applicationype}, FileName: ${fileName}`)
+      await downloadDocument(applicationId, applicationype, fileName)
+      
       toast({
-        title: t('error'),
-        description: isApproved ? t('pleaseUploadFile') : t('pleaseLeaveFeedback'),
-        variant: 'destructive',
-      });
-      return;
+        title: t("success"),
+        description: t("documentDownloaded"),
+      })
+    } catch (error) {
+      console.error("Download error:", error)
+      toast({
+        title: t("error"),
+        description: t("downloadFailed"),
+        variant: "destructive",
+      })
     }
+  }
 
-    setIsSubmitting(true);
-    const formData = new FormData();
-    formData.append('isApproved', isApproved);
-    formData.append('feedback', feedback);
-    if (file) {
-      formData.append('studentFile', file);
-    }
-
+  const handleApprove = async () => {
+    setIsSubmitting(true)
     try {
-      const response = await updateApplicationDetail(formData);
+      const formData = new FormData()
+      formData.append("isApproved", true)
+      formData.append("grade", grade)
+      formData.append("isManual", isManualApplication)
+
+      const response = await updateApplicationDetail(formData)
       toast({
-        title: t('success'),
+        title: t("success"),
         description: response.data.message,
-      });
-      navigate('/admin/applicationRequests');
+      })
+      navigate("/admin/internships")
     } catch (error) {
       toast({
-        title: t('error'),
-        description: t('failedToUpdateApplication'),
-        variant: 'destructive',
-      });
+        title: t("error"),
+        description: t("failedToUpdateApplication"),
+        variant: "destructive",
+      })
     } finally {
-      setIsSubmitting(false);
-      setFeedbackModalOpen(false);
+      setIsSubmitting(false)
     }
-  };
-
-  const downloadButton = async () => {
-    try {
-      const response = await downloadFile(application.id);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  }
 
   if (isLoading) {
     return (
-      <Card className="w-full max-w-4xl mx-auto mt-5 p-4">
-        <CardHeader>
+      <div className="bg-white rounded-lg shadow-sm border max-w-7xl mx-auto">
+        <div className="p-6">
           <Skeleton className="h-8 w-3/4 mb-2" />
-          <Skeleton className="h-4 w-1/2" />
-        </CardHeader >
-        <CardContent className="space-y-6">
-          {[1, 2, 3, 4].map((i) => (
-            <Skeleton key={i} className="h-12 w-full mb-4" />
-          ))}
-        </CardContent>
-      </Card>
-    );
+          <Skeleton className="h-4 w-1/2 mb-6" />
+          <div className="grid lg:grid-cols-2 gap-8">
+            {[1, 2].map((i) => (
+              <Skeleton key={i} className="h-96 w-full" />
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!application) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border max-w-7xl mx-auto p-8">
+        <div className="text-center">
+          <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-gray-700 mb-2">{t("applicationNotFound")}</h2>
+          <p className="text-gray-500">{t("applicationNotFoundDescription")}</p>
+          <Button onClick={() => navigate(-1)} className="mt-4">
+            {t("goBack")}
+          </Button>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 50 }}
-    >
-      <Card className="w-full max-w-4xl mx-auto p-4 mt-5">
-        <CardHeader>
-          <CardTitle>{t('applicationDetailTitle')}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-4 ">
-            <div>
-              <h3 className="text-lg font-semibold mb-2">{t('studentInfo')}</h3>
-              <p><strong>{t('studentName')}:</strong> {application.Student.username}</p>
-              <p><strong>{t('id')}:</strong> {application.Student.id}</p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold mb-2">{t('companyInfo')}</h3>
-              <p><strong>{t('company')}:</strong> {application.Announcement.Company.name}</p>
-              <p><strong>{t('description')}:</strong> {application.Announcement.description || 'N/A'}</p>
-            </div>
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold mb-2">{t('internshipPeriod')}</h3>
-            <p><strong>{t('startDate')}:</strong> {new Date(application.Announcement.startDate).toLocaleDateString()}</p>
-            <p><strong>{t('endDate')}:</strong> {new Date(application.Announcement.endDate).toLocaleDateString()}</p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-4 justify-between">
-            <Button
-              onClick={() => downloadButton()}
-              className="flex-1 w-full hover:border-blue-500 hover:bg-blue-300 transition-colors duration-200"
-              variant="outline"
-            >
-              <Download className="mr-2 h-4 w-4" />
-              {t('downloadForm')}
-            </Button>
-            <div className="relative flex-1 ml-4 mr-5">
-              <Button
-                onClick={handleUploadClick}
-                className="w-full hover:border-green-500 hover:bg-green-300 transition-colors duration-200"
-                variant="outline"
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+      <div className="bg-white rounded-lg shadow-lg border max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-gray-50 to-gray-100 text-gray-800 p-6 flex justify-center items-center rounded-t-lg border-b-2 border-gray-200">
+          <h3 className="text-2xl font-bold flex items-center gap-3">
+            <FileText className="h-6 w-6 text-blue-600" />
+            {t("internshipOverview")}
+            {isManualApplication && (
+              <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm ml-3 font-medium">
+                {t("manual")}
+              </span>
+            )}
+          </h3>
+        </div>
+
+        {/* Main Content */}
+        <div className="grid lg:grid-cols-2 gap-8 p-6">
+          {/* Student Section */}
+          <Card className="border-2 border-blue-100 shadow-lg">
+            <CardHeader className="bg-blue-50 border-b-2 border-blue-100">
+              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                <div className="flex flex-col items-center">
+                  {application.Student?.logoUrl ? (
+                    <div className="w-20 h-20 rounded-lg border-2 border-blue-200 flex items-center justify-center bg-white shadow-sm">
+                      <img
+                        src={application.Student.logoUrl}
+                        alt="Student Logo"
+                        className="max-w-full max-h-full p-2"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-20 h-20 border-2 border-blue-200 rounded-full bg-blue-100 flex items-center justify-center shadow-sm">
+                      <span className="text-blue-800 font-bold text-xl">
+                        {application.Student?.username?.charAt(0) || "S"}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-xl font-bold flex items-center gap-2 text-blue-800 mb-2">
+                    <User className="h-5 w-5" />
+                    {application.Student?.username || t("unknownStudent")}
+                  </h2>
+                  <p className="text-sm text-gray-600 mb-1">{application.Student?.email || t("notAvailable")}</p>
+                  <p className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded inline-block">
+                    {t("id")}: {application.Student?.id || application.studentId}
+                  </p>
+                </div>
+              </div>
+            </CardHeader>
+
+            <CardContent className="p-6">
+              {/* Documents Stack */}
+              <div className="space-y-4 mb-6">
+                <DocumentPreview
+                  title={t("studentReport")}
+                  documentType="studentReport"
+                  documentId={studentReportData.id}
+                  onDownload={handleDocumentDownload}
+                  isAvailable={studentReportData.isAvailable}
+                />
+
+                <DocumentPreview
+                  title={t("evaluationForm")}
+                  documentType="evaluationForm"
+                  documentId={evaluationFormData.id}
+                  onDownload={handleDocumentDownload}
+                  isAvailable={evaluationFormData.isAvailable}
+                />
+              </div>
+
+              {studentFeedbackVisible && (
+                <div className="mt-6 space-y-3">
+                  {/* Display Latest Student Feedback if available */}
+                  {latestStudentFeedback && (
+                    <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                      <div className="flex items-center justify-between mb-2">
+                        <h5 className="text-sm font-bold text-blue-800">
+                          {t("previousFeedback")} (Cycle ID: {latestStudentFeedback.cycleId})
+                        </h5>
+                        <span className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded">
+                          {new Date(latestStudentFeedback.createdAt || latestStudentFeedback.date).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <p className="text-sm text-blue-700 bg-blue-100 p-3 rounded border italic">
+                        "{latestStudentFeedback.feedback || latestStudentFeedback.message || latestStudentFeedback.content}"
+                      </p>
+                    </div>
+                  )}
+                  
+                  {/* New Feedback Input */}
+                  <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+                    <label className="text-sm font-medium text-red-800 block mb-2">{t("newRejectionFeedback")}</label>
+                    <Textarea
+                      placeholder={t("enterStudentFeedback")}
+                      className="min-h-[100px] border-red-300 focus:border-red-500"
+                      value={studentFeedback}
+                      onChange={(e) => setStudentFeedback(e.target.value)}
+                    />
+                  </div>
+                </div>
+              )}
+            </CardContent>
+
+            <CardFooter className="flex justify-end p-6 pt-4 bg-gray-50 border-t mt-4">
+              {!studentFeedbackVisible ? (
+                <Button
+                  variant="outline"
+                  className="border-red-300 text-red-700 hover:bg-red-50 hover:border-red-400 font-medium"
+                  onClick={toggleStudentFeedback}
+                >
+                  <X className="h-4 w-4 mr-2" /> {t("reject")}
+                </Button>
+              ) : (
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    className="border-gray-300 text-gray-600 hover:bg-gray-50"
+                    onClick={toggleStudentFeedback}
+                  >
+                    {t("cancel")}
+                  </Button>
+                  <Button
+                    className="bg-red-600 hover:bg-red-700 text-white"
+                    onClick={handleStudentFeedbackSubmit}
+                  >
+                    {t("sendFeedback")}
+                  </Button>
+                </div>
+              )}
+            </CardFooter>
+          </Card>
+
+          {/* Company Section */}
+          <Card className="border-2 border-green-100 shadow-lg">
+            <CardHeader className="bg-green-50 border-b-2 border-green-100">
+              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                <div className="flex-1">
+                  <h2 className="text-xl font-bold flex items-center gap-2 text-green-800 mb-2">
+                    <Building className="h-5 w-5" />
+                    {isManualApplication || !application.Application
+                      ? t("manualApplication")
+                      : application.Application?.Announcement?.Company?.name || t("unknownCompany")}
+                  </h2>
+                  {!isManualApplication && application.Application?.Announcement && (
+                    <p className="text-sm text-gray-600 mb-2">
+                      {application.Application.Announcement.description || t("noDescription")}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </CardHeader>
+
+            <CardContent className="p-6">
+              
+
+              {/* Company Form */}
+              <div className="mb-6 mt-4">
+                <DocumentPreview
+                  title={t("companyForm")}
+                  documentType="companyForm"
+                  documentId={companyFormData.id}
+                  onDownload={handleDocumentDownload}
+                  isAvailable={companyFormData.isAvailable}
+                />
+              </div>
+
+              {companyFeedbackVisible && (
+                <div className="mt-6 space-y-3">
+                  {/* Display Latest Company Feedback if available */}
+                  {latestCompanyFeedback && (
+                    <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                      <div className="flex items-center justify-between mb-2">
+                        <h5 className="text-sm font-bold text-green-800">
+                          {t("previousFeedback")} (Cycle ID: {latestCompanyFeedback.cycleId})
+                        </h5>
+                        <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">
+                          {new Date(latestCompanyFeedback.createdAt || latestCompanyFeedback.date).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <p className="text-sm text-green-700 bg-green-100 p-3 rounded border italic">
+                        "{latestCompanyFeedback.feedback || latestCompanyFeedback.message || latestCompanyFeedback.content}"
+                      </p>
+                    </div>
+                  )}
+                  
+                  {/* New Feedback Input */}
+                  <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+                    <label className="text-sm font-medium text-red-800 block mb-2">{t("newRejectionFeedback")}</label>
+                    <Textarea
+                      placeholder={t("enterCompanyFeedback")}
+                      className="min-h-[100px] border-red-300 focus:border-red-500"
+                      value={companyFeedback}
+                      onChange={(e) => setCompanyFeedback(e.target.value)}
+                    />
+                  </div>
+                </div>
+              )}
+            </CardContent>
+
+            <CardFooter className="flex justify-end p-6 pt-4 bg-gray-50 border-t mt-4">
+              {!companyFeedbackVisible ? (
+                <Button
+                  variant="outline"
+                  className="border-red-300 text-red-700 hover:bg-red-50 hover:border-red-400 font-medium"
+                  onClick={toggleCompanyFeedback}
+                >
+                  <X className="h-4 w-4 mr-2" /> {t("reject")}
+                </Button>
+              ) : (
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    className="border-gray-300 text-gray-600 hover:bg-gray-50"
+                    onClick={toggleCompanyFeedback}
+                  >
+                    {t("cancel")}
+                  </Button>
+                  <Button
+                    className="bg-red-600 hover:bg-red-700 text-white"
+                    onClick={handleCompanyFeedbackSubmit}
+                  >
+                    {t("sendFeedback")}
+                  </Button>
+                </div>
+              )}
+            </CardFooter>
+          </Card>
+        </div>
+
+        {/* Footer */}
+        <div className="border-t-2 border-gray-200 p-6 bg-gradient-to-r from-gray-50 to-gray-100 rounded-b-lg">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
+            <div className="flex items-center gap-4 bg-white p-3 rounded-lg border shadow-sm">
+              <span className="text-sm font-bold text-gray-700">{t("grade")}:</span>
+              <select
+                value={grade}
+                onChange={(e) => setGrade(e.target.value)}
+                className="w-24 px-4 py-2 border-2 border-gray-300 rounded-md bg-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
               >
-                <Upload className="mr-2 h-4 w-4" />
-                {fileName || t('uploadForm')}
-              </Button>
-              <Input
-                type="file"
-                id="studentFileInput"
-                className="hidden"
-                accept=".pdf,.docx"
-                onChange={handleFileChange}
-              />
+                <option value="S">S</option>
+                <option value="F">F</option>
+                <option value="W">W</option>
+              </select>
             </div>
+            <Button
+              onClick={handleApprove}
+              disabled={isSubmitting}
+              className="w-full sm:w-auto bg-green-700 hover:bg-green-800 text-white font-bold px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all"
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  {t("processing")}
+                </>
+              ) : (
+                <>
+                  <CheckCircle className="h-5 w-5 mr-2" />
+                  {t("approve")}
+                </>
+              )}
+            </Button>
           </div>
-        </CardContent>
-        <CardFooter className="flex justify-between gap-4">
-          <Button
-            onClick={() => updateApplication(true)}
-            disabled={isSubmitting}
-            className="flex-1 bg-[#990000] hover:bg-[#500000] hover:text-white"
-          >
-            <Send className="mr-2 h-4 w-4" />
-            {t('sendSecretary')}
-          </Button>
-          <Button
-            onClick={() => setFeedbackModalOpen(true)}
-            variant="outline"
-            disabled={isSubmitting}
-            className="flex-1 bg-gray-300 hover:bg-gray-500 hover:text-white"
-          >
-            <X className="mr-2 h-4 w-4" />
-            {t('reject')}
-          </Button>
-        </CardFooter>
-      </Card>
-
-      <Dialog open={isFeedbackModalOpen} onOpenChange={setFeedbackModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('provideFeedback')}</DialogTitle>
-          </DialogHeader>
-          <Textarea
-            value={feedback}
-            onChange={(e) => setFeedback(e.target.value)}
-            className="min-h-[100px]"
-          />
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setFeedbackModalOpen(false)}>
-              {t('cancel')}
-            </Button>
-            <Button onClick={() => updateApplication(false)} disabled={isSubmitting}>
-              {t('submit')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        </div>
+      </div>
     </motion.div>
-  );
-};
+  )
+}
 
-export default DICInnerInternships;
+export default DICInnerInternships

@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { requestLink } from "../../../../api/StudentApi/internshipApi";
 import { Tooltip } from "@mui/material";
 import { studentAPI } from "../../../../services";
-import downloadTemplateFile from "../../../../api/downloadApi";
+import downloadTemplateFile from "../../../../api/downloadTemplateFilesApi";
 
 const SubmissionForm = ({ status, manualApplicationId, onRequestLink, studentStatus, companyStatus }) => {
   const [fileSPR, setFileSPR] = useState(null);
