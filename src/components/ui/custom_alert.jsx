@@ -11,28 +11,33 @@ import {
 } from "./alert_dialog";
 import Logo from '../../assets/iyte_logo_eng.png';
 
-const CustomAlertDialog = ({ 
-  isOpen, 
-  onClose, 
-  title, 
-  description, 
-  onConfirm, 
-  confirmLabel , 
-  // cancelLabel  
+const CustomAlertDialog = ({
+  isOpen,
+  onClose,
+  title,
+  description,
+  onConfirm,
+  confirmLabel,
+  cancelLabel,
+  showCancel = false,   // yeni prop: default olarak false
 }) => {
   return (
     <AlertDialog open={isOpen} onOpenChange={onClose}>
       <AlertDialogContent>
-        <AlertDialogHeader>
+        <AlertDialogHeader className="flex items-center justify-between">
           <AlertDialogTitle>{title}</AlertDialogTitle>
-          <img src= {Logo} alt="logo" />
+          <img src={Logo} alt="logo" className="h-8 w-auto" />
         </AlertDialogHeader>
-        <AlertDialogDescription>{description}</AlertDialogDescription>
-        <AlertDialogFooter>
-          {/* <AlertDialogCancel onClick={onClose}>
-            {cancelLabel}
-          </AlertDialogCancel> */}
-          <AlertDialogAction onClick={onConfirm} className="w-1/2">
+        <AlertDialogDescription className="mt-2">
+          {description}
+        </AlertDialogDescription>
+        <AlertDialogFooter className="mt-4 flex justify-end space-x-2">
+          {showCancel && (
+            <AlertDialogCancel onClick={onClose} className="px-4 py-2 bg-gray-200 rounded">
+              {cancelLabel}
+            </AlertDialogCancel>
+          )}
+          <AlertDialogAction onClick={onConfirm} className="px-4 py-2 bg-blue-600 text-white rounded">
             {confirmLabel}
           </AlertDialogAction>
         </AlertDialogFooter>

@@ -131,7 +131,7 @@
   "accepted": "Accepted",
   "internshipTitle": "Continuing Internships",
   "noApplication": "There are no application requests",
-  "noInternships": "There is no continuing internships",
+  "noInternships": "There is no finished internship",
   "failedToFetchDetails": "Failed to fetch details",
   "ok": "Okay",
   "error": "Error",
@@ -351,6 +351,7 @@
   "ready": "Ready",
   "newRejectionFeedback": "Feedback",
   "previousFeedback": "Previous Feedback",
-  "feedbackMayNotBeSeen": "Feedback may not be seen by the Company Supervisor"
-  
+  "feedbackMayNotBeSeen": "Feedback may not be seen by the parties involved.",
+  "okContinue": "OK, Continue",
+  "noInternshipsDescription": "Could not find an internship finished."
 }

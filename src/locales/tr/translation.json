@@ -123,7 +123,7 @@
   "accepted": "Kabul Edildi",
   "internshipTitle": "Devam eden stajlar",
   "noApplication": "Staj başvurusu bulunamadı",
-  "noInternships": "Devam eden staj bulunamadı",
+  "noInternships": "Biten staj bulunamadı",
   "failedToFetchDetails": "Detaylar görüntülenemedi",
   "ok": "Tamam",
   "error": "Hata",
@@ -343,6 +343,7 @@
   "ready": "Hazır",
   "newRejectionFeedback": "Geri bildirim",
   "previousFeedback": "Önceki geri bildirim",
-  "feedbackMayNotBeSeen": "Geri bildirim, şirket tarafından görülememiş olabilir"
-
+  "feedbackMayNotBeSeen": "Geri bildirim, taraflar tarafından görülememiş olabilir",
+  "okContinue": "Tamam, devam et",
+  "noInternshipsDescription": "Henüz stajı biten öğrenci bulunamadı."
 }

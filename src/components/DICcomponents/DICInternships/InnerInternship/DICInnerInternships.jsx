@@ -75,7 +75,6 @@ const DICInnerInternships = () => {
       try {
         setIsLoading(true)
         const res = await fetchInternshipDetails(id)
-        console.log("Fetched application details:", res)
 
         setInternshipData(res.internship)
         setDocuments(res.documents)
@@ -584,13 +583,15 @@ const DICInnerInternships = () => {
       </motion.div>
 
       <CustomAlertDialog
-        isOpen={confirmOpen}
-        onClose={() => setConfirmOpen(false)}
-        title={t("warning")}
-        description={t("feedbackMayNotBeSeen")}
-        onConfirm={onConfirm}
-        confirmLabel={t("ok")}
-      />
+      isOpen={confirmOpen}
+      onClose={() => setConfirmOpen(false)}
+      title={t("Warning")}                   
+      description={t("feedbackMayNotBeSeen")}   
+      onConfirm={onConfirm}
+      confirmLabel={t("okContinue")}               
+      cancelLabel={t("cancel")}                  
+      showCancel={true}                         
+    />
     </>
   )
 }
