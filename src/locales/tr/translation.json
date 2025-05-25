@@ -341,5 +341,8 @@
   "linkRequestsRequestDate": "Talep Tarihi",
   "linkRequestsCardTitle": "Link talebi",
   "ready": "Hazır",
-  "newRejectionFeedback": "Geri bildirim"
+  "newRejectionFeedback": "Geri bildirim",
+  "previousFeedback": "Önceki geri bildirim",
+  "feedbackMayNotBeSeen": "Geri bildirim, şirket tarafından görülememiş olabilir"
+
 }

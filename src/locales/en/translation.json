@@ -349,6 +349,8 @@
   "linkRequestsRequestDate": "Request Date",
   "linkRequestsCardTitle": "Link Request from",
   "ready": "Ready",
-  "newRejectionFeedback": "Feedback"
+  "newRejectionFeedback": "Feedback",
+  "previousFeedback": "Previous Feedback",
+  "feedbackMayNotBeSeen": "Feedback may not be seen by the Company Supervisor"
   
 }
