@@ -35,6 +35,7 @@ import CompanyProfile from "./components/CompanyComponents/CompanyProfileCompone
 import CompanyInternships from "./components/CompanyComponents/CompanyInternships/CompanyInternships.jsx";
 import CompanyInternship from "./components/CompanyComponents/CompanyInternship/CompanyInternship.jsx";
 import StudentSettings from "./components/StudentComponents/StudentSettings/StudentSettings.jsx";
+import DICLinkRequests from "./components/DICcomponents/DICLinkRequests/DICLinkRequests.jsx";
 
 const initialVh = window.innerHeight;
 document.documentElement.style.setProperty('--initial-vh', `${initialVh}px`);
@@ -103,7 +104,8 @@ const App = () => {
         { path: 'application/:id', element: <DICInnerApplication />, handle: { titleKey: 'application' } },
         { path: 'manualApplication/:id', element: <DICInnerApplication />, handle: { titleKey: 'manualApplication' } },
         { path: 'internships', element: <DICInternships />, handle: { titleKey: 'internships' } },
-        { path: 'internship/:id', element: <DICInnerInternships />, handle: { titleKey: 'internship' } }
+        { path: 'internship/:id', element: <DICInnerInternships />, handle: { titleKey: 'internship' } },
+        { path: 'linkRequests', element: <DICLinkRequests />, handle: { titleKey: 'linkRequests' } }
       ]
     },    
     {

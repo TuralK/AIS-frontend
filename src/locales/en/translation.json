@@ -330,5 +330,23 @@
   "failedToLoadPdf": "Failed to load PDF document",
   "retry": "Retry",
   "clickViewToSeeActualPdf": "Click 'View PDF' to see actual document",
-  "notGraded": "-"
+  "notGraded": "-",
+  "linkRequests": "Link Requests",
+  "linkRequestsTitle": "Link Requests",
+  "linkRequestsRefresh": "Refresh",
+  "linkRequestsApprove": "Approve",
+  "linkRequestsReject": "Reject",
+  "linkRequestsLoading": "Loading requests...",
+  "linkRequestsError": "Failed to load requests.",
+  "linkRequestsEmptyTitle": "No Link Requests",
+  "linkRequestsEmptyDescription": "There are currently no pending link requests.",
+  "linkRequestsApproveSuccess": "Link request approved successfully.",
+  "linkRequestsRejectSuccess": "Link request rejected.",
+  "linkRequestsErrorGeneric": "An error occurred while processing the request.",
+  "linkRequestsStatusPending": "Pending",
+  "linkRequestsStatusApproved": "Approved",
+  "linkRequestsStatusRejected": "Rejected",
+  "linkRequestsRequestDate": "Request Date",
+  "linkRequestsCardTitle": "Link Request from"
+  
 }

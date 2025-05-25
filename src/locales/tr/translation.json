@@ -322,5 +322,23 @@
   "failedToLoadPdf": "PDF belgesi yüklenemedi",
   "retry": "Tekrar Dene",
   "clickViewToSeeActualPdf": "Gerçek belgeyi görmek için 'PDF Görüntüle' butonuna tıklayın",
-  "notGraded": "-"
+  "notGraded": "-",
+  "linkRequests": "Link İstekleri",
+  "linkRequestsTitle": "Link İstekleri",
+  "linkRequestsRefresh": "Yenile",
+  "linkRequestsApprove": "Onayla",
+  "linkRequestsReject": "Reddet",
+  "linkRequestsLoading": "İstekler yükleniyor...",
+  "linkRequestsError": "İstekler yüklenirken bir hata oluştu.",
+  "linkRequestsEmptyTitle": "Bağlantı İsteği Yok",
+  "linkRequestsEmptyDescription": "Şu anda bekleyen bağlantı isteği bulunmamaktadır.",
+  "linkRequestsApproveSuccess": "Bağlantı isteği başarıyla onaylandı.",
+  "linkRequestsRejectSuccess": "Bağlantı isteği reddedildi.",
+  "linkRequestsErrorGeneric": "İstek işlenirken bir hata oluştu.",
+  "linkRequestsStatusPending": "Beklemede",
+  "linkRequestsStatusApproved": "Onaylandı",
+  "linkRequestsStatusRejected": "Reddedildi",
+  "linkRequestsRequestDate": "Talep Tarihi",
+  "linkRequestsCardTitle": "Link talebi"
+  
 }

@@ -13,6 +13,7 @@ const DICLayout = () => {
             { item: t('announcements'), route: 'announcementRequests' },
             { item: t('applications'), route: 'applicationRequests' },
             { item: t('internship'), route: 'internships' },
+            { item: t('linkRequests'), route: 'linkRequests' },
             ]}
             userMenuItems = {[
             { item: t('settings'), route: 'settings' },
