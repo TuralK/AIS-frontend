@@ -86,5 +86,10 @@ const downloadDocument = async (id, applicationType, fileType, fallbackFileName)
 };
 
 
+const evaluateInternship = async (id, payload) => {
+  // payload örn: { status, feedbackToStudent, feedbackToCompany, feedbackContextStudent, feedbackContextCompany }
+  return adminAPI.put(`/internship/internships/${id}`, payload, {withCredentials: true});
+};
 
-export { fetchInternshipDetails, updateApplicationDetail, downloadFile, fetchDocument, downloadDocument };
+
+export { evaluateInternship, fetchInternshipDetails, updateApplicationDetail, downloadFile, fetchDocument, downloadDocument };

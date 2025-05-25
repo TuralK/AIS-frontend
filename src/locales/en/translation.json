@@ -301,8 +301,8 @@
   "internshipOverview": "Internship Overview",
   "manual": "Manual",
   "applicationId": "Application ID",
-  "studentReport": "Student Report",
-  "evaluationForm": "Evaluation Form",
+  "studentReport": "Student Summer Practice Report",
+  "evaluationForm": "Summer Practice Evaluation Survey",
   "companyForm": "Company Form",
   "download": "Download",
   "viewPdf": "View PDF",
@@ -347,6 +347,8 @@
   "linkRequestsStatusApproved": "Approved",
   "linkRequestsStatusRejected": "Rejected",
   "linkRequestsRequestDate": "Request Date",
-  "linkRequestsCardTitle": "Link Request from"
+  "linkRequestsCardTitle": "Link Request from",
+  "ready": "Ready",
+  "newRejectionFeedback": "Feedback"
   
 }

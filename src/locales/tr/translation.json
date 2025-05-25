@@ -293,8 +293,8 @@
   "internshipOverview": "Staj Genel Bakış",
   "manual": "Manuel",
   "applicationId": "Başvuru ID",
-  "studentReport": "Öğrenci Raporu",
-  "evaluationForm": "Değerlendirme Formu",
+  "studentReport": "Öğrenci Staj Raporu",
+  "evaluationForm": "Staj Değerlendirme Anketi",
   "companyForm": "Şirket Formu",
   "download": "İndir",
   "viewPdf": "PDF Görüntüle",
@@ -339,6 +339,7 @@
   "linkRequestsStatusApproved": "Onaylandı",
   "linkRequestsStatusRejected": "Reddedildi",
   "linkRequestsRequestDate": "Talep Tarihi",
-  "linkRequestsCardTitle": "Link talebi"
-  
+  "linkRequestsCardTitle": "Link talebi",
+  "ready": "Hazır",
+  "newRejectionFeedback": "Geri bildirim"
 }

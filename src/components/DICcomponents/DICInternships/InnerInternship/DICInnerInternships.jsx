@@ -1,8 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import { useParams, useNavigate, useSearchParams } from "react-router-dom"
-import { useMatches } from "react-router-dom"
+import { useParams, useNavigate, useSearchParams, useMatches } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { motion } from "framer-motion"
 import { Button } from "../../../ui/button"
@@ -10,12 +9,9 @@ import { Card, CardContent, CardFooter, CardHeader } from "../../../ui/card"
 import { Textarea } from "../../../ui/text_area"
 import { toast } from "../../../ui/use-toast"
 import { Skeleton } from "../../../ui/skeleton"
-import { FileText, Building, User, X, AlertCircle, Link, CheckCircle } from "lucide-react"
-import { updateApplicationDetail } from "../../../../api/DICApi/applicationDetails"
-import { fetchInternshipDetails } from "../../../../api/DICApi/internshipDetailApi"
-import adminAPI from "../../../../services/adminAPI"
-import DocumentPreview from "./DocumentPreview" 
-import { downloadDocument } from "../../../../api/DICApi/internshipDetailApi" 
+import { FileText, Building, User, X, AlertCircle, CheckCircle } from "lucide-react"
+import { fetchInternshipDetails, downloadDocument, evaluateInternship } from "../../../../api/DICApi/internshipDetailApi"
+import DocumentPreview from "./DocumentPreview"
 
 const DICInnerInternships = () => {
   const matches = useMatches()
@@ -36,7 +32,6 @@ const DICInnerInternships = () => {
   const [companyFeedbackVisible, setCompanyFeedbackVisible] = useState(false)
   const [studentFeedback, setStudentFeedback] = useState("")
   const [companyFeedback, setCompanyFeedback] = useState("")
-  const [grade, setGrade] = useState("S")
   const [documents, setDocuments] = useState([])
   const [applicationId, setApplicationId] = useState()
   const navigate = useNavigate()
@@ -50,7 +45,6 @@ const DICInnerInternships = () => {
   // Get document data from the documents array
   const getDocumentById = (fileType) => {
     if (!documents || documents.length === 0) return { isAvailable: false, id: null }
-    
     const document = documents.find(doc => doc.fileType === fileType)
     return {
       isAvailable: !!document,
@@ -62,24 +56,21 @@ const DICInnerInternships = () => {
   const evaluationFormData = getDocumentById('Survey')  
   const companyFormData = getDocumentById('CompanyForm')
 
-  // Helper function to get the latest feedback with highest cycleId
+  // Helper: get latest feedback by cycleId
   const getLatestFeedback = (feedbackArray) => {
     if (!feedbackArray || feedbackArray.length === 0) return null
-    
-    return feedbackArray.reduce((latest, current) => {
-      return (current.cycleId > latest.cycleId) ? current : latest
-    }, feedbackArray[0])
+    return feedbackArray.reduce((latest, current) =>
+      current.cycleId > latest.cycleId ? current : latest
+    , feedbackArray[0])
   }
 
   const latestStudentFeedback = getLatestFeedback(latestStudentFeedbacks)
   const latestCompanyFeedback = getLatestFeedback(latestCompanyFeedbacks)
-  
 
   useEffect(() => {
     const loadApplicationDetails = async () => {
       try {
         setIsLoading(true)
-
         const res = await fetchInternshipDetails(id)
         console.log("Fetched application details:", res)
         
@@ -89,9 +80,6 @@ const DICInnerInternships = () => {
         if (res.internship.application) {
           applicationData = res.internship.application
           setApplicationId(res.internship.applicationId)
-        } else if (res.id) {
-          applicationData = res.internship
-          setApplicationId(applicationData.manualApplicationId)
         } else {
           applicationData = res.internship
           setApplicationId(applicationData.manualApplicationId)
@@ -105,7 +93,6 @@ const DICInnerInternships = () => {
         if (res.latestCompanyFeedbacks) {
           setLatestCompanyFeedbacks(res.latestCompanyFeedbacks)
         }
-
       } catch (error) {
         console.error("Error in loadApplicationDetails:", error)
         toast({
@@ -129,33 +116,99 @@ const DICInnerInternships = () => {
     setCompanyFeedbackVisible(!companyFeedbackVisible)
   }
 
-  const handleStudentFeedbackSubmit = () => {
-    alert(`Student feedback submitted: ${studentFeedback}`)
-    setStudentFeedbackVisible(false)
-    setStudentFeedback("")
+  const handleStudentFeedbackSubmit = async () => {
+    setIsSubmitting(true)
+    try {
+      await evaluateInternship(id, {
+        status: "FeedbackToStudent",
+        feedbackToStudent: studentFeedback,
+        feedbackContextStudent: "Survey",
+        feedbackToCompany: null,
+        feedbackContextCompany: null,
+      })
+      toast({ title: t("success"), description: t("studentFeedbackSent") })
+      setStudentFeedbackVisible(false)
+      setStudentFeedback("")
+    } catch (error) {
+      toast({ title: t("error"), description: t("failedToSendFeedback"), variant: "destructive" })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
-  const handleCompanyFeedbackSubmit = () => {
-    alert(`Company feedback submitted: ${companyFeedback}`)
-    setCompanyFeedbackVisible(false)
-    setCompanyFeedback("")
+  const handleCompanyFeedbackSubmit = async () => {
+    setIsSubmitting(true)
+    try {
+      await evaluateInternship(id, {
+        status: "FeedbackToCompany",
+        feedbackToStudent: null,
+        feedbackContextStudent: null,
+        feedbackToCompany: companyFeedback,
+        feedbackContextCompany: "CompanyForm",
+      })
+      toast({ title: t("success"), description: t("companyFeedbackSent") })
+      setCompanyFeedbackVisible(false)
+      setCompanyFeedback("")
+    } catch (error) {
+      toast({ title: t("error"), description: t("failedToSendFeedback"), variant: "destructive" })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleApprove = async () => {
+    setIsSubmitting(true)
+    try {
+      await evaluateInternship(id, {
+        status: "Approved",
+        feedbackToStudent: null,
+        feedbackContextStudent: null,
+        feedbackToCompany: null,
+        feedbackContextCompany: null,
+      })
+      toast({ title: t("success"), description: t("internshipApprovedMessage") })
+      navigate("/admin/internships")
+    } catch (error) {
+      toast({ title: t("error"), description: t("failedToApprove"), variant: "destructive" })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleReject = async () => {
+    setIsSubmitting(true)
+    try {
+      await evaluateInternship(id, {
+        status: "Rejected",
+        feedbackToStudent: null,
+        feedbackContextStudent: null,
+        feedbackToCompany: null,
+        feedbackContextCompany: null,
+      })
+      toast({ title: t("success"), description: t("internshipRejectedMessage") })
+      navigate("/admin/internships")
+    } catch (error) {
+      toast({ title: t("error"), description: t("failedToReject"), variant: "destructive" })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleDocumentDownload = async (documentType) => {
     try {
       let documentData = null
       let fileName = null
-      switch(documentType) {
+      switch (documentType) {
         case 'studentReport':
-          fileName = 'Report';
+          fileName = 'Report'
           documentData = studentReportData
           break
         case 'evaluationForm':
-          fileName = 'Survey';
+          fileName = 'Survey'
           documentData = evaluationFormData
           break
         case 'companyForm':
-          fileName = 'CompanyForm';
+          fileName = 'CompanyForm'
           documentData = companyFormData
           break
         default:
@@ -186,31 +239,6 @@ const DICInnerInternships = () => {
         description: t("downloadFailed"),
         variant: "destructive",
       })
-    }
-  }
-
-  const handleApprove = async () => {
-    setIsSubmitting(true)
-    try {
-      const formData = new FormData()
-      formData.append("isApproved", true)
-      formData.append("grade", grade)
-      formData.append("isManual", isManualApplication)
-
-      const response = await updateApplicationDetail(formData)
-      toast({
-        title: t("success"),
-        description: response.data.message,
-      })
-      navigate("/admin/internships")
-    } catch (error) {
-      toast({
-        title: t("error"),
-        description: t("failedToUpdateApplication"),
-        variant: "destructive",
-      })
-    } finally {
-      setIsSubmitting(false)
     }
   }
 
@@ -307,7 +335,6 @@ const DICInnerInternships = () => {
                   onDownload={handleDocumentDownload}
                   isAvailable={studentReportData.isAvailable}
                 />
-
                 <DocumentPreview
                   title={t("evaluationForm")}
                   documentType="evaluationForm"
@@ -371,8 +398,9 @@ const DICInnerInternships = () => {
                   <Button
                     className="bg-red-600 hover:bg-red-700 text-white"
                     onClick={handleStudentFeedbackSubmit}
+                    disabled={isSubmitting}
                   >
-                    {t("sendFeedback")}
+                    {isSubmitting ? t("processing") : t("sendFeedback")}
                   </Button>
                 </div>
               )}
@@ -400,8 +428,6 @@ const DICInnerInternships = () => {
             </CardHeader>
 
             <CardContent className="p-6">
-              
-
               {/* Company Form */}
               <div className="mb-6 mt-4">
                 <DocumentPreview
@@ -467,8 +493,9 @@ const DICInnerInternships = () => {
                   <Button
                     className="bg-red-600 hover:bg-red-700 text-white"
                     onClick={handleCompanyFeedbackSubmit}
+                    disabled={isSubmitting}
                   >
-                    {t("sendFeedback")}
+                    {isSubmitting ? t("processing") : t("sendFeedback")}
                   </Button>
                 </div>
               )}
@@ -478,35 +505,30 @@ const DICInnerInternships = () => {
 
         {/* Footer */}
         <div className="border-t-2 border-gray-200 p-6 bg-gradient-to-r from-gray-50 to-gray-100 rounded-b-lg">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
-            <div className="flex items-center gap-4 bg-white p-3 rounded-lg border shadow-sm">
-              <span className="text-sm font-bold text-gray-700">{t("grade")}:</span>
-              <select
-                value={grade}
-                onChange={(e) => setGrade(e.target.value)}
-                className="w-24 px-4 py-2 border-2 border-gray-300 rounded-md bg-white text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-              >
-                <option value="S">S</option>
-                <option value="F">F</option>
-                <option value="W">W</option>
-              </select>
-            </div>
+          <div className="flex flex-col sm:flex-row justify-end items-center gap-4">
+            <Button
+              onClick={handleReject}
+              disabled={isSubmitting}
+              className="sm:mr-4 w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all"
+            >
+              {isSubmitting ? (
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+              ) : (
+                <X className="h-5 w-5 mr-2" />
+              )}
+              {isSubmitting ? t("processing") : t("reject")}
+            </Button>
             <Button
               onClick={handleApprove}
               disabled={isSubmitting}
               className="w-full sm:w-auto bg-green-700 hover:bg-green-800 text-white font-bold px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all"
             >
               {isSubmitting ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  {t("processing")}
-                </>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
               ) : (
-                <>
-                  <CheckCircle className="h-5 w-5 mr-2" />
-                  {t("approve")}
-                </>
+                <CheckCircle className="h-5 w-5 mr-2" />
               )}
+              {isSubmitting ? t("processing") : t("approve")}
             </Button>
           </div>
         </div>
