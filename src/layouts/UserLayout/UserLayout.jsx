@@ -158,12 +158,12 @@ export const UserLayout = ({
                   </NavLink>
                 ))}
 
-                <NavLink
+                {/* <NavLink
                   to={`/${basePath}/notifications`}
                   className={styles.menuItem}
                 >
                   <Bell size={24} />
-                </NavLink>
+                </NavLink> */}
 
                 <button
                   onClick={() => changeLanguage(i18n.language === 'tr' ? 'en' : 'tr')}
@@ -246,14 +246,14 @@ export const UserLayout = ({
               {i18n.language === 'tr' ? 'EN' : 'TR'}
             </button>
 
-            <button
+            {/* <button
               className={styles.menuItem}
               style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}
               onClick={() => { navigate(`/${basePath}/notifications`); setIsMenuOpen(false); }}
             >
               <Bell size={24} />
               <span style={{ marginLeft: '0.5rem' }}>{t('notifications')}</span>
-            </button>
+            </button> */}
             
             <div style={{ position: 'relative' }} ref={userMenuRef}>
               <button

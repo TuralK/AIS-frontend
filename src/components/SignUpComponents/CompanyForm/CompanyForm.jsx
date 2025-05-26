@@ -98,7 +98,7 @@ const CompanyForm = (reset) => {
           <input
             type="text"
             value={companyName}
-            placeholder="Company Name"
+            placeholder={t('companyName')}
             id="company-name"
             name="company-name"
             onChange={(e) => setCompanyName(e.target.value)}
@@ -108,7 +108,7 @@ const CompanyForm = (reset) => {
           <input
             type="text"
             value={representativeName}
-            placeholder="Representative Name"
+            placeholder={t('representativeName')}
             id="representative-name"
             name="representative-name"
             onChange={(e) => setRepresentativeName(e.target.value)}
@@ -118,7 +118,7 @@ const CompanyForm = (reset) => {
           <input
             type="email"
             value={companyEmail}
-            placeholder="Company Email"
+            placeholder={t('companyEmail')}
             id="company-email"
             name="company-email"
             onChange={(e) => setCompanyEmail(e.target.value)}
@@ -130,7 +130,7 @@ const CompanyForm = (reset) => {
           <input
             type="text"
             value={companyAddress}
-            placeholder="Address"
+            placeholder={t('address')}
             id="company-address"
             name="company-address"
             onChange={(e) => setCompanyAddress(e.target.value)}
@@ -140,7 +140,7 @@ const CompanyForm = (reset) => {
           <input
             type="password"
             value={companyPassword}
-            placeholder="Password"
+            placeholder={t('password')}
             id="company-password"
             name="company-password"
             onChange={(e) => setCompanyPassword(e.target.value)}
@@ -153,7 +153,7 @@ const CompanyForm = (reset) => {
           <input
             type="password"
             value={companyConfirmPassword}
-            placeholder="Confirm password"
+            placeholder={t('confirmPassword')}
             id="company-confirmPassword"
             name="company-confirmPassword"
             onChange={(e) => setCompanyConfirmPassword(e.target.value)}
@@ -162,10 +162,10 @@ const CompanyForm = (reset) => {
           />
           <div className={`${CompanyFormCSS.confirm} ${CompanyFormCSS.error}`}>{errors.confirmPassword}</div>
           </div>
-          <button type="submit" className={CompanyFormCSS.button}>Sign Up</button>
+          <button type="submit" className={CompanyFormCSS.button}>{t('signUp')}</button>
           <center>
             <li>
-              <a href="/" className={CompanyFormCSS.link}>You already have an account? Log in.</a>
+              <a href="/" className={CompanyFormCSS.link}>{t('alreadyHaveAccount')}</a>
             </li>
           </center>
         </div>

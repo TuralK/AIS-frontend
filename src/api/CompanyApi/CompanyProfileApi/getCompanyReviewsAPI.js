@@ -1,11 +1,11 @@
 import { companyAPI } from '../../../services/index'
 
-export const getCompanyProfile = async () => {
+export const getCompanyReviews = async () => {
     try {
-        const response = await companyAPI.get('/profile', {
+        const response = await companyAPI.get('/profile/reviews', {
             withCredentials: true,
         });
-        return {profile: response.data.profile, rating: response.data.rating};
+        return response.data.reviews;
     } catch (error) {
         console.log(error)
         throw new Error(error);

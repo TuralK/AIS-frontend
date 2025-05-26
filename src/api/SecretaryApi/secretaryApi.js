@@ -33,7 +33,7 @@ export const downloadFile = async (id, fileType) => {
 export const submitApplication = async (applicationId, selectedFile) => {
   try {
     const formData = new FormData();
-    formData.append("studentFile", selectedFile);
+    formData.append("EmploymentCertificate", selectedFile);
 
     const response = await secretaryAPI.post(
       `/applications/${applicationId}`,

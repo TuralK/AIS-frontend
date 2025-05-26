@@ -46,13 +46,13 @@ const CompanyInternships = () => {
                 {app.Student.username}
               </span>
             ),
-            applied_at: new Date(app.Application.applyDate).toLocaleDateString("en-US", {
+            applied_at: app.Application ? new Date(app.Application.applyDate).toLocaleDateString("en-US", {
               year: "numeric",
               month: "long",
               day: "numeric",
-            }),
+            }) : 'N/A',
             grade: app.Student.year,
-            announcement: app.Application.Announcement.announcementName,
+            announcement: app.Application?.Announcement.announcementName || 'N/A',
           }));
           setInternships(formatted);
         })

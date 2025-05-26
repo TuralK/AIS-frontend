@@ -37,7 +37,7 @@ const CustomAlertDialog = ({
               {cancelLabel}
             </AlertDialogCancel>
           )}
-          <AlertDialogAction onClick={onConfirm} className="px-4 py-2 bg-blue-600 text-white rounded">
+          <AlertDialogAction onClick={onConfirm} className="px-4 py-2 bg-red-800 text-white rounded">
             {confirmLabel}
           </AlertDialogAction>
         </AlertDialogFooter>

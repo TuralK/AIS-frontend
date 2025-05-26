@@ -5,7 +5,7 @@ export const getCompanyProfileById = async (companyId) => {
         const response = await companyAPI.get(`/profile/${companyId}`, {
             withCredentials: true,
         });
-        return response.data.profile;
+        return { profile: response.data.profile, rating: response.data.rating };
     } catch (error) {
         console.log(error)
         throw new Error(error);

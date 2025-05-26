@@ -18,6 +18,8 @@ import { getCompanyAnnouncements } from '../../../api/CompanyApi/CompanyProfileA
 import { getCompanyProfileById } from '../../../api/CompanyApi/CompanyProfileApi/getCompanyProfileByIdAPI';
 import EmptyState from '../../UtilComponents/EmptyState';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import { getCompanyReviews } from '../../../api/CompanyApi/CompanyProfileApi/getCompanyReviewsAPI';
+import { fetchAnnouncements } from '../../../api/StudentApi/fetchAnnouncementsAPI'
 
 
 const baseUrl = 'http://localhost:3005';
@@ -374,7 +376,7 @@ const truncateText = (text, maxLength = 100) => {
   return text.substring(0, maxLength) + '...';
 };
 
-const AnnouncementCard = ({ announcement, onClick }) => {
+const AnnouncementCard = ({ showBothDates, announcement, onClick }) => {
   const imageSrc = announcement.image ? `${baseUrl}/${announcement.image}` : CompanyBackground;
     
   return (
@@ -394,10 +396,15 @@ const AnnouncementCard = ({ announcement, onClick }) => {
             <span className={styles.readMore}>Read more</span>
           )}
         </p>
-        <div className={styles.announcementDates}>
-          <span>Start: {formatDate(announcement?.startDate)}</span>
-          <span>End: {formatDate(announcement?.endDate)}</span>
-        </div>
+        {
+          showBothDates ? (
+            <div className={styles.announcementDates}>
+              <span>Start: {formatDate(announcement?.startDate)}</span>
+              <span>End: {formatDate(announcement?.endDate)}</span>
+            </div>
+          ) : <span className={styles.announcementDates}>End: {formatDate(announcement?.endDate)}</span>
+        }
+        
       </div>
     </div>
   );
@@ -428,8 +435,6 @@ const CompanyProfile = () => {
   const [backgroundPicPreview, setBackgroundPicPreview] = useState(CompanyBackground);
   const [backgroundPic, setBackgroundPic] = useState(null);
 
-  const [reviews, setReviews] = useState("");
-
   // for restoring on Cancel
   const [originalState, setOriginalState] = useState({});
 
@@ -440,10 +445,14 @@ const CompanyProfile = () => {
   const [email, setEmail] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState(null);
   const [website, setWebsite] = useState(null);
-  const [socialMediaLinks, setSocialMediaLinks] = useState([])
+  const [socialMediaLinks, setSocialMediaLinks] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [rating, setRating] = useState(0);
 
   const [isAnnouncementsLoading, setIsAnnouncementsLoading] = useState(false);
+  const [isReviewsLoading, setIsReviewsLoading] = useState(false);
   const [hasFetchedAnnouncements, setHasFetchedAnnouncements] = useState(false);
+  const [hasFetchedReviews, setHasFetchedReviews] = useState(false);
   const [announcements, setAnnouncements] = useState([]);
 
   const [loading, setLoading] = useState(true);
@@ -478,9 +487,13 @@ const CompanyProfile = () => {
     const loadData = async () => {
       try {
         let profile;
+        let rating;
         setLoading(true);
-        if(!id) { profile = await getCompanyProfile(); }
-        else { profile = await getCompanyProfileById(id); }
+        if (!id) {
+           ({ profile, rating } = await getCompanyProfile());
+        } else {
+          ({ profile, rating } = await getCompanyProfileById(id));
+        }
         
         setCompanyData(profile);
         // initialize all editing state from fetched data:
@@ -490,7 +503,7 @@ const CompanyProfile = () => {
         setEmail(profile.contactEmail || "");
         setPhoneNumber(profile.contactPhone || "");
         setWebsite(profile.website || "");
-        
+        setRating(rating || 'N/A');
         const linksObj = JSON.parse(profile.socialMediaLinks);
         const linksArray = Object.entries(linksObj).map(
           ([name, link]) => ({ name, link })
@@ -514,12 +527,18 @@ const CompanyProfile = () => {
   }, [activeTab]);
 
   useEffect(() => {
-    const fetchAnnouncements = async () => {
+    const fetchCompanyAnnouncements = async () => {
       if (activeTab === "Announcements" && !hasFetchedAnnouncements && announcements.length === 0) {
         try {
           setIsAnnouncementsLoading(true);
-          const response = await getCompanyAnnouncements();
-          setAnnouncements(response.announcements);
+          let response;
+          if (!id) {
+            response = await getCompanyAnnouncements();
+            setAnnouncements(response.announcements);
+          } else {
+            response = await fetchAnnouncements();
+            setAnnouncements(response);
+          }
           setHasFetchedAnnouncements(true);
         } catch (error) {
           console.error('Error loading announcements:', error);
@@ -529,8 +548,27 @@ const CompanyProfile = () => {
       }
     };
 
-    fetchAnnouncements();
+    fetchCompanyAnnouncements();
   }, [activeTab, hasFetchedAnnouncements, announcements.length]);
+
+ useEffect(() => {
+    const fetchReviews = async () => {
+      if (activeTab === "Reviews" && !hasFetchedReviews && reviews.length === 0) {
+        try {
+          setIsReviewsLoading(true);
+          const response = await getCompanyReviews();
+          setReviews(response);
+          setHasFetchedReviews(true);
+        } catch (error) {
+          console.error('Error loading reviews:', error);
+        } finally {
+          setIsReviewsLoading(false);
+        }
+      }
+    };
+
+    fetchReviews();
+  }, [activeTab, hasFetchedReviews, reviews.length]);
 
   const handleBackToAnnouncements = () => {
     setSelectedAnnouncement(null);
@@ -554,7 +592,7 @@ const CompanyProfile = () => {
         }
       })
     );
-  }, [location, email, phoneNumber, website]); // Runs when any of these dependencies change
+  }, [location, email, phoneNumber, website]);
 
   const handleEditToggle = async () => {
     if (!isEditing) {
@@ -726,10 +764,15 @@ const CompanyProfile = () => {
           <p className={styles.announcementDescription}>
             {selectedAnnouncement.description}
           </p>
-          <div className={styles.announcementDates}>
-            <p><strong>Start Date:</strong> {formatDate(selectedAnnouncement.startDate)}</p>
-            <p><strong>End Date:</strong> {formatDate(selectedAnnouncement.endDate)}</p>
-          </div>
+          {
+            !id ? (
+            <div className={styles.announcementDates}>
+              <p><strong>Start Date:</strong> {formatDate(selectedAnnouncement.startDate)}</p>
+              <p><strong>End Date:</strong> {formatDate(selectedAnnouncement.endDate)}</p>
+            </div>
+            ) : <p className={styles.announcementDates}><strong>End Date:</strong> {formatDate(selectedAnnouncement.endDate)}</p>
+          }
+
         </div>
       );
     }
@@ -769,6 +812,7 @@ const CompanyProfile = () => {
                   <div className={styles.announcementsGrid}>
                     {announcements.map((announcement, index) => (
                       <AnnouncementCard 
+                        showBothDates={!id}
                         key={index} 
                         announcement={announcement}
                         onClick={setSelectedAnnouncement}
@@ -786,7 +830,25 @@ const CompanyProfile = () => {
         );
 
       case "Reviews":
-        return (<div></div>); 
+        return (
+          <div className={styles.reviewsContainer}>
+            {isReviewsLoading ? (
+              <div className={styles.loadingContainer}>
+                <Loading />
+              </div>
+            ) : (
+              reviews.length === 0 ? (
+                <div className={styles.noAnnouncements}>
+                  No reviews available
+                </div>
+              ) : (
+                <div className={styles.reviewsContainer}>
+                  {/* Render reviews here */}
+                </div>
+              )
+            )}
+          </div>
+        );
 
       default:
         return null;
@@ -821,7 +883,7 @@ const CompanyProfile = () => {
             defaultImage={ProfilePic}
           />
 
-          <h1 className={styles.studentProfileTitle}>{companyData.username || 'Company Name'}</h1>
+          <h1 className={styles.studentProfileTitle}>{companyData.Company.name || 'Company Name'}</h1>
           {isEditing ? (
             <input
               type="text"

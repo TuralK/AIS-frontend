@@ -41,7 +41,17 @@ const DICInnerInternships = () => {
   const [latestStudentFeedbacks, setLatestStudentFeedbacks] = useState([])
   const [latestCompanyFeedbacks, setLatestCompanyFeedbacks] = useState([])
   const [confirmOpen, setConfirmOpen] = useState(false)
+  const [reasonAlertOpen, setReasonAlertOpen] = useState(false)
   const [confirmAction, setConfirmAction] = useState(null)
+  const [hideCompanyReject, setHideCompanyReject] = useState(false)
+  const [rejectionReason, setRejectionReason] = useState("")
+
+  const [isApproving, setIsApproving] = useState(false)
+  const [isRejecting, setIsRejecting] = useState(false)
+  const [isStudentSubmitting, setIsStudentSubmitting] = useState(false)
+  const [isCompanySubmitting, setIsCompanySubmitting] = useState(false)
+  const [approveSuccessOpen, setApproveSuccessOpen] = useState(false)
+  const [rejectSuccessOpen, setRejectSuccessOpen] = useState(false)
 
   const isManualApplication = searchParams.get("manual") === "true"
 
@@ -69,6 +79,9 @@ const DICInnerInternships = () => {
 
   const latestStudentFeedback = getLatestFeedback(latestStudentFeedbacks)
   const latestCompanyFeedback = getLatestFeedback(latestCompanyFeedbacks)
+
+  const studentStatus = internshipData?.studentStatus
+  const latestFeedbackContext = internshipData?.feedbackContextStudent
 
   useEffect(() => {
     const loadApplicationDetails = async () => {
@@ -119,27 +132,33 @@ const DICInnerInternships = () => {
   }
 
   const handleStudentFeedbackSubmit = async () => {
-    setIsSubmitting(true)
+    if (!rejectionReason || !studentFeedback.trim()) {
+      setReasonAlertOpen(true)
+      return
+    }
+
+    setIsStudentSubmitting(true)
     try {
       await evaluateInternship(id, {
         status: "FeedbackToStudent",
         feedbackToStudent: studentFeedback,
-        feedbackContextStudent: "Survey",
+        feedbackContextStudent: rejectionReason,
         feedbackToCompany: null,
         feedbackContextCompany: null,
       })
       toast({ title: t("success"), description: t("studentFeedbackSent") })
       setStudentFeedbackVisible(false)
       setStudentFeedback("")
+      setRejectionReason("")
     } catch (error) {
       toast({ title: t("error"), description: t("failedToSendFeedback"), variant: "destructive" })
     } finally {
-      setIsSubmitting(false)
+      setIsStudentSubmitting(false)
     }
   }
 
   const handleCompanyFeedbackSubmit = async () => {
-    setIsSubmitting(true)
+    setIsCompanySubmitting(true)
     try {
       await evaluateInternship(id, {
         status: "FeedbackToCompany",
@@ -149,12 +168,14 @@ const DICInnerInternships = () => {
         feedbackContextCompany: "CompanyForm",
       })
       toast({ title: t("success"), description: t("companyFeedbackSent") })
-      setCompanyFeedbackVisible(false)
-      setCompanyFeedback("")
     } catch (error) {
       toast({ title: t("error"), description: t("failedToSendFeedback"), variant: "destructive" })
     } finally {
-      setIsSubmitting(false)
+      setLatestCompanyFeedbacks(companyFeedback)
+      setHideCompanyReject(true)
+      setCompanyFeedbackVisible(false)
+      setCompanyFeedback("")
+      setIsCompanySubmitting(false)
     }
   }
 
@@ -168,17 +189,17 @@ const DICInnerInternships = () => {
     setConfirmOpen(true)
   }
 
-  const onConfirm = () => {
+  const onConfirm = async () => {
     setConfirmOpen(false)
     if (confirmAction === "approve") {
-      handleApprove()
+      await handleApprove()
     } else if (confirmAction === "reject") {
-      handleReject()
+      await handleReject()
     }
   }
 
   const handleApprove = async () => {
-    setIsSubmitting(true)
+    setIsApproving(true)
     try {
       await evaluateInternship(id, {
         status: "Approved",
@@ -187,17 +208,16 @@ const DICInnerInternships = () => {
         feedbackToCompany: null,
         feedbackContextCompany: null,
       })
-      toast({ title: t("success"), description: t("internshipApprovedMessage") })
-      navigate("/admin/internships")
+      setApproveSuccessOpen(true)
     } catch (error) {
       toast({ title: t("error"), description: t("failedToApprove"), variant: "destructive" })
     } finally {
-      setIsSubmitting(false)
+      setIsApproving(false)
     }
   }
 
   const handleReject = async () => {
-    setIsSubmitting(true)
+    setIsRejecting(true)
     try {
       await evaluateInternship(id, {
         status: "Rejected",
@@ -206,12 +226,11 @@ const DICInnerInternships = () => {
         feedbackToCompany: null,
         feedbackContextCompany: null,
       })
-      toast({ title: t("success"), description: t("internshipRejectedMessage") })
-      navigate("/admin/internships")
+      setRejectSuccessOpen(true)
     } catch (error) {
       toast({ title: t("error"), description: t("failedToReject"), variant: "destructive" })
     } finally {
-      setIsSubmitting(false)
+      setIsRejecting(false)
     }
   }
 
@@ -388,11 +407,32 @@ const DICInnerInternships = () => {
                       </div>
                     )}
 
+                    <div className="p-4 bg-red-50 rounded-lg border border-red-200">
+                      <label className="text-sm font-medium text-red-800 block mb-2">
+                        {t("rejectionReason")}
+                      </label>
+                      <select
+                        value={rejectionReason}
+                        onChange={(e) => setRejectionReason(e.target.value)}
+                        className="w-full p-2 border border-red-300 rounded-md focus:ring-red-500 focus:border-red-500 bg-white"
+                        required
+                      >
+                        <option value="">{t("selectReason")}</option>
+                        <option value="Survey">{t("surveyIssue")}</option>
+                        <option value="Report">{t("reportIssue")}</option>
+                        <option value="Both">{t("bothIssues")}</option>
+                      </select>
+                    </div>
+
                     {/* New Feedback Input */}
                     <div className="p-4 bg-red-50 rounded-lg border border-red-200">
                       <label className="text-sm font-medium text-red-800 block mb-2">{t("newRejectionFeedback")}</label>
                       <Textarea
-                        placeholder={t("enterStudentFeedback")}
+                        placeholder={
+                          rejectionReason === "Survey" ? t("enterSurveyFeedback") :
+                          rejectionReason === "Report" ? t("enterReportFeedback") :
+                          t("enterStudentFeedback")
+                        }
                         className="min-h-[100px] border-red-300 focus:border-red-500"
                         value={studentFeedback}
                         onChange={(e) => setStudentFeedback(e.target.value)}
@@ -406,8 +446,9 @@ const DICInnerInternships = () => {
                 {!studentFeedbackVisible ? (
                   <Button
                     variant="outline"
-                    className="border-red-300 text-red-700 hover:bg-red-50 hover:border-red-400 font-medium"
+                    className="disabled:cursor-not-allowed border-red-300 text-red-700 hover:bg-red-50 hover:border-red-400 font-medium"
                     onClick={toggleStudentFeedback}
+                    disabled={studentStatus === 4 || (studentStatus === 6 && latestFeedbackContext !== "Survey") || isSubmitting}
                   >
                     <X className="h-4 w-4 mr-2" /> {t("reject")}
                   </Button>
@@ -423,7 +464,7 @@ const DICInnerInternships = () => {
                     <Button
                       className="bg-red-600 hover:bg-red-700 text-white"
                       onClick={handleStudentFeedbackSubmit}
-                      disabled={isSubmitting}
+                      disabled={studentStatus === 4 || (studentStatus === 6 && latestFeedbackContext !== "Survey") || isSubmitting}
                     >
                       {isSubmitting ? t("processing") : t("sendFeedback")}
                     </Button>
@@ -464,7 +505,7 @@ const DICInnerInternships = () => {
                   />
                 </div>
 
-                {hideCompanyControls ? (
+                {(hideCompanyControls || hideCompanyReject) ? (
                   // If companyStatus === 4, only show latest feedback
                   latestCompanyFeedback && (
                     <div className="p-4 bg-green-50 rounded-lg border border-green-200">
@@ -518,7 +559,7 @@ const DICInnerInternships = () => {
               </CardContent>
 
               <CardFooter className="flex justify-end p-6 pt-4 bg-gray-50 border-t mt-4">
-                {!hideCompanyControls && (
+                {(!hideCompanyControls && !hideCompanyReject) && (
                   !companyFeedbackVisible ? (
                     <Button
                       variant="outline"
@@ -555,27 +596,27 @@ const DICInnerInternships = () => {
             <div className="flex flex-col sm:flex-row justify-end items-center gap-4">
               <Button
                 onClick={confirmReject}
-                disabled={isSubmitting}
+                disabled={isRejecting || isApproving}
                 className="sm:mr-4 w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all"
               >
-                {isSubmitting ? (
+                {isRejecting ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                 ) : (
                   <X className="h-5 w-5 mr-2" />
                 )}
-                {isSubmitting ? t("processing") : t("reject")}
+                {isRejecting  ? t("processing") : t("reject")}
               </Button>
               <Button
                 onClick={confirmApprove}
-                disabled={isSubmitting}
+                disabled={isRejecting || isApproving}
                 className="w-full sm:w-auto bg-green-700 hover:bg-green-800 text-white font-bold px-8 py-3 text-lg shadow-lg hover:shadow-xl transition-all"
               >
-                {isSubmitting ? (
+                {isApproving  ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                 ) : (
                   <CheckCircle className="h-5 w-5 mr-2" />
                 )}
-                {isSubmitting ? t("processing") : t("approve")}
+                {isApproving  ? t("processing") : t("approve")}
               </Button>
             </div>
           </div>
@@ -583,15 +624,50 @@ const DICInnerInternships = () => {
       </motion.div>
 
       <CustomAlertDialog
-      isOpen={confirmOpen}
-      onClose={() => setConfirmOpen(false)}
-      title={t("Warning")}                   
-      description={t("feedbackMayNotBeSeen")}   
-      onConfirm={onConfirm}
-      confirmLabel={t("okContinue")}               
-      cancelLabel={t("cancel")}                  
-      showCancel={true}                         
-    />
+        isOpen={approveSuccessOpen}
+        onClose={() => {
+          setApproveSuccessOpen(false)
+          navigate("/admin/internships")
+        }}
+        title={t("success")}
+        description={t("internshipApprovedMessage")}
+        confirmLabel={t("ok")}
+        showCancel={false}
+      />
+
+      <CustomAlertDialog
+        isOpen={rejectSuccessOpen}
+        onClose={() => {
+          setRejectSuccessOpen(false)
+          navigate("/admin/internships")
+        }}
+        title={t("success")}
+        description={t("internshipRejectedMessage")}
+        confirmLabel={t("ok")}
+        showCancel={false}
+      />
+
+      <CustomAlertDialog
+        isOpen={reasonAlertOpen}
+        onClose={() => setReasonAlertOpen(false)}
+        title={t("warning")}
+        description={t("selectRejectionReason")}
+        confirmLabel={t("ok")}
+        showCancel={false}
+        onConfirm={() => setReasonAlertOpen(false)}
+      />
+
+      <CustomAlertDialog
+        isOpen={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        title={t("Warning")}                   
+        description={t("feedbackMayNotBeSeen")}   
+        onConfirm={onConfirm}
+        confirmLabel={t("okContinue")}               
+        cancelLabel={t("cancel")}                  
+        showCancel={true}                         
+      />
+
     </>
   )
 }

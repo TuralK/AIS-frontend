@@ -86,7 +86,7 @@ const StudentForm = ({ reset }) => {
               type="email"
               value={email}
               style={{ fontSize: '14px' }}
-              placeholder="Email"
+              placeholder={t('email')}
               id="student-email"
               name="student-email"
               onChange={(e) => setEmail(e.target.value)}
@@ -98,7 +98,7 @@ const StudentForm = ({ reset }) => {
               type="password"
               value={password}
               style={{ fontSize: '14px' }}
-              placeholder="Password"
+              placeholder={t('password')}
               id="student-password"
               name="student-password"
               onChange={(e) => setPassword(e.target.value)}
@@ -111,7 +111,7 @@ const StudentForm = ({ reset }) => {
               type="password"
               value={confirmPassword}
               style={{ fontSize: '14px' }}
-              placeholder="Confirm password"
+              placeholder={t('confirmPassword')}
               id="student-confirmPassword"
               name="student-confirmPassword"
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -127,7 +127,7 @@ const StudentForm = ({ reset }) => {
 
           <center>
             <li>
-              <a href="/">You already have an account? Log in.</a>
+              <a href="/">{t('alreadyHaveAccount')}</a>
             </li>
           </center>
         </div>

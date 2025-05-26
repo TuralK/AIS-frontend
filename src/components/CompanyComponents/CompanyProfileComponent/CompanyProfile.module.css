@@ -640,3 +640,8 @@ html {
   position: relative;
   min-height: 300px; /* Ensure container has enough height */
 }
+
+.reviewsContainer {
+  position: relative;
+  min-height: 300px; /* Ensure container has enough height */
+}

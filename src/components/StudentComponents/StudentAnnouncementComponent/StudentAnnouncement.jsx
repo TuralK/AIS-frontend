@@ -576,12 +576,12 @@ const StudentAnnouncementComponent = () => {
 
                                 <div className={StudentAnnouncementCSS.previewDeleteContainer}>
                                   <span
-                                    className="material-symbols-outlined"
+                                    className={`${StudentAnnouncementCSS.previewIcon} material-symbols-outlined`}
                                     onClick={handlePreviewClick}
                                     title={(watchedCv?.[0] || studentData?.cvUrl) ? t('preview_cv') : t('no_file_to_preview')}
                                   >quick_reference_all</span>
                                   <i
-                                    className="fa-solid fa-trash"
+                                    className={`${StudentAnnouncementCSS.deleteIcon} fa-solid fa-trash`}
                                     onClick={handleFileDelete}
                                     title={(watchedCv?.[0] || studentData?.cvUrl) ? t('delete_cv') : t('no_file_to_delete')}
                                   />

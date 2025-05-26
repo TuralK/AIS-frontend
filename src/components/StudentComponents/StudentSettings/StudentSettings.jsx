@@ -71,7 +71,7 @@ const StudentSettings = () => {
             <span className={styles.pillText}>{t('studentInfo')}</span>
         </div>
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col">
         <div ref={settingsRef}>
           <Settings apiUrl={'http://localhost:3004'} />
         </div>

@@ -79,8 +79,7 @@ const App = () => {
       path: '/company',
       element: <CompanyLayout />,
       children: [
-        { index: true, element: <CompanyHome />, handle: { titleKey: 'home' } },
-        { path: "home", element: <CompanyHome />, handle: { titleKey: 'home' } },
+        { index: true, element: <Navigate to="/company/applications" />, handle: { titleKey: 'applications' } },
         { path: "applications", element: <CompanyApplications />, handle: { titleKey: 'applications' } },
         { path: "publishAnnouncement", element: <PublishAnnouncement />, handle: { titleKey: 'publishAnnouncement' } },
         { path: "applications/:id", element: <CompanyApplication />, handle: { titleKey: 'application' } },

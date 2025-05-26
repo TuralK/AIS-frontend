@@ -63,7 +63,7 @@ const ChangePassword = () => {
                     setLoading(false);
                 });
         } else {
-            alert("No token provided");
+            alert(t('noTokenProvided'));
             navigate('/');
         }
     }, [location, navigate]);
@@ -91,7 +91,7 @@ const ChangePassword = () => {
         setSuccess('');
 
         if (password !== confirmPassword || password.length < 6) {
-            setError('Passwords do not match or are less than 6 characters.');
+            setError('passwordMismatchError');
             return;
         }
 
@@ -102,18 +102,18 @@ const ChangePassword = () => {
                 token: token,
             });
             if (response.status === 200) {
-                alert(response.data.success);
+                alert(t('passwordChangeSuccess'));
             } else {
-                alert('Failed to change password. Please try again.');
+                alert(t('passwordChangeFail'));
             }
             navigate('/');
         } catch (err) {
             if (err.response.data.error === "Token has expired." ||
                 err.response.data.error === "Invalid or expired token.") {
-                alert(err.response.data.error);
+                alert(t('invalidOrExpiredToken'));
                 navigate('/');
             }
-            setError(err.response.data.error || 'Failed to communicate with the server');
+            setError(err.response.data.error || t('serverCommunicationError'));
         }
     };
 
@@ -132,7 +132,9 @@ const ChangePassword = () => {
                 <center><h1>Change Your Password</h1></center>
                 <form onSubmit={handleSubmit}>
                     <input type="hidden" value={token} /> {/* Token field */}
-                    <label className={ChangePasswordCSS.label}  htmlFor="password">New Password:</label>
+                    <label className={ChangePasswordCSS.label} htmlFor="password">
+                        {t('newPassword')}
+                    </label>
                     <input
                         className={ChangePasswordCSS.input}
                         type="password"
@@ -147,7 +149,9 @@ const ChangePassword = () => {
                         onChange={handlePasswordChange}
                         required
                     />
-                    <label className={ChangePasswordCSS.label} htmlFor="confirmPassword">Confirm Password:</label>
+                    <label className={ChangePasswordCSS.label} htmlFor="confirmPassword">
+                        {t('confirmPassword')}
+                    </label>
                     <input
                         className={ChangePasswordCSS.input}
                         type="password"
@@ -163,13 +167,13 @@ const ChangePassword = () => {
                         required
                     />
                     <div className={ChangePasswordCSS['change-password-error']} style={{ color: 'red', display: error ? 'block' : 'none' }}>
-                        {error}
+                        {t(error)}
                     </div>
                     <center>
-                        <button className={ChangePasswordCSS.button} type="submit">Update Password</button>
+                        <button className={ChangePasswordCSS.button} type="submit">{t('updatePasswordButton')}</button>
                     </center>
                     {success && <center><p style={{ color: 'green' }}>{success}</p></center>}
-                    <center><a href='/'>Log in.</a></center>
+                    <center><a href='/'>{t('loginLink')}</a></center>
                 </form>
             </div>
         </div>

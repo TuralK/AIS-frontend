@@ -84,7 +84,7 @@ const SignUp = () => {
                     <div className={SignUpCSS.form_top_bottom}>
                         <hr className={SignUpCSS.form_line}></hr>
                     </div>
-                    <p name="page-name" className={SignUpCSS.page_name}>Internship Management System</p>
+                    <p name="page-name" className={SignUpCSS.page_name}> {t('system_name')}</p>
                 </div>
                 
                 <div className={SignUpCSS.bottom_right}>
@@ -94,22 +94,22 @@ const SignUp = () => {
                         <input type="radio" className={SignUpCSS.slide} id="register-Company" 
                                 onChange={() => handleForm(false)} checked={!studentForm}/>
                         <label htmlFor="register-Student" className={`${SignUpCSS.slide} ${SignUpCSS.registerStudent} 
-                                ${studentForm ? SignUpCSS.active : SignUpCSS.deactive}`}>Sign up Student</label>
+                                ${studentForm ? SignUpCSS.active : SignUpCSS.deactive}`}>{t('signUpStudent')}</label>
                         <label htmlFor="register-Company" className={`${SignUpCSS.slide} ${SignUpCSS.registerCompany} 
-                                ${!studentForm ? SignUpCSS.active : SignUpCSS.deactive}`}>Sign up Company</label>
+                                ${!studentForm ? SignUpCSS.active : SignUpCSS.deactive}`}>{t('signUpCompany')}</label>
                         <div className={` ${SignUpCSS.slider_tab} ${studentForm ? SignUpCSS.active : SignUpCSS.deactive}`}></div>
                     </div>
 
                     <div className={SignUpCSS.form_container}
                         style={{ transform: `translateX(${studentForm ? '0%' : '-50%'})` }}>
                       <div className={SignUpCSS.title}>
-                        <h1 name="header" className={SignUpCSS.header}>Sign Up Student</h1>
+                        <h1 name="header" className={SignUpCSS.header}>{t('signUpStudent')}</h1>
                         <div className={SignUpCSS.form_inner}>
                           <StudentForm reset={resetKey} />
                         </div>
                       </div>
                       <div className={SignUpCSS.title}>
-                        <h1 name="header" className={SignUpCSS.header}>Sign Up Company</h1>
+                        <h1 name="header" className={SignUpCSS.header}>{t('signUpCompany')}</h1>
                         <div className={SignUpCSS.form_inner}>
                           <CompanyForm reset={resetKey} />
                         </div>
