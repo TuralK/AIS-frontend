@@ -345,5 +345,6 @@
   "previousFeedback": "Önceki geri bildirim",
   "feedbackMayNotBeSeen": "Geri bildirim, taraflar tarafından görülememiş olabilir",
   "okContinue": "Tamam, devam et",
-  "noInternshipsDescription": "Henüz stajı biten öğrenci bulunamadı."
+  "noInternshipsDescription": "Henüz stajı biten öğrenci bulunamadı.",
+  "internshipStudent": "Staj"
 }

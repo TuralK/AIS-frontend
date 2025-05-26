@@ -353,5 +353,6 @@
   "previousFeedback": "Previous Feedback",
   "feedbackMayNotBeSeen": "Feedback may not be seen by the parties involved.",
   "okContinue": "OK, Continue",
-  "noInternshipsDescription": "Could not find an internship finished."
+  "noInternshipsDescription": "Could not find an internship finished.",
+  "internshipStudent": "Internship"
 }

@@ -24,13 +24,15 @@ const StudentInternship = () => {
   const [loading, setLoading] = useState(true);
   const [finishing, setFinishing] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [latestStudentFeedbacks, setLatestStudentFeedbacks] = useState([]);
 
   useEffect(() => {
     const fetchInternship = async () => {
       try {
         const res = await getInternship();
-        
-        setInternshipData(res);
+        console.log("Internship data:", res);
+        setLatestStudentFeedbacks(res.latestStudentFeedbacks);
+        setInternshipData(res.internship);
       } catch (err) {
         console.error("Get internship error:", err);
       } finally {
@@ -161,7 +163,7 @@ const StudentInternship = () => {
           {(internshipData.studentStatus !== 2 && internshipData.studentStatus !== 0 )  && (
             <div className="flex-1">
               <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-                <FeedbackSection internshipData={internshipData} />
+                <FeedbackSection internshipData={internshipData} latestStudentFeedbacks={latestStudentFeedbacks} />
               </div>
             </div>
           )}
