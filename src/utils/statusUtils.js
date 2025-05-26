@@ -41,14 +41,14 @@ export const getCompanySupervisorStatus = (data) => {
 export const getCoordinatorStatus = (data) => {
   const { status, studentStatus, feedbackContextStudent } = data;
 
-  // status === 2 -> Admin onaylamış (direkt onay mesajı, feedback gözükmez)
+  // status === 2 -> Admin approved (approved message, feedback context not needed)
   if (status === 2) {
     return "Approved";
   }
 
-  // status === 1 -> Beklemede, feedback varsa diğer status değerleri gösterilir
+  // status === 1 -> pending, 
   if (status === 1) {
-    // Eğer feedback context'i varsa, özel durumları kontrol et
+    // if feedbackContextStudent is provided, check its value
     if (feedbackContextStudent) {
       switch (feedbackContextStudent) {
         case "MissingReport":
@@ -58,7 +58,7 @@ export const getCoordinatorStatus = (data) => {
           return "AdminFeedbackBoth_StudOnlyReport";
           // "Admin gave feedback for both report and survey, student only updated the report."
         case "Report":
-          // Admin yalnızca raporla ilgili geri bildirim vermiş
+          // Admin only gave feedback on report
           if (studentStatus === 4 || studentStatus === 6) {
             return "AdminFeedbackReport_StudUpdated"; 
             // "Admin gave feedback on report, student updated accordingly."
@@ -71,21 +71,21 @@ export const getCoordinatorStatus = (data) => {
           }
           break;
         case "Both":
-          // Admin her ikisi için de geri bildirim vermiş
+          // Admin gave feedback on both report and survey, student updated both
           return "AdminFeedbackBoth";
         default:
           return "Pending";
       }
     }
-    // Eğer feedback context'i yoksa normal pending
+    // If no feedbackContextStudent is provided, return Pending
     return "Pending";
   }
 
-  // status === 3 -> Admin reddetti
+  // status === 3 -> Admin rejected
   if (status === 3) {
     return "Rejected";
   }
 
-  // Diğer durumlar için default
+  // default
   return "Pending";
 };
