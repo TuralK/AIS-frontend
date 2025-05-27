@@ -55,19 +55,23 @@ const DICAnouncementDetails = () => {
 
   const handleApproval = async () => {
     try {
-      await updateAnnouncementById(id, true, feedback); 
+      await updateAnnouncementById(id, true, feedback);
+      alert(t('announcementApproved'));
       navigate(-1); 
     } catch (error) {
       console.error('Error updating announcement:', error);
+      alert(t('failedToApprove'));
     }
   };
 
   const handleReject = async () => {
     try {
       await updateAnnouncementById(id, false, feedback);
+      alert(t('announcementRejected'));
       navigate(-1);
     } catch (error) {
       console.error('Error updating announcement:', error);
+      alert(t('failedToReject'));
     }
   };
 

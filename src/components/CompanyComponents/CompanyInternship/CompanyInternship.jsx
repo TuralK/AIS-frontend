@@ -198,6 +198,8 @@ const CompanyInternship = () => {
         return "You have approved the report and uploaded the company form.";
       case 4:
         return "The admin has requested changes to the submission.";
+      case 5:
+        return "You have updated the company form.";
       default:
         return null;
     }

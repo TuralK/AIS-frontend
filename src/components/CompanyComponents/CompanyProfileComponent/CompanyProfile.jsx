@@ -20,6 +20,7 @@ import EmptyState from '../../UtilComponents/EmptyState';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { getCompanyReviews } from '../../../api/CompanyApi/CompanyProfileApi/getCompanyReviewsAPI';
 import { fetchAnnouncements } from '../../../api/StudentApi/fetchAnnouncementsAPI'
+import { getAnnouncementByCompanyId } from '../../../api/StudentApi/getAnnouncementsByCompanyIdAPI';
 
 
 const baseUrl = 'http://localhost:3005';
@@ -536,7 +537,7 @@ const CompanyProfile = () => {
             response = await getCompanyAnnouncements();
             setAnnouncements(response.announcements);
           } else {
-            response = await fetchAnnouncements();
+            response = await getAnnouncementByCompanyId(id);
             setAnnouncements(response);
           }
           setHasFetchedAnnouncements(true);

@@ -49,6 +49,7 @@ export default function PendingApplicationList() {
   }, [allApplications, searchTerm]);
 
   const handleSubmitSuccess = () => {
+    alert(t('employmentCertificateSent'));
     window.location.reload();
   };
 

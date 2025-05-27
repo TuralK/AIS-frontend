@@ -178,9 +178,9 @@ body, html {
 }
 
 .filter-button.active {
-  background-color: #007bff; /* Example active color */
+  background-color: darkred; /* Example active color */
   color: white;
-  border-color: #007bff;
+  border-color: darkred;
 }
 
 /* ... rest of your CSS ... */
