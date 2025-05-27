@@ -12,7 +12,7 @@ const LinkRequestCard = ({ request, onApprove, onReject, isProcessing }) => {
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              {t('linkRequestsCardTitle')} {request.companyName}
+              {t('linkRequestsCardTitle')} {request.Student.username}
             </h3>
             {getStatusBadge(request.status, t)}
           </div>
