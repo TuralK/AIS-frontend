@@ -36,6 +36,7 @@ import CompanyInternships from "./components/CompanyComponents/CompanyInternship
 import CompanyInternship from "./components/CompanyComponents/CompanyInternship/CompanyInternship.jsx";
 import StudentSettings from "./components/StudentComponents/StudentSettings/StudentSettings.jsx";
 import DICLinkRequests from "./components/DICcomponents/DICLinkRequests/DICLinkRequests.jsx";
+import ManualUpload from "./components/CompanyComponents/ManualUpload/ManualUpload.jsx";
 
 const initialVh = window.innerHeight;
 document.documentElement.style.setProperty('--initial-vh', `${initialVh}px`);
@@ -115,6 +116,10 @@ const App = () => {
         { path: "home", element: <PendingApplicationList />, handle: { titleKey: 'home' }},
         { path: "settings", element: <Settings apiUrl= 'http://localhost:3006' />, handle: { titleKey: 'settings' } },
       ]
+    },
+    {
+      path: '/internship/upload',
+      element: <ManualUpload />,
     },
     {
       path: '*',

@@ -1,9 +1,10 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useEffect } from "react"
 import styles from "./PublishAnnouncement.module.css"
 import { publishAnnouncement } from "../../../api/CompanyApi/publishAnnouncementAPI"
 import { AiOutlineInfoCircle } from "react-icons/ai"
 import { useMatches } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { getAllSkills } from "../../../api/CompanyApi/getAllSkillsAPI";
 
 export default function PublishAnnouncement() {
   const matches = useMatches();
@@ -16,43 +17,70 @@ export default function PublishAnnouncement() {
     document.title = titleKey ? `${baseTitle} | ${t(titleKey)}` : baseTitle;
   }, [titleKey, t]);
 
-  
   // New state variables for inputs
   const [title, setTitle] = useState("")
   const [details, setDetails] = useState("")
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
-  const [image, setImage] = useState(null)           // For image preview (URL)
-  const [imageFile, setImageFile] = useState(null)     // The actual file object
+  const [image, setImage] = useState(null)     // For image preview (URL)
+  const [imageFile, setImageFile] = useState(null)    // The actual file object
   const [imageSize, setImageSize] = useState({ width: "", height: "" })
-  
+  const [skills, setSkills] = useState([])
+  const [selectedSkillIds, setSelectedSkillIds] = useState([]);
+
+
   const startDatePickerRef = useRef(null)
   const endDatePickerRef = useRef(null)
 
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const response = await getAllSkills();
+        setSkills(response);
+      } catch (error) {
+        console.error("Error fetching skills:", error);
+      }
+    };
+
+    fetchSkills();
+  }, []);
+
+  const handleSkillSelection = (e) => {
+    const skillId = e.target.value;
+    if (e.target.checked) {
+      setSelectedSkillIds((prev) => [...prev, skillId]);
+    } else {
+      setSelectedSkillIds((prev) => prev.filter((id) => id !== skillId));
+    }
+  };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     const start = new Date(startDate);
     const end = new Date(endDate);
 
     if (start > end) {
-      alert("Start date must be before the end date.");
+      alert(t("publishAnnouncements.startDateBeforeEndDate"));
       return false;
     }
 
-    // new Date("YYYY-MM-DD") creates a valid date
     const isoStartDate = new Date(startDate).toISOString();
     const isoEndDate = new Date(endDate).toISOString();
-  
+
     const formData = new FormData();
     formData.append("announcementName", title);
     formData.append("description", details);
+    selectedSkillIds.forEach((id) => {
+      formData.append("skillIds", id); // backend must support receiving an array like this
+    });
     formData.append("startDate", isoStartDate);
     formData.append("endDate", isoEndDate);
     if (imageFile) {
       formData.append("image", imageFile);
     }
-  
+
     try {
       const response = await publishAnnouncement(formData);
       alert(response.data.message);
@@ -61,8 +89,6 @@ export default function PublishAnnouncement() {
       alert(error);
     }
   };
-  
-  
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0]
@@ -75,7 +101,7 @@ export default function PublishAnnouncement() {
             img.width !== Number(imageSize.width) ||
             img.height !== Number(imageSize.height)
           ) {
-            alert(`Image must be ${imageSize.width}x${imageSize.height} pixels`)
+            alert(t("publishAnnouncements.imageSizeMismatch", { width: imageSize.width, height: imageSize.height }));
             return
           }
         }
@@ -112,8 +138,6 @@ export default function PublishAnnouncement() {
   }
 
   const handleDatePickerChange = (e, setDate) => {
-    // The HTML5 date input value is in YYYY-MM-DD format,
-    // which is acceptable by new Date()
     setDate(e.target.value);
   }
 
@@ -125,63 +149,39 @@ export default function PublishAnnouncement() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.heading}>Publish Announcement</h1>
+      <h1 className={styles.heading}>{t("publishAnnouncements.pageTitle")}</h1>
 
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.formGroup}>
-          <label htmlFor="title">Title</label>
-          <input 
-            type="text" 
-            id="title" 
-            placeholder="Enter announcement title" 
-            className={styles.input} 
+          <label htmlFor="title">{t("publishAnnouncements.title")}</label>
+          <input
+            type="text"
+            id="title"
+            placeholder={t("publishAnnouncements.enterAnnouncementTitle")}
+            className={styles.input}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
         </div>
 
         <div className={styles.formGroup}>
-          <label htmlFor="details">Details</label>
-          <textarea 
-            id="details" 
-            placeholder="Enter the details of your announcement" 
+          <label htmlFor="details">{t("publishAnnouncements.details")}</label>
+          <textarea
+            id="details"
+            placeholder={t("publishAnnouncements.enterAnnouncementDetails")}
             className={styles.textarea}
             value={details}
             onChange={(e) => setDetails(e.target.value)}
           />
         </div>
 
-        {/*<div className={styles.dateContainer}>
-          <div className={styles.formGroup}>
-          <label htmlFor="startDate">Start Date</label>
-          <input
-            type="date"
-            id="startDate"
-            className={styles.input}
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-          </div>
-
-          <div className={styles.formGroup}>
-            <label htmlFor="endDate">End Date</label>
-            <input
-              type="date"
-              id="endDate"
-              className={styles.input}
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
-          </div>
-        </div>
-        */}
-         <div className={styles.dateContainer}>
+        <div className={styles.dateContainer}>
           <div className={styles.formGroup}>
             <label htmlFor="startDate" className={styles.dateDiv}>
-              Start Date&nbsp;
+              {t("publishAnnouncements.startDate")}&nbsp;
               <AiOutlineInfoCircle
                 className={styles.infoIcon}
-                title="The announcement will start showing on the site on this date."
+                title={t("publishAnnouncements.startDateInfo")}
               />
             </label>
             <input
@@ -195,10 +195,10 @@ export default function PublishAnnouncement() {
 
           <div className={styles.formGroup}>
             <label htmlFor="endDate" className={styles.dateDiv}>
-              End Date&nbsp;
+              {t("publishAnnouncements.endDate")}&nbsp;
               <AiOutlineInfoCircle
                 className={styles.infoIcon}
-                title="The announcement will stop showing on the site on this date."
+                title={t("publishAnnouncements.endDateInfo")}
               />
             </label>
             <input
@@ -212,12 +212,29 @@ export default function PublishAnnouncement() {
         </div>
 
         <div className={styles.formGroup}>
-          <label>Upload Image</label>
+          <label>{t("publishAnnouncements.selectSkills")}</label>
+          <div className={styles.skillsList}>
+            {skills.map((skill) => {
+              const isSelected = selectedSkillIds.includes(skill.id.toString());
+              return (
+                <div
+                    key={skill.id}
+                    className={`${styles.skillTag} ${isSelected ? styles.selectedSkillTag : ''}`}
+                    onClick={() => handleSkillSelection({ target: { value: skill.id.toString(), checked: !isSelected } })}
+                >
+                    {skill.name}
+                </div>
+              );
+          })}
+          </div>
+        </div>
+
+        <div className={styles.formGroup}>
+          <label>{t("publishAnnouncements.uploadImage")}</label>
           <div className={styles.imageSizeInputs}>
-            {/* Change size and width inputs (hidden in this example) */}
             <input
               type="number"
-              placeholder="Width (px)"
+              placeholder={t("publishAnnouncements.widthPx")}
               value={imageSize.width}
               onChange={(e) => setImageSize({ ...imageSize, width: e.target.value })}
               className={styles.imageSizeInput}
@@ -226,26 +243,26 @@ export default function PublishAnnouncement() {
             <input
               hidden={true}
               type="number"
-              placeholder="Height (px)"
+              placeholder={t("publishAnnouncements.heightPx")}
               value={imageSize.height}
               onChange={(e) => setImageSize({ ...imageSize, height: e.target.value })}
               className={styles.imageSizeInput}
             />
           </div>
           <div className={styles.uploadArea}>
-            <input 
-              type="file" 
-              id="image" 
-              accept="image/*" 
-              onChange={handleImageUpload} 
-              className={styles.fileInput} 
+            <input
+              type="file"
+              id="image"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className={styles.fileInput}
             />
             {image ? (
               <div className={styles.imagePreview}>
-                <img 
-                  src={image} 
-                  alt="Preview" 
-                  className={styles.previewImage} 
+                <img
+                  src={image}
+                  alt="Preview"
+                  className={styles.previewImage}
                 />
                 <div className={styles.imageOverlay}>
                   <button
@@ -253,14 +270,14 @@ export default function PublishAnnouncement() {
                     onClick={() => document.getElementById("image").click()}
                     className={styles.editButton}
                   >
-                    Edit
+                    {t("publishAnnouncements.edit")}
                   </button>
-                  <button 
-                    type="button" 
-                    onClick={handleRemoveImage} 
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
                     className={styles.removeButton}
                   >
-                    Remove
+                    {t("publishAnnouncements.remove")}
                   </button>
                 </div>
               </div>
@@ -271,17 +288,16 @@ export default function PublishAnnouncement() {
                   alt="Upload icon"
                   className={styles.uploadIcon}
                 />
-                <span>Click to upload or drag and drop</span>
+                <span>{t("publishAnnouncements.clickToUpload")}</span>
               </div>
             )}
           </div>
         </div>
 
         <button type="submit" className={styles.submitButton}>
-          Publish Announcement
+          {t("publishAnnouncements.publishButton")}
         </button>
       </form>
     </div>
   )
 }
-  

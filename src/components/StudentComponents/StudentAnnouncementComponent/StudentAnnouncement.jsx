@@ -634,6 +634,19 @@ const StudentAnnouncementComponent = () => {
                       </div>
                     </div>
 
+                    {announcement.skillId_Skills?.length > 0 && (
+                      <div className={StudentAnnouncementCSS.skillsContainer}>
+                        <h2 className={StudentAnnouncementCSS.skillsHeading}>{t('requiredSkills')}</h2>
+                        <div className={StudentAnnouncementCSS.skillsList}>
+                          {announcement.skillId_Skills.map((skill) => (
+                            <span key={skill.id} className={StudentAnnouncementCSS.skillItem}>
+                              {skill.name}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     <div className={StudentAnnouncementCSS.endDateContainer}>
                       <h3 className={StudentAnnouncementCSS.endDateName}>{t('end_date')}</h3>
                       <p className={StudentAnnouncementCSS.endDate}>{formattedEndDate}</p>
@@ -646,8 +659,7 @@ const StudentAnnouncementComponent = () => {
             )
         : 
         (
-            "No information found"
-            // <p>{t('no_announcement_found')}</p>
+            <p>{t('no_information_found')}</p>
         )}
 
         <CustomAlertDialog

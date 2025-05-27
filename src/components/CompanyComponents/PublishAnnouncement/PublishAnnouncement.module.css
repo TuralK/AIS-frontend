@@ -244,3 +244,39 @@
   vertical-align: middle;
   font-size: 1.1em;
 }
+
+/* In PublishAnnouncement.module.css */
+
+.skillsList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.skillTag {
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    border-radius: 20px; /* Pill shape */
+    background-color: #f0f0f0;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    font-size: 0.95rem;
+    white-space: nowrap; /* Prevent text wrapping inside the tag */
+}
+
+.skillTag:hover {
+    background-color: #e0e0e0;
+    border-color: #999;
+}
+
+.selectedSkillTag {
+    background-color: #8b2323;
+    color: white;
+    border-color: #8b2323;
+}
+
+.selectedSkillTag:hover {
+    background-color: #701c1c;
+    border-color: #701c1c;
+}

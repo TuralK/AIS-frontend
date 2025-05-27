@@ -7,118 +7,115 @@ import { createStudentProfile } from '../../../api/StudentApi/StudentProfileAPI/
 import ProfilePic from '../../../assets/default_profile_icon.png'
 import StudentBackgound from "../../../assets/default_background.jpg";
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
+import { useTranslation } from 'react-i18next';
 
-const steps = [
-  'Personal Info',
-  'Contact',
-  'Bio',
-  'Experience',
-  'Certificates',
-  'Skills',
-  'Languages',
-  'Review'
-];
 
-const formReducer = (state, action) => {
-  switch (action.type) {
-    case 'UPDATE_FIELD':
-      return { ...state, [action.field]: action.value };
-    case 'ADD_EXPERIENCE':
-      return { ...state, experiences: [...state.experiences, action.payload] };
-    case 'UPDATE_EXPERIENCE':
-      return {
-        ...state,
-        experiences: state.experiences.map((exp, i) =>
-          i === action.index ? { ...exp, [action.field]: action.value } : exp
-        )
-      };
-    case 'REMOVE_EXPERIENCE':
-      return {
-        ...state,
-        experiences: state.experiences.filter((_, i) => i !== action.index)
-      };
-      case 'ADD_EXPERIENCE_SKILL': 
-      return {
-        ...state,
-        experiences: state.experiences.map((exp, i) => 
-          i === action.expIndex ? {
-            ...exp,
-            skills: [...exp.skills, action.skill]
-          } : exp
-        )
-      };
-    case 'REMOVE_EXPERIENCE_SKILL':
-      return {
-        ...state,
-        experiences: state.experiences.map((exp, i) =>
-          i === action.expIndex ? {
-            ...exp,
-            skills: exp.skills.filter((_, i) => i !== action.skillIndex)
-          } : exp
-        )
-      };
-    case 'ADD_CERTIFICATE':
-      return { ...state, certificates: [...state.certificates, action.payload] };
-    case 'UPDATE_CERTIFICATE':
-      return {
-        ...state,
-        certificates: state.certificates.map((cert, i) =>
-          i === action.index ? { ...cert, [action.field]: action.value } : cert
-        )
-      };
-    case 'REMOVE_CERTIFICATE':
-      return {
-        ...state,
-        certificates: state.certificates.filter((_, i) => i !== action.index)
-      };
-    case 'ADD_SKILL':
-      return { ...state, skills: [...state.skills, action.payload] };
-    case 'REMOVE_SKILL':
-      return {
-        ...state,
-        skills: state.skills.filter((_, i) => i !== action.index)
-      };
-    case 'ADD_LANGUAGE':
-      return { ...state, languages: [...state.languages, action.payload] };
-    // case 'UPDATE_LANGUAGE':
-    //   return {
-    //     ...state,
-    //     languages: state.languages.map((lang, i) =>
-    //       i === action.index ? { ...lang, rating: action.rating } : lang
-    //     )
-    //   };
-    case 'UPDATE_LANGUAGE':
-      return {
-        ...state,
-        languages: state.languages.map((lang, i) =>
-          i === action.index ? { ...lang, ...action.payload } : lang
-        )
-      };
-    case 'REMOVE_LANGUAGE':
-      return {
-        ...state,
-        languages: state.languages.filter((_, i) => i !== action.index)
-      };
-    default:
-      return state;
-  }
-};
-
-const initialState = {
-  // username: '',
-  // title: '',
-  bio: '',
-  email: '',
-  phoneNumber: '',
-  address: '',
-  webSite: '',
-  experiences: [],
-  certificates: [],
-  skills: [],
-  languages: []
-};
 
 const StudentCreateProfile = ({StarRating}) => {
+  
+  const { t } = useTranslation();
+  const steps = [
+    t('studentProfile.personalInfo'),
+    t('studentProfile.contact'),
+    t('studentProfile.bio'),
+    t('studentProfile.experience'),
+    t('studentProfile.certificates'),
+    t('studentProfile.skills'),
+    t('studentProfile.languages'),
+    t('studentProfile.review')
+  ];
+
+  const formReducer = (state, action) => {
+    switch (action.type) {
+      case 'UPDATE_FIELD':
+        return { ...state, [action.field]: action.value };
+      case 'ADD_EXPERIENCE':
+        return { ...state, experiences: [...state.experiences, action.payload] };
+      case 'UPDATE_EXPERIENCE':
+        return {
+          ...state,
+          experiences: state.experiences.map((exp, i) =>
+            i === action.index ? { ...exp, [action.field]: action.value } : exp
+          )
+        };
+      case 'REMOVE_EXPERIENCE':
+        return {
+          ...state,
+          experiences: state.experiences.filter((_, i) => i !== action.index)
+        };
+        case 'ADD_EXPERIENCE_SKILL': 
+        return {
+          ...state,
+          experiences: state.experiences.map((exp, i) => 
+            i === action.expIndex ? {
+              ...exp,
+              skills: [...exp.skills, action.skill]
+            } : exp
+          )
+        };
+      case 'REMOVE_EXPERIENCE_SKILL':
+        return {
+          ...state,
+          experiences: state.experiences.map((exp, i) =>
+            i === action.expIndex ? {
+              ...exp,
+              skills: exp.skills.filter((_, i) => i !== action.skillIndex)
+            } : exp
+          )
+        };
+      case 'ADD_CERTIFICATE':
+        return { ...state, certificates: [...state.certificates, action.payload] };
+      case 'UPDATE_CERTIFICATE':
+        return {
+          ...state,
+          certificates: state.certificates.map((cert, i) =>
+            i === action.index ? { ...cert, [action.field]: action.value } : cert
+          )
+        };
+      case 'REMOVE_CERTIFICATE':
+        return {
+          ...state,
+          certificates: state.certificates.filter((_, i) => i !== action.index)
+        };
+      case 'ADD_SKILL':
+        return { ...state, skills: [...state.skills, action.payload] };
+      case 'REMOVE_SKILL':
+        return {
+          ...state,
+          skills: state.skills.filter((_, i) => i !== action.index)
+        };
+      case 'ADD_LANGUAGE':
+        return { ...state, languages: [...state.languages, action.payload] };
+      case 'UPDATE_LANGUAGE':
+        return {
+          ...state,
+          languages: state.languages.map((lang, i) =>
+            i === action.index ? { ...lang, ...action.payload } : lang
+          )
+        };
+      case 'REMOVE_LANGUAGE':
+        return {
+          ...state,
+          languages: state.languages.filter((_, i) => i !== action.index)
+        };
+      default:
+        return state;
+    }
+  };
+
+  const initialState = {
+    bio: '',
+    email: '',
+    phoneNumber: '',
+    address: '',
+    webSite: '',
+    experiences: [],
+    certificates: [],
+    skills: [],
+    languages: []
+  };
+
+
   const [state, dispatch] = useReducer(formReducer, initialState);
   const [currentStep, setCurrentStep] = useState(0);
   const [profileFile, setProfileFile] = useState(null);
@@ -239,7 +236,7 @@ const StudentCreateProfile = ({StarRating}) => {
         return (
           <div className={styles.stepContent}>
             <div className={styles.formGroup}>
-              <label>Profile Picture</label>
+              <label>{t('studentProfile.profilePicture')}</label>
               <input
                 type="file"
                 accept="image/*"
@@ -248,7 +245,7 @@ const StudentCreateProfile = ({StarRating}) => {
               <div className={styles.imagePreviewContainer}>
                 <img 
                   src={profilePreview || ProfilePic} 
-                  alt="Profile Preview" 
+                  alt={t('studentProfile.profilePreview')}
                   className={styles.imagePreview} 
                 />
                 {profilePreview && (
@@ -266,16 +263,16 @@ const StudentCreateProfile = ({StarRating}) => {
             </div>
 
             <div className={styles.formGroup}>
-              <label>Banner Image</label>
+              <label>{t('studentProfile.bannerImage')}</label>
               <input
                 type="file"
                 accept="image/*"
                 onChange={(e) => handleImageUpload(e.target.files[0], false)}
               />
-              <div  className={styles.bannerPreviewContainer}>
+              <div className={styles.bannerPreviewContainer}>
                 <img 
                   src={bannerPreview || StudentBackgound} 
-                  alt="Profile Preview" 
+                  alt={t('studentProfile.bannerPreview')}
                   className={styles.bannerPreview} 
                 />
                 {bannerPreview && (
@@ -319,7 +316,7 @@ const StudentCreateProfile = ({StarRating}) => {
         return (
           <div className={styles.stepContent}>
             <div className={styles.formGroup}>
-              <label>Email</label>
+              <label>{t('studentProfile.email')}</label>
               <input
                 type="email"
                 value={state.email}
@@ -329,17 +326,17 @@ const StudentCreateProfile = ({StarRating}) => {
             </div>
 
             <div className={styles.formGroup}>
-              <label>Phone Number</label>
+              <label>{t('studentProfile.phoneNumber')}</label>
               <input
                 value={state.phoneNumber}
                 onChange={(e) => dispatch({ type: 'UPDATE_FIELD', field: 'phoneNumber', value: e.target.value })}
-                placeholder="+CountryCode Number"
+                placeholder={t('studentProfile.phonePlaceholder')}
               />
               {errors.phoneNumber && <span className={styles.error}>{errors.phoneNumber}</span>}
             </div>
 
             <div className={styles.formGroup}>
-              <label>Location</label>
+              <label>{t('studentProfile.location')}</label>
               <input
                 value={state.address}
                 onChange={(e) => dispatch({ type: 'UPDATE_FIELD', field: 'address', value: e.target.value })}
@@ -347,7 +344,7 @@ const StudentCreateProfile = ({StarRating}) => {
             </div>
 
             <div className={styles.formGroup}>
-              <label>Website</label>
+              <label>{t('studentProfile.website')}</label>
               <input
                 value={state.webSite}
                 onChange={(e) => dispatch({ type: 'UPDATE_FIELD', field: 'webSite', value: e.target.value })}
@@ -361,7 +358,7 @@ const StudentCreateProfile = ({StarRating}) => {
         return (
           <div className={styles.stepContent}>
             <div className={`${styles.formGroup} ${styles.aboutMeTextArea}`}>
-              <label>About You</label>
+              <label>{t('studentProfile.aboutYou')}</label>
               <textarea
                 value={state.bio}
                 onChange={(e) => dispatch({ type: 'UPDATE_FIELD', field: 'bio', value: e.target.value })}
@@ -381,13 +378,13 @@ const StudentCreateProfile = ({StarRating}) => {
                 payload: { pos: '', company: '', startDate: '', endDate: '', description: '', skills: [] }
               })}
             >
-              + Add Experience
+               {t('studentProfile.addExperience')}
             </button>
 
             {state.experiences.map((exp, index) => (
               <div key={index} className={styles.card}>
                 <div className={styles.formGroup}>
-                  <label>Position *</label>
+                  <label>{t('studentProfile.position')}</label>
                   <input
                     value={exp.pos}
                     onChange={(e) => dispatch({
@@ -403,7 +400,7 @@ const StudentCreateProfile = ({StarRating}) => {
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label>Company *</label>
+                  <label>{t('studentProfile.company')} *</label>
                   <input
                     value={exp.company}
                     onChange={(e) => dispatch({
@@ -420,7 +417,7 @@ const StudentCreateProfile = ({StarRating}) => {
 
                 <div className={styles.dateGroup}>
                   <div className={styles.formGroup}>
-                    <label>Start Date *</label>
+                    <label>{t('studentProfile.startDate')} *</label>
                     <input
                       type="date"
                       value={exp.startDate}
@@ -437,7 +434,7 @@ const StudentCreateProfile = ({StarRating}) => {
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label>End Date</label>
+                    <label>{t('studentProfile.endDate')}</label>
                     <input
                       type="date"
                       value={exp.endDate}
@@ -465,7 +462,7 @@ const StudentCreateProfile = ({StarRating}) => {
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label>Description</label>
+                  <label>{t('studentProfile.description')}</label>
                   <textarea
                     value={exp.description}
                     onChange={(e) => dispatch({
@@ -479,7 +476,7 @@ const StudentCreateProfile = ({StarRating}) => {
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label>Skills</label>
+                  <label>{t('studentProfile.skills')}</label>
                   <div className={styles.skillsContainer}>
                     <div className={styles.availableSkills}>
                     <div className={styles.skillsGrid}>
@@ -536,7 +533,7 @@ const StudentCreateProfile = ({StarRating}) => {
                   className={styles.removeButton}
                   onClick={() => dispatch({ type: 'REMOVE_EXPERIENCE', index })}
                 >
-                  Remove Experience
+                  {t('studentProfile.removeExperience')}
                 </button>
               </div>
             ))}
@@ -553,13 +550,13 @@ const StudentCreateProfile = ({StarRating}) => {
                 payload: { title: '', issuingOrganization: '', issueDate: '', expirationDate: '' }
               })}
             >
-              + Add Certificate
+              {t('studentProfile.addCertificate')}
             </button>
 
             {state.certificates.map((cert, index) => (
               <div key={index} className={styles.card}>
                 <div className={styles.formGroup}>
-                  <label>Title *</label>
+                  <label>{t('studentProfile.title')} *</label>
                   <input
                     value={cert.title}
                     onChange={(e) => dispatch({
@@ -575,7 +572,7 @@ const StudentCreateProfile = ({StarRating}) => {
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label>Issuing Organization *</label>
+                  <label>{t('studentProfile.issuingOrganization')} *</label>
                   <input
                     value={cert.issuingOrganization}
                     onChange={(e) => dispatch({
@@ -592,7 +589,7 @@ const StudentCreateProfile = ({StarRating}) => {
 
                 <div className={styles.dateGroup}>
                   <div className={styles.formGroup}>
-                    <label>Issue Date *</label>
+                    <label>{t('studentProfile.issueDate')} *</label>
                     <input
                       type="date"
                       value={cert.issueDate}
@@ -609,7 +606,7 @@ const StudentCreateProfile = ({StarRating}) => {
                   </div>
 
                   <div className={styles.formGroup}>
-                    <label>Expiration Date</label>
+                    <label>{t('studentProfile.expirationDate')}</label>
                     <input
                       type="date"
                       value={cert.expirationDate || ''}
@@ -640,7 +637,7 @@ const StudentCreateProfile = ({StarRating}) => {
                   className={styles.removeButton}
                   onClick={() => dispatch({ type: 'REMOVE_CERTIFICATE', index })}
                 >
-                  Remove Certificate
+                  {t('studentProfile.removeCertificate')}
                 </button>
               </div>
             ))}
@@ -652,7 +649,7 @@ const StudentCreateProfile = ({StarRating}) => {
           <div className={styles.stepContent}>
             <div className={styles.skillsContainer}>
               <div className={styles.availableSkills}>
-                <h3>Available Skills</h3>
+                <h3>{t('studentProfile.availableSkills')}</h3>
                 <div className={styles.skillsGrid}>
                   {allSkills.map(skill => (
                     <button
@@ -678,7 +675,7 @@ const StudentCreateProfile = ({StarRating}) => {
               </div>
 
               <div className={styles.selectedSkills}>
-                <h3>Selected Skills ({state.skills.length})</h3>
+                <h3>{t('studentProfile.selectedSkills')} ({state.skills.length})</h3>
                 <div className={styles.skillsGrid}>
                   {state.skills.map((skill, index) => (
                     <div key={skill.id} className={styles.skillPill}>
@@ -707,13 +704,13 @@ const StudentCreateProfile = ({StarRating}) => {
                 payload: { id: '', name: '', rating: 1 }
               })}
             >
-              + Add Language
+              {t('studentProfile.addLanguage')}
             </button>
 
             {state.languages.map((lang, index) => (
               <div key={index} className={styles.card}>
                 <div className={styles.formGroup}>
-                  <label>Language</label>
+                  <label>{t('studentProfile.language')}</label>
                   <select
                     value={lang.id || ''}
                     // onChange={(e) => {
@@ -744,7 +741,7 @@ const StudentCreateProfile = ({StarRating}) => {
                       }
                     }}
                   >
-                    <option value="" disabled>Select a language</option>
+                    <option value="" disabled>{t('studentProfile.selectLanguage')}</option>
                     {allLanguages.map(lang => (
                       <option key={lang.id} value={lang.id}>{lang.name}</option>
                     ))}
@@ -752,7 +749,7 @@ const StudentCreateProfile = ({StarRating}) => {
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label>Proficiency</label>
+                  <label>{t('studentProfile.proficiency')}</label>
                   {/* <StarRating
                     rating={lang.rating}
                     onRatingChange={(rating) => dispatch({
@@ -776,7 +773,7 @@ const StudentCreateProfile = ({StarRating}) => {
                   className={styles.removeButton}
                   onClick={() => dispatch({ type: 'REMOVE_LANGUAGE', index })}
                 >
-                  Remove Language
+                  {t('studentProfile.removeLanguage')}
                 </button>
               </div>
             ))}
@@ -787,7 +784,7 @@ const StudentCreateProfile = ({StarRating}) => {
         return (
           <div className={styles.stepContent}>
             <div className={styles.reviewSection}>
-              <h2>Profile Preview</h2>
+              <h2>{t('studentProfile.profilePreview')}</h2>
               <div className={styles.profileHeader}>
                 <div className={styles.banner}>
                   {bannerPreview ? (
@@ -806,20 +803,20 @@ const StudentCreateProfile = ({StarRating}) => {
               </div>
 
               <div className={styles.reviewGroup}>
-                <h3>Contact Information</h3>
-                <p>Email: {state.email || 'Not provided'}</p>
-                <p>Phone: {state.phoneNumber || 'Not provided'}</p>
-                <p>Location: {state.address || 'Not provided'}</p>
-                <p>Website: {state.webSite || 'Not provided'}</p>
+                <h3>{t('studentProfile.contactInformation')}</h3>
+                <p>{t('studentProfile.email')}: {state.email || 'Not provided'}</p>
+                <p>{t('studentProfile.phone')}: {state.phoneNumber || 'Not provided'}</p>
+                <p>{t('studentProfile.location')}: {state.address || 'Not provided'}</p>
+                <p>{t('studentProfile.website')}: {state.webSite || 'Not provided'}</p>
               </div>
 
               <div className={styles.reviewGroup}>
-                <h3>About</h3>
-                <p className={styles.aboutText}>{state.bio || 'No bio provided'}</p>
+                <h3>{t('studentProfile.about')}</h3>
+                <p className={styles.aboutText}>{state.bio || t('studentProfile.noBioProvided')}</p>
               </div>
 
               <div className={styles.reviewGroup}>
-                <h3>Experiences ({state.experiences.length})</h3>
+                <h3>{t('studentProfile.experiences')} ({state.experiences.length})</h3>
                 {state.experiences.map((exp, index) => (
                   <div key={index} className={styles.reviewItem}>
                     <p><strong>{exp.pos}</strong> at {exp.company}</p>
@@ -829,19 +826,19 @@ const StudentCreateProfile = ({StarRating}) => {
               </div>
 
               <div className={styles.reviewGroup}>
-                <h3>Certificates ({state.certificates.length})</h3>
+                <h3>{t('studentProfile.certificates')} ({state.certificates.length})</h3>
                 {state.certificates.map((cert, i) => (
                   <div key={i} className={styles.reviewItem}>
                     <p><strong>{cert.title}</strong></p>
-                    <p>Issued by: {cert.issuingOrganization}</p>
-                    <p>Issued: {cert.issueDate}</p>
-                    {cert.expirationDate && <p>Expires: {cert.expirationDate}</p>}
+                    <p>{t('studentProfile.issuedBy')}: {cert.issuingOrganization}</p>
+                    <p>{t('studentProfile.issued')}: {cert.issueDate}</p>
+                    {cert.expirationDate && <p>{t('studentProfile.expires')}: {cert.expirationDate}</p>}
                   </div>
                 ))}
               </div>
 
               <div className={styles.reviewGroup}>
-                <h3>Skills ({state.skills.length})</h3>
+                <h3>{t('studentProfile.skills')} ({state.skills.length})</h3>
                 <div className={styles.skillsGrid}>
                   {state.skills.map((skill, i) => (
                     <div key={i} className={styles.skillPill}>{skill.name}</div>
@@ -850,7 +847,7 @@ const StudentCreateProfile = ({StarRating}) => {
               </div>
 
               <div className={styles.reviewGroup}>
-                <h3>Languages ({state.languages.length})</h3>
+                <h3>{t('studentProfile.languages')} ({state.languages.length})</h3>
                 {state.languages.map((lang, i) => (
                   <div key={i} className={styles.languageItem}>
                     <span>{lang.name}</span>
@@ -861,7 +858,7 @@ const StudentCreateProfile = ({StarRating}) => {
 
               <div className={styles.buttonContainer}>
                 <button className={styles.submitButton} onClick={handleSubmit}>
-                  Create Profile
+                  {t('studentProfile.createProfile')}
                 </button>
               </div>
             </div>
@@ -869,7 +866,7 @@ const StudentCreateProfile = ({StarRating}) => {
         );
 
       default:
-        return <div>Invalid step</div>;
+        return <div>{t('studentProfile.invalidStep')}</div>;
     }
   };
 
@@ -895,12 +892,12 @@ const StudentCreateProfile = ({StarRating}) => {
         <div className={styles.navigation}>
           {currentStep > 0 && (
             <button className={styles.navButton} onClick={handlePrevious}>
-              Previous
+              {t('studentProfile.previous')}
             </button>
           )}
           {currentStep < steps.length - 1 && (
             <button className={styles.navButton} onClick={handleNext}>
-              Next
+              {t('studentProfile.next')}
             </button>
           )}
         </div>

@@ -36,7 +36,7 @@ const CompanyInternship = () => {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [canReject, setCanReject] = useState(false);
+  const [canReject, setCanReject] = useState(true);
   const [canAccept, setCanAccept] = useState(true);
 
   const [isDownloading, setIsDownloading] = useState(false);
@@ -205,9 +205,6 @@ const CompanyInternship = () => {
 
   const canGiveFeedback = () => {
     const { studentStatus, feedbackContextStudent, companyStatus } = internship;
-    if (companyStatus === 3 || companyStatus === 5) {
-      return false;
-    }
     switch (studentStatus) {
       case 1:
         return true;
@@ -238,44 +235,47 @@ const CompanyInternship = () => {
       default:
         return false;
     }
+     if (companyStatus === 3 || companyStatus === 5) {
+      return false;
+    }
   };
 
   const canApprove = () => {
     const { studentStatus, companyStatus, feedbackContextStudent } = internship;
+    
+    switch (studentStatus) {
+      case 1:
+        return true;
+      case 3:
+        if (["Report", "Both"].includes(feedbackContextStudent)) {
+          return false;
+        } else {
+          return true;
+        }
+      case 4:
+        if (feedbackContextStudent === "Report" || feedbackContextStudent === "Both" || feedbackContextStudent === "ReportMissing") {
+          return false;
+        } else if (feedbackContextStudent === "SurveyMissing") {
+          return true;
+        }
+        break;
+      case 5:
+        return false;
+      case 6:
+        if (feedbackContextStudent === "Report" || feedbackContextStudent === "Both") {
+          return true;
+        } else if (feedbackContextStudent === "SurveyMissing") {
+          return false;
+        }
+        break;
+      case 7:
+        return true;
+      default:
+        return false;
+    }
     if (companyStatus === 3 || companyStatus === 5) {
       return false;
-    } else {
-      switch (studentStatus) {
-        case 1:
-          return true;
-        case 3:
-          if (["Report", "Both"].includes(feedbackContextStudent)) {
-            return false;
-          } else {
-            return true;
-          }
-        case 4:
-          if (feedbackContextStudent === "Report" || feedbackContextStudent === "Both" || feedbackContextStudent === "ReportMissing") {
-            return false;
-          } else if (feedbackContextStudent === "SurveyMissing") {
-            return true;
-          }
-          break;
-        case 5:
-          return false;
-        case 6:
-          if (feedbackContextStudent === "Report" || feedbackContextStudent === "Both") {
-            return true;
-          } else if (feedbackContextStudent === "SurveyMissing") {
-            return false;
-          }
-          break;
-        case 7:
-          return true;
-        default:
-          return false;
-      }
-    }
+    } 
   };
 
    const handleTemplateDownload = async (fileName) => {

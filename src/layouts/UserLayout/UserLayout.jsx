@@ -327,7 +327,7 @@ export const UserLayout = ({
         
         <footer className={styles.footer}>
           <div className={styles.footerContent}>
-            © {new Date().getFullYear()} IZTECH Internship Management System. All rights reserved.
+            © {new Date().getFullYear()} {t('systemFooter')}
           </div>
         </footer>
       </main>

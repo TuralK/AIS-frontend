@@ -132,7 +132,7 @@ const CompanyApplication = () => {
       const downloadUrl = window.URL.createObjectURL(fileBlob);
       const link = document.createElement("a");
       link.href = downloadUrl;
-      link.setAttribute("download", fileDisplayName+".docx");
+      link.setAttribute("download", fileDisplayName);
       document.body.appendChild(link);
       link.click();
       // Clean up the URL object and remove the temporary element

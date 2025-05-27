@@ -537,3 +537,30 @@ html, body {
 .fileContainer {
   width: 100%;
 }
+
+.skillsContainer {
+  margin-top: 30px;
+}
+
+.skillsHeading {
+  font-family: "Lexend Deca";
+  font-weight: 600;
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+
+.skillsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skillItem {
+  background-color: #f0f0f0;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-family: "Lexend Deca";
+  font-size: 14px;
+  color: #333;
+  border: 1px solid #ddd;
+}

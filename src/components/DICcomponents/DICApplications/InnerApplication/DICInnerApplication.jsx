@@ -346,7 +346,7 @@ const DICInnerApplication = () => {
               <CustomAlertDialog
                 isOpen={isAlertOpen}
                 onClose={() => setIsAlertOpen(false)}
-                title={t("error")}
+                title={t("success")}
                 description={alertMessage}
                 onConfirm={() => {
                   setIsAlertOpen(false);
