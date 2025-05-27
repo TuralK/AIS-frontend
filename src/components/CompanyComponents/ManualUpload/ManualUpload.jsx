@@ -6,6 +6,7 @@ import IYTElogo from '../../../assets/iyte_logo_eng.png'; // Assuming this is yo
 import { getUploadPage } from '../../../api/CompanyApi/getUploadPageAPI';
 // import Loading from '../../LoadingComponent/Loading'; // Your Loading component
 import FileUploadSection from '../../StudentComponents/StudentInternship/components/FileUploadSection';
+import { uploadReportForm } from '../../../api/CompanyApi/uploadReportFormAPI';
 
 const Loading = () => (
   <div className="flex justify-center items-center h-screen">
