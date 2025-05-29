@@ -12,11 +12,11 @@ You can find the backend code for this project here:
 ## 🔗 Frontend Repository
 This repository contains frontend code of IMS
 
-🌐 Live Preview
+## 🌐 Live Preview
 
-    🔗  https://youtu.be/B23iw-9nf9c
+🔗  [Preview video](https://youtu.be/B23iw-9nf9c)
 
-🚀 Features
+## 🚀 Features
 🔐 Authentication
 
     Login, Forgot Password, and Change Password pages
